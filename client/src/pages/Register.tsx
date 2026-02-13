@@ -1,0 +1,68 @@
+import { useState } from 'react';
+import { useAuth } from '../store/auth';
+import { useNavigate, Link } from 'react-router-dom';
+
+export default function Register() {
+  const [email, setEmail] = useState('');
+  const [displayName, setDisplayName] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const { register } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await register(email, displayName, password);
+      navigate('/');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-400 to-blue-500">
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">LinguaCMS</h1>
+        <h2 className="text-xl text-center text-gray-600 mb-6">Create Account</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Display Name"
+            value={displayName}
+            onChange={e => setDisplayName(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 text-lg"
+            required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 text-lg"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 text-lg"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl text-lg transition-colors"
+          >
+            Sign Up
+          </button>
+        </form>
+        <p className="text-center mt-4 text-gray-600">
+          Already have an account? <Link to="/login" className="text-green-500 font-semibold">Log in</Link>
+        </p>
+      </div>
+    </div>
+  );
+}
