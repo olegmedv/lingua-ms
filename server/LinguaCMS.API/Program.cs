@@ -73,6 +73,27 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+// Auto-migrate + seed admin
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+
+    if (!db.Users.Any(u => u.Role == LinguaCMS.Domain.Enums.UserRole.Admin))
+    {
+        db.Users.Add(new LinguaCMS.Domain.Entities.AppUser
+        {
+            Id = Guid.NewGuid(),
+            Email = "admin@linguacms.com",
+            DisplayName = "Admin",
+            PasswordHash = LinguaCMS.Application.Auth.Commands.RegisterHandler.HashPassword("Admin123!"),
+            Role = LinguaCMS.Domain.Enums.UserRole.Admin,
+            CreatedAt = DateTime.UtcNow
+        });
+        db.SaveChanges();
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
