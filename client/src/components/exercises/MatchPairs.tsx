@@ -13,7 +13,9 @@ export default function MatchPairs({ data, onAnswer }: Props) {
   const [correctCount, setCorrectCount] = useState(0);
 
   const words = data.pairs.map((p, i) => ({ text: p.word, idx: i }));
-  const translations = [...data.pairs.map((p, i) => ({ text: p.translation, idx: i }))].sort(() => Math.random() - 0.5);
+  const [translations] = useState(() =>
+    [...data.pairs.map((p, i) => ({ text: p.translation, idx: i }))].sort(() => Math.random() - 0.5)
+  );
 
   const handleTranslation = (tIdx: number) => {
     if (selectedWord === null || matched.has(tIdx)) return;
