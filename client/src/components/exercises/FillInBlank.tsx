@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 interface Props {
   data: { sentence: string; correctAnswer: string; distractors: string[] };
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function FillInBlank({ data, onAnswer }: Props) {
@@ -13,7 +13,7 @@ export default function FillInBlank({ data, onAnswer }: Props) {
   const handleSelect = (opt: string) => {
     if (selected) return;
     setSelected(opt);
-    setTimeout(() => onAnswer(opt === data.correctAnswer), 1500);
+    onAnswer(opt === data.correctAnswer, data.correctAnswer);
   };
 
   const displaySentence = selected

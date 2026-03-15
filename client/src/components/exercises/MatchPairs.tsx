@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 interface Props {
   data: { pairs: { word: string; translation: string }[] };
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function MatchPairs({ data, onAnswer }: Props) {
@@ -27,7 +27,7 @@ export default function MatchPairs({ data, onAnswer }: Props) {
       const newCount = correctCount + 1;
       setCorrectCount(newCount);
       if (newCount === data.pairs.length) {
-        setTimeout(() => onAnswer(true), 500);
+        onAnswer(true);
       }
     } else {
       setWrongPair([selectedWord, tIdx]);

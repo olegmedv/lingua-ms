@@ -6,7 +6,7 @@ import { API_URL } from '../../config';
 interface Props {
   data: { correctText: string; distractors: string[] };
   audioUrl?: string;
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
@@ -20,7 +20,7 @@ export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
   const handleSelect = (opt: string) => {
     if (selected) return;
     setSelected(opt);
-    setTimeout(() => onAnswer(opt === data.correctText), 1500);
+    onAnswer(opt === data.correctText, data.correctText);
   };
 
   return (

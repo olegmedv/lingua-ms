@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 interface Props {
   data: { word: string; correctAnswer: string; distractors: string[] };
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function MultipleChoice({ data, onAnswer }: Props) {
@@ -14,7 +14,7 @@ export default function MultipleChoice({ data, onAnswer }: Props) {
     if (selected) return;
     setSelected(opt);
     const correct = opt === data.correctAnswer;
-    setTimeout(() => onAnswer(correct), 1500);
+    onAnswer(correct, data.correctAnswer);
   };
 
   return (

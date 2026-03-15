@@ -4,7 +4,7 @@ import { API_URL } from '../../config';
 
 interface Props {
   data: { word: string; correctImageUrl: string; distractorImages: string[] };
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function ImageSelect({ data, onAnswer }: Props) {
@@ -14,7 +14,7 @@ export default function ImageSelect({ data, onAnswer }: Props) {
   const handleSelect = (img: string) => {
     if (selected) return;
     setSelected(img);
-    setTimeout(() => onAnswer(img === data.correctImageUrl), 1500);
+    onAnswer(img === data.correctImageUrl);
   };
 
   const imgSrc = (url: string) => url.startsWith('http') ? url : `${API_URL}${url}`;

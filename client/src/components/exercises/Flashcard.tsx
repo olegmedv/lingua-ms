@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 interface Props {
   data: { front: string; back: string };
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function Flashcard({ data, onAnswer }: Props) {

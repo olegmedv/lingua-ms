@@ -5,23 +5,22 @@ import { API_URL } from '../../config';
 interface Props {
   data: { correctText: string };
   audioUrl?: string;
-  onAnswer: (correct: boolean) => void;
+  onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
   const [input, setInput] = useState('');
   const [checked, setChecked] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(false);
 
   const playAudio = () => {
     if (audioUrl) new Audio(`${API_URL}${audioUrl}`).play();
   };
 
   const handleCheck = () => {
+    if (checked) return;
     const correct = input.trim().toLowerCase() === data.correctText.toLowerCase();
-    setIsCorrect(correct);
     setChecked(true);
-    setTimeout(() => onAnswer(correct), 1500);
+    onAnswer(correct, data.correctText);
   };
 
   return (
@@ -35,12 +34,11 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
         onChange={e => setInput(e.target.value)}
         disabled={checked}
         className={`w-full max-w-md px-4 py-3 rounded-xl border-2 text-lg text-center ${
-          checked ? (isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50') : 'border-gray-300'
+          checked ? 'border-gray-300 bg-gray-50' : 'border-gray-300'
         }`}
         placeholder="Type here..."
         onKeyDown={e => e.key === 'Enter' && !checked && handleCheck()}
       />
-      {checked && !isCorrect && <p className="text-red-500">Correct: {data.correctText}</p>}
       {!checked && (
         <button onClick={handleCheck} className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl text-lg">
           Check
