@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../../store/auth';
 import { api } from '../../api/client';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Flame, Trophy, BookOpen } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 
 interface Stats {
   totalXp: number;
@@ -26,8 +26,8 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-md mx-auto">
+    <div className="p-6 md:p-10">
+      <div className="max-w-xl">
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
           <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl text-white font-bold">{user?.displayName?.[0]?.toUpperCase()}</span>
@@ -37,26 +37,22 @@ export default function Profile() {
         </div>
 
         {stats && (
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-white rounded-xl shadow p-4 text-center">
-              <Trophy className="w-8 h-8 text-yellow-500 mx-auto mb-2" />
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <div className="bg-white rounded-xl shadow p-4">
+              <p className="text-sm text-gray-500 mb-1">Total XP</p>
               <p className="text-2xl font-bold text-gray-800">{stats.totalXp}</p>
-              <p className="text-sm text-gray-500">Total XP</p>
             </div>
-            <div className="bg-white rounded-xl shadow p-4 text-center">
-              <Flame className="w-8 h-8 text-orange-500 mx-auto mb-2" />
+            <div className="bg-white rounded-xl shadow p-4">
+              <p className="text-sm text-gray-500 mb-1">Day Streak</p>
               <p className="text-2xl font-bold text-gray-800">{stats.currentStreak}</p>
-              <p className="text-sm text-gray-500">Day Streak</p>
             </div>
-            <div className="bg-white rounded-xl shadow p-4 text-center">
-              <Flame className="w-8 h-8 text-red-500 mx-auto mb-2" />
+            <div className="bg-white rounded-xl shadow p-4">
+              <p className="text-sm text-gray-500 mb-1">Best Streak</p>
               <p className="text-2xl font-bold text-gray-800">{stats.longestStreak}</p>
-              <p className="text-sm text-gray-500">Best Streak</p>
             </div>
-            <div className="bg-white rounded-xl shadow p-4 text-center">
-              <BookOpen className="w-8 h-8 text-green-500 mx-auto mb-2" />
+            <div className="bg-white rounded-xl shadow p-4">
+              <p className="text-sm text-gray-500 mb-1">Lessons Done</p>
               <p className="text-2xl font-bold text-gray-800">{stats.completedLessons}</p>
-              <p className="text-sm text-gray-500">Lessons Done</p>
             </div>
           </div>
         )}

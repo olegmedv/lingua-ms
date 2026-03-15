@@ -35,7 +35,7 @@ export default function LessonTree() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 md:p-10 max-w-3xl">
       <h1 className="text-2xl font-bold text-gray-800 mb-6">Lessons</h1>
       <div className="flex flex-col items-center gap-6">
         {lessons.map((lesson, i) => {

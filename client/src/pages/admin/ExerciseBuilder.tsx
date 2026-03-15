@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Table, Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { useParams, Link } from 'react-router-dom';
+import { Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider } from 'antd';
+import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { api } from '../../api/client';
+import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
 
 const exerciseTypes = [
   { value: 0, label: 'Multiple Choice' },
@@ -271,46 +272,71 @@ export default function ExerciseBuilder() {
     setPreviewOpen(true);
   };
 
-  const columns = [
-    { title: '#', dataIndex: 'order', key: 'order', width: 60 },
-    { title: 'Type', dataIndex: 'type', key: 'type', render: (v: number) => exerciseTypes.find(t => t.value === v)?.label },
-    {
-      title: 'Preview', key: 'preview', width: 300,
-      render: (_: unknown, record: Exercise) => {
-        try {
-          const d = JSON.parse(record.contentJson);
-          switch (record.type) {
-            case 0: return `"${d.word}" → ${d.correctAnswer}`;
-            case 1: return `Listen → ${d.correctText}`;
-            case 2: return `Type: ${d.correctText}`;
-            case 3: return `${d.pairs?.length || 0} pairs`;
-            case 4: return `"${d.word}" + images`;
-            case 5: return `"${d.prompt}"`;
-            case 6: return `"${d.sentence}"`;
-            case 7: return `"${d.front}" / "${d.back}"`;
-            default: return '—';
-          }
-        } catch { return '—'; }
-      },
-    },
-    {
-      title: 'Actions', key: 'actions', width: 120,
-      render: (_: unknown, record: Exercise) => (
-        <div className="flex gap-2">
-          <Button size="small" icon={<EditOutlined />} onClick={() => openEdit(record)} />
-          <Button size="small" danger icon={<DeleteOutlined />} onClick={() => handleDelete(record.id)} />
-        </div>
-      ),
-    },
-  ];
+  const getPreview = (record: Exercise) => {
+    try {
+      const d = JSON.parse(record.contentJson);
+      switch (record.type) {
+        case 0: return `"${d.word}" → ${d.correctAnswer}`;
+        case 1: return `Listen → ${d.correctText}`;
+        case 2: return `Type: ${d.correctText}`;
+        case 3: return `${d.pairs?.length || 0} pairs`;
+        case 4: return `"${d.word}" + images`;
+        case 5: return `"${d.prompt}"`;
+        case 6: return `"${d.sentence}"`;
+        case 7: return `"${d.front}" / "${d.back}"`;
+        default: return '—';
+      }
+    } catch { return '—'; }
+  };
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
+    <div className="p-6 md:p-10">
+      <Link to={`/admin/languages`} className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
+        <ChevronLeft className="w-4 h-4" /> Back to Lessons
+      </Link>
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Exercises</h1>
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>Add Exercise</Button>
       </div>
-      <Table dataSource={exercises} columns={columns} rowKey="id" pagination={false} />
+
+      {exercises.length === 0 ? (
+        <p className="text-gray-400 py-12 text-center">No exercises yet. Create one to get started.</p>
+      ) : (
+        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {exercises.sort((a, b) => a.order - b.order).map(ex => (
+            <div
+              key={ex.id}
+              className="bg-white rounded-xl border border-gray-200 p-5 group hover:border-gray-300 hover:shadow-sm transition-all"
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs text-gray-400 font-medium">#{ex.order}</span>
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+                      {exerciseTypes.find(t => t.value === ex.type)?.label}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-700 line-clamp-2">{getPreview(ex)}</p>
+                </div>
+              </div>
+              <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => openEdit(ex)}
+                  className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => handleDelete(ex.id)}
+                  className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Modal
         title={editing ? 'Edit Exercise' : 'Add Exercise'}

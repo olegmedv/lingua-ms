@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../store/auth';
-import { Flame, Trophy } from 'lucide-react';
+
 
 interface Language {
   id: string;
@@ -27,7 +27,7 @@ export default function Dashboard() {
   }, []);
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
+    <div className="p-6 md:p-10 max-w-3xl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-800">Hello, {user?.displayName}!</h1>
@@ -36,11 +36,11 @@ export default function Dashboard() {
         <div className="flex gap-3">
           {stats && (
             <>
-              <div className="flex items-center gap-1 bg-orange-100 text-orange-600 px-3 py-1 rounded-full">
-                <Flame className="w-4 h-4" /> {stats.currentStreak}
+              <div className="flex items-center gap-1 bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-medium">
+                🔥 {stats.currentStreak}
               </div>
-              <div className="flex items-center gap-1 bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full">
-                <Trophy className="w-4 h-4" /> {stats.totalXp}
+              <div className="flex items-center gap-1 bg-yellow-100 text-yellow-600 px-3 py-1 rounded-full text-sm font-medium">
+                🏆 {stats.totalXp}
               </div>
             </>
           )}
