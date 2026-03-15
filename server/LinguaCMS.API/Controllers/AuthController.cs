@@ -27,17 +27,31 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
     {
-        var result = await _mediator.Send(new RegisterCommand(request.Email, request.DisplayName, request.Password));
-        result.Token = GenerateToken(result.User.Id, result.User.Email, result.User.Role);
-        return Ok(result);
+        try
+        {
+            var result = await _mediator.Send(new RegisterCommand(request.Email, request.DisplayName, request.Password));
+            result.Token = GenerateToken(result.User.Id, result.User.Email, result.User.Role);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Conflict(new { message = ex.Message });
+        }
     }
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
     {
-        var result = await _mediator.Send(new LoginCommand(request.Email, request.Password));
-        result.Token = GenerateToken(result.User.Id, result.User.Email, result.User.Role);
-        return Ok(result);
+        try
+        {
+            var result = await _mediator.Send(new LoginCommand(request.Email, request.Password));
+            result.Token = GenerateToken(result.User.Id, result.User.Email, result.User.Role);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return Unauthorized(new { message = ex.Message });
+        }
     }
 
     [Authorize]

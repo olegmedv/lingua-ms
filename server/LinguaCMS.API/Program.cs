@@ -81,12 +81,15 @@ using (var scope = app.Services.CreateScope())
 
     if (!db.Users.Any(u => u.Role == LinguaCMS.Domain.Enums.UserRole.Admin))
     {
+        var adminEmail = app.Configuration["AdminSeed:Email"]!;
+        var adminPassword = app.Configuration["AdminSeed:Password"]!;
+        var adminName = app.Configuration["AdminSeed:DisplayName"]!;
         db.Users.Add(new LinguaCMS.Domain.Entities.AppUser
         {
             Id = Guid.NewGuid(),
-            Email = "admin@linguacms.com",
-            DisplayName = "Admin",
-            PasswordHash = LinguaCMS.Application.Auth.Commands.RegisterHandler.HashPassword("Admin123!"),
+            Email = adminEmail,
+            DisplayName = adminName,
+            PasswordHash = LinguaCMS.Application.Auth.Commands.RegisterHandler.HashPassword(adminPassword),
             Role = LinguaCMS.Domain.Enums.UserRole.Admin,
             CreatedAt = DateTime.UtcNow
         });
