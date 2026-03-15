@@ -16,7 +16,10 @@ public class LanguagesController : ControllerBase
 
     [HttpGet]
     public async Task<ActionResult<List<LanguageDto>>> GetAll()
-        => Ok(await _mediator.Send(new GetLanguagesQuery()));
+    {
+        var isAdmin = User.IsInRole("Admin");
+        return Ok(await _mediator.Send(new GetLanguagesQuery(isAdmin)));
+    }
 
     [HttpGet("{id}")]
     public async Task<ActionResult<LanguageDto>> GetById(Guid id)

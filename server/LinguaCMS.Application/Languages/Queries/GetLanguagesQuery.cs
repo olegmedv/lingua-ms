@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Languages.Queries;
 
-public record GetLanguagesQuery : IRequest<List<LanguageDto>>;
+public record GetLanguagesQuery(bool IsAdmin = false) : IRequest<List<LanguageDto>>;
 
 public class GetLanguagesHandler : IRequestHandler<GetLanguagesQuery, List<LanguageDto>>
 {
@@ -14,8 +14,12 @@ public class GetLanguagesHandler : IRequestHandler<GetLanguagesQuery, List<Langu
 
     public async Task<List<LanguageDto>> Handle(GetLanguagesQuery request, CancellationToken ct)
     {
-        return await _db.Languages
-            .Where(l => l.IsPublished)
+        var query = _db.Languages.AsQueryable();
+
+        if (!request.IsAdmin)
+            query = query.Where(l => l.IsPublished);
+
+        return await query
             .Select(l => new LanguageDto { Id = l.Id, Name = l.Name, Description = l.Description, ImageUrl = l.ImageUrl, IsPublished = l.IsPublished })
             .ToListAsync(ct);
     }
