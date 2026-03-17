@@ -20,3 +20,6 @@ dist/
 # Demo / uploads
 demo/
 server/LinguaCMS.API/wwwroot/uploads/
+
+# Docs
+UI-REMOVED-ELEMENTS.md

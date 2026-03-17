@@ -1,17 +1,8 @@
-import { useEffect, useState } from 'react';
 import { useAuth } from '../../store/auth';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
 import { LogOut } from 'lucide-react';
-import type { Stats } from '../../types/api';
 
 export default function Profile() {
   const { user, logout } = useAuth();
-  const [stats, setStats] = useState<Stats | null>(null);
-
-  useEffect(() => {
-    api.get<Stats>(API.progress.stats).then(setStats).catch(() => {});
-  }, []);
 
   return (
     <div className="p-6 md:p-10">
@@ -23,27 +14,6 @@ export default function Profile() {
           <h1 className="text-2xl font-bold text-center text-gray-800">{user?.displayName}</h1>
           <p className="text-center text-gray-500">{user?.email}</p>
         </div>
-
-        {stats && (
-          <div className="grid grid-cols-2 gap-3 mb-6">
-            <div className="bg-white rounded-xl shadow p-4">
-              <p className="text-sm text-gray-500 mb-1">Total XP</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.totalXp}</p>
-            </div>
-            <div className="bg-white rounded-xl shadow p-4">
-              <p className="text-sm text-gray-500 mb-1">Day Streak</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.currentStreak}</p>
-            </div>
-            <div className="bg-white rounded-xl shadow p-4">
-              <p className="text-sm text-gray-500 mb-1">Best Streak</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.longestStreak}</p>
-            </div>
-            <div className="bg-white rounded-xl shadow p-4">
-              <p className="text-sm text-gray-500 mb-1">Lessons Done</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.completedLessons}</p>
-            </div>
-          </div>
-        )}
 
         <button
           onClick={logout}
