@@ -1,8 +1,8 @@
 using LinguaCMS.Application.Exercises.Models;
+using LinguaCMS.Application.Extensions;
 using LinguaCMS.Domain.Enums;
 using LinguaCMS.Infrastructure.Data;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Exercises.Commands;
 
@@ -15,8 +15,7 @@ public class UpdateExerciseHandler : IRequestHandler<UpdateExerciseCommand, Exer
 
     public async Task<ExerciseDto> Handle(UpdateExerciseCommand request, CancellationToken ct)
     {
-        var exercise = await _db.Exercises.FirstOrDefaultAsync(e => e.Id == request.Id, ct)
-            ?? throw new Exception("Exercise not found");
+        var exercise = await _db.Exercises.FirstOrNotFoundAsync(e => e.Id == request.Id, ct);
 
         exercise.Type = request.Type;
         exercise.ContentJson = request.ContentJson;

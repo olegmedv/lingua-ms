@@ -1,6 +1,6 @@
+using LinguaCMS.Application.Extensions;
 using LinguaCMS.Infrastructure.Data;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Exercises.Commands;
 
@@ -13,8 +13,7 @@ public class DeleteExerciseHandler : IRequestHandler<DeleteExerciseCommand>
 
     public async Task Handle(DeleteExerciseCommand request, CancellationToken ct)
     {
-        var exercise = await _db.Exercises.FirstOrDefaultAsync(e => e.Id == request.Id, ct)
-            ?? throw new Exception("Exercise not found");
+        var exercise = await _db.Exercises.FirstOrNotFoundAsync(e => e.Id == request.Id, ct);
 
         _db.Exercises.Remove(exercise);
         await _db.SaveChangesAsync(ct);

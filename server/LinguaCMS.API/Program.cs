@@ -1,4 +1,7 @@
 using System.Text;
+using LinguaCMS.API.Middleware;
+using LinguaCMS.API.Services;
+using LinguaCMS.Application.Common;
 using LinguaCMS.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +36,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddSingleton<JwtTokenService>();
 
 // Controllers + Swagger
 builder.Services.AddControllers();
@@ -61,11 +65,12 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // CORS
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -89,7 +94,7 @@ using (var scope = app.Services.CreateScope())
             Id = Guid.NewGuid(),
             Email = adminEmail,
             DisplayName = adminName,
-            PasswordHash = LinguaCMS.Application.Auth.Commands.RegisterHandler.HashPassword(adminPassword),
+            PasswordHash = PasswordHasher.Hash(adminPassword),
             Role = LinguaCMS.Domain.Enums.UserRole.Admin,
             CreatedAt = DateTime.UtcNow
         });
@@ -103,6 +108,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,4 +1,6 @@
 using LinguaCMS.Application.Auth.Models;
+using LinguaCMS.Application.Common;
+using LinguaCMS.Application.Exceptions;
 using LinguaCMS.Infrastructure.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -16,14 +18,14 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponse>
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken ct)
     {
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email, ct)
-            ?? throw new Exception("Invalid credentials");
+            ?? throw new UnauthorizedException("Invalid credentials");
 
-        if (user.PasswordHash != RegisterHandler.HashPassword(request.Password))
-            throw new Exception("Invalid credentials");
+        if (!PasswordHasher.Verify(request.Password, user.PasswordHash))
+            throw new UnauthorizedException("Invalid credentials");
 
         return new AuthResponse
         {
-            Token = "", // Token will be set by controller
+            Token = "",
             User = new UserDto
             {
                 Id = user.Id,

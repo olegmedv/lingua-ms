@@ -1,6 +1,6 @@
+using LinguaCMS.Application.Extensions;
 using LinguaCMS.Infrastructure.Data;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Languages.Commands;
 
@@ -13,8 +13,7 @@ public class DeleteLanguageHandler : IRequestHandler<DeleteLanguageCommand>
 
     public async Task Handle(DeleteLanguageCommand request, CancellationToken ct)
     {
-        var lang = await _db.Languages.FirstOrDefaultAsync(l => l.Id == request.Id, ct)
-            ?? throw new Exception("Language not found");
+        var lang = await _db.Languages.FirstOrNotFoundAsync(l => l.Id == request.Id, ct);
 
         _db.Languages.Remove(lang);
         await _db.SaveChangesAsync(ct);

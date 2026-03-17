@@ -1,7 +1,7 @@
+using LinguaCMS.Application.Extensions;
 using LinguaCMS.Application.Languages.Models;
 using LinguaCMS.Infrastructure.Data;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Languages.Commands;
 
@@ -14,8 +14,7 @@ public class UpdateLanguageHandler : IRequestHandler<UpdateLanguageCommand, Lang
 
     public async Task<LanguageDto> Handle(UpdateLanguageCommand request, CancellationToken ct)
     {
-        var lang = await _db.Languages.FirstOrDefaultAsync(l => l.Id == request.Id, ct)
-            ?? throw new Exception("Language not found");
+        var lang = await _db.Languages.FirstOrNotFoundAsync(l => l.Id == request.Id, ct);
 
         lang.Name = request.Name;
         lang.Description = request.Description;

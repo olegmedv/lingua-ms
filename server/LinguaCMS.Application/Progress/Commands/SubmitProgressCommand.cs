@@ -1,3 +1,4 @@
+using LinguaCMS.Application.Extensions;
 using LinguaCMS.Application.Progress.Models;
 using LinguaCMS.Domain.Entities;
 using LinguaCMS.Infrastructure.Data;
@@ -15,8 +16,7 @@ public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, Prog
 
     public async Task<ProgressDto> Handle(SubmitProgressCommand request, CancellationToken ct)
     {
-        var lesson = await _db.Lessons.FirstOrDefaultAsync(l => l.Id == request.LessonId, ct)
-            ?? throw new Exception("Lesson not found");
+        var lesson = await _db.Lessons.FirstOrNotFoundAsync(l => l.Id == request.LessonId, ct);
 
         var completed = request.Score >= lesson.PassThreshold;
         var xp = completed ? 10 + (request.Score / 10) : 0;
