@@ -163,12 +163,11 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
     case 0:
       return (
         <>
-          <Form.Item name="mc_word" label="Word / Phrase" rules={[{ required: true }]}><Input placeholder="e.g. Gilakas'la" /></Form.Item>
-          <Form.Item name="mc_correct" label="Correct Answer" rules={[{ required: true }]}><Input placeholder="e.g. Thank you" /></Form.Item>
+          <Form.Item name="mc_word" label="Word / Phrase" rules={[{ required: true }]}><Input placeholder="e.g. Hello" /></Form.Item>
+          <Form.Item name="mc_correct" label="Correct Answer" rules={[{ required: true }]}><Input placeholder="e.g. Greeting" /></Form.Item>
           <Form.Item name="mc_d1" label="Distractor 1" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="mc_d2" label="Distractor 2" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="mc_d3" label="Distractor 3" rules={[{ required: true }]}><Input /></Form.Item>
-          {audioUploadField(false)}
         </>
       );
     case 1:
@@ -219,7 +218,7 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
     case 4:
       return (
         <>
-          <Form.Item name="is_word" label="Word" rules={[{ required: true }]}><Input placeholder="e.g. A'mis" /></Form.Item>
+          <Form.Item name="is_word" label="Word" rules={[{ required: true }]}><Input placeholder="e.g. Dog" /></Form.Item>
           <Divider />
           {imageUploadField('is_correctImage', 'Correct Image', isCorrectImage)}
           {imageUploadField('is_di1', 'Distractor Image 1', isDi1)}
@@ -232,10 +231,10 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
         <>
           <Form.Item name="wb_prompt" label="Prompt (English sentence)" rules={[{ required: true }]}><Input placeholder="e.g. The dog is big" /></Form.Item>
           <Form.Item name="wb_correctOrder" label="Correct Word Order (comma-separated)" rules={[{ required: true }]} extra={<>Separator: <code style={{ userSelect: 'all', cursor: 'copy' }}>,</code></>}>
-            <Input placeholder="e.g. A'mis, ek, aw'ina" />
+            <Input placeholder="e.g. The, dog, is, big" />
           </Form.Item>
           <Form.Item name="wb_distractors" label="Distractor Words (comma-separated)" extra={<>Separator: <code style={{ userSelect: 'all', cursor: 'copy' }}>,</code></>}>
-            <Input placeholder="e.g. nage', gukw" />
+            <Input placeholder="e.g. cat, small" />
           </Form.Item>
         </>
       );
@@ -245,7 +244,7 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
           <Form.Item name="fb_sentence" label="Sentence (use _____ for blank)" rules={[{ required: true }]}>
             <Input placeholder="e.g. _____ is big" />
           </Form.Item>
-          <Form.Item name="fb_correct" label="Correct Answer" rules={[{ required: true }]}><Input placeholder="e.g. A'mis" /></Form.Item>
+          <Form.Item name="fb_correct" label="Correct Answer" rules={[{ required: true }]}><Input placeholder="e.g. Dog" /></Form.Item>
           <Form.Item name="fb_d1" label="Distractor 1" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="fb_d2" label="Distractor 2"><Input /></Form.Item>
           <Form.Item name="fb_d3" label="Distractor 3"><Input /></Form.Item>
@@ -254,8 +253,8 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
     case 7:
       return (
         <>
-          <Form.Item name="fc_front" label="Front (word/phrase)" rules={[{ required: true }]}><Input placeholder="e.g. Gilakas'la" /></Form.Item>
-          <Form.Item name="fc_back" label="Back (meaning)" rules={[{ required: true }]}><Input placeholder="e.g. Thank you" /></Form.Item>
+          <Form.Item name="fc_front" label="Front (word/phrase)" rules={[{ required: true }]}><Input placeholder="e.g. Hello" /></Form.Item>
+          <Form.Item name="fc_back" label="Back (meaning)" rules={[{ required: true }]}><Input placeholder="e.g. Greeting" /></Form.Item>
         </>
       );
     default:
