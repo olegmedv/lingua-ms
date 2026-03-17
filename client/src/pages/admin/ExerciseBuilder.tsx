@@ -18,71 +18,89 @@ const exerciseTypes = [
   { value: 7, label: 'Flashcard' },
 ];
 
+const defaultInstructions: Record<number, string> = {
+  0: "What does this mean?",
+  1: "What did you hear?",
+  2: "Type what you hear",
+  3: "Match the pairs",
+  4: "Select the correct image",
+  5: "Tap words to build the sentence",
+  6: "Fill in the blank",
+  7: "Tap to reveal",
+};
+
 function buildContentJson(type: number, values: Record<string, unknown>): string {
+  let obj: Record<string, unknown>;
   switch (type) {
     case 0:
-      return JSON.stringify({
-        word: values.mc_word,
-        correctAnswer: values.mc_correct,
-        distractors: [values.mc_d1, values.mc_d2, values.mc_d3],
-      });
+      obj = { word: values.mc_word, correctAnswer: values.mc_correct, distractors: [values.mc_d1, values.mc_d2, values.mc_d3] };
+      break;
     case 1:
-      return JSON.stringify({
-        correctText: values.ls_correct,
-        distractors: [values.ls_d1, values.ls_d2, values.ls_d3],
-      });
+      obj = { correctText: values.ls_correct, distractors: [values.ls_d1, values.ls_d2, values.ls_d3] };
+      break;
     case 2:
-      return JSON.stringify({ correctText: values.lt_correct });
+      obj = { correctText: values.lt_correct };
+      break;
     case 3:
-      return JSON.stringify({ pairs: values.mp_pairs });
+      obj = { pairs: values.mp_pairs };
+      break;
     case 4:
-      return JSON.stringify({
-        word: values.is_word,
-        correctImageUrl: values.is_correctImage,
-        distractorImages: [values.is_di1, values.is_di2, values.is_di3],
-      });
+      obj = { word: values.is_word, correctImageUrl: values.is_correctImage, distractorImages: [values.is_di1, values.is_di2, values.is_di3] };
+      break;
     case 5:
-      return JSON.stringify({
+      obj = {
         prompt: values.wb_prompt,
         correctOrder: (values.wb_correctOrder as string).split(',').map((s: string) => s.trim()),
         distractorWords: (values.wb_distractors as string).split(',').map((s: string) => s.trim()).filter(Boolean),
-      });
+      };
+      break;
     case 6:
-      return JSON.stringify({
-        sentence: values.fb_sentence,
-        correctAnswer: values.fb_correct,
-        distractors: [values.fb_d1, values.fb_d2, values.fb_d3].filter(Boolean),
-      });
+      obj = { sentence: values.fb_sentence, correctAnswer: values.fb_correct, distractors: [values.fb_d1, values.fb_d2, values.fb_d3].filter(Boolean) };
+      break;
     case 7:
-      return JSON.stringify({ front: values.fc_front, back: values.fc_back });
+      obj = { front: values.fc_front, back: values.fc_back };
+      break;
     default:
-      return '{}';
+      obj = {};
   }
+  if (values.instruction) obj.instruction = values.instruction;
+  return JSON.stringify(obj);
 }
 
 function parseContentToFields(type: number, json: string): Record<string, unknown> {
   try {
     const data = JSON.parse(json);
+    let fields: Record<string, unknown>;
     switch (type) {
       case 0:
-        return { mc_word: data.word, mc_correct: data.correctAnswer, mc_d1: data.distractors?.[0], mc_d2: data.distractors?.[1], mc_d3: data.distractors?.[2] };
+        fields = { mc_word: data.word, mc_correct: data.correctAnswer, mc_d1: data.distractors?.[0], mc_d2: data.distractors?.[1], mc_d3: data.distractors?.[2] };
+        break;
       case 1:
-        return { ls_correct: data.correctText, ls_d1: data.distractors?.[0], ls_d2: data.distractors?.[1], ls_d3: data.distractors?.[2] };
+        fields = { ls_correct: data.correctText, ls_d1: data.distractors?.[0], ls_d2: data.distractors?.[1], ls_d3: data.distractors?.[2] };
+        break;
       case 2:
-        return { lt_correct: data.correctText };
+        fields = { lt_correct: data.correctText };
+        break;
       case 3:
-        return { mp_pairs: data.pairs || [{ word: '', translation: '' }, { word: '', translation: '' }, { word: '', translation: '' }] };
+        fields = { mp_pairs: data.pairs || [{ word: '', translation: '' }, { word: '', translation: '' }, { word: '', translation: '' }] };
+        break;
       case 4:
-        return { is_word: data.word, is_correctImage: data.correctImageUrl, is_di1: data.distractorImages?.[0], is_di2: data.distractorImages?.[1], is_di3: data.distractorImages?.[2] };
+        fields = { is_word: data.word, is_correctImage: data.correctImageUrl, is_di1: data.distractorImages?.[0], is_di2: data.distractorImages?.[1], is_di3: data.distractorImages?.[2] };
+        break;
       case 5:
-        return { wb_prompt: data.prompt, wb_correctOrder: data.correctOrder?.join(', '), wb_distractors: data.distractorWords?.join(', ') };
+        fields = { wb_prompt: data.prompt, wb_correctOrder: data.correctOrder?.join(', '), wb_distractors: data.distractorWords?.join(', ') };
+        break;
       case 6:
-        return { fb_sentence: data.sentence, fb_correct: data.correctAnswer, fb_d1: data.distractors?.[0], fb_d2: data.distractors?.[1], fb_d3: data.distractors?.[2] };
+        fields = { fb_sentence: data.sentence, fb_correct: data.correctAnswer, fb_d1: data.distractors?.[0], fb_d2: data.distractors?.[1], fb_d3: data.distractors?.[2] };
+        break;
       case 7:
-        return { fc_front: data.front, fc_back: data.back };
+        fields = { fc_front: data.front, fc_back: data.back };
+        break;
       default:
-        return {};
+        fields = {};
     }
+    if (data.instruction) fields.instruction = data.instruction;
+    return fields;
   } catch {
     return {};
   }
@@ -446,6 +464,14 @@ export default function ExerciseBuilder() {
           <Form.Item name="order" label="Order"><InputNumber min={0} className="w-full" /></Form.Item>
           <Divider>Content</Divider>
           <TypeFields type={selectedType} form={form} onUpload={(url) => { sessionUploads.current.push(url); }} />
+          <Divider />
+          <Form.Item
+            name="instruction"
+            label="Custom Instruction"
+            extra="Leave empty to use the default instruction text"
+          >
+            <Input placeholder={defaultInstructions[selectedType]} allowClear />
+          </Form.Item>
         </Form>
       </Modal>
 

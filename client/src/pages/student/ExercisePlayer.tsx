@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
@@ -23,6 +23,8 @@ interface Feedback {
 export default function ExercisePlayer() {
   const { lessonId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const langId = (location.state as { langId?: string } | null)?.langId;
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [current, setCurrent] = useState(0);
@@ -48,7 +50,7 @@ export default function ExercisePlayer() {
       const passThreshold = lesson?.passThreshold ?? 80;
       api.post(API.progress.submit, { lessonId, score }).then(() => {
         navigate(`/lessons/${lessonId}/complete`, {
-          state: { score, total: exercises.length, correct: finalCorrect, passThreshold },
+          state: { score, total: exercises.length, correct: finalCorrect, passThreshold, langId },
         });
       });
     } else {

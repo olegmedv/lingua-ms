@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
-  data: { pairs: { word: string; translation: string }[] };
+  data: { pairs: { word: string; translation: string }[]; instruction?: string };
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
@@ -37,7 +37,7 @@ export default function MatchPairs({ data, onAnswer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <p className="text-lg text-gray-600 font-medium">Match the pairs</p>
+      <p className="text-lg text-gray-600 font-medium">{data.instruction ?? "Match the pairs"}</p>
       <div className="flex gap-8 w-full max-w-md">
         <div className="flex-1 flex flex-col gap-3">
           {words.map(w => (

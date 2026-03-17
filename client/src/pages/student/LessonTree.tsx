@@ -44,7 +44,7 @@ export default function LessonTree() {
             return (
               <div
                 key={lesson.id}
-                onClick={() => unlocked && navigate(`/lessons/${lesson.id}/play`)}
+                onClick={() => unlocked && navigate(`/lessons/${lesson.id}/play`, { state: { langId } })}
                 className={`bg-white rounded-xl border p-5 transition-all ${
                   unlocked
                     ? 'border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-sm group'

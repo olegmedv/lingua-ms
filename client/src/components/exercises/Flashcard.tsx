@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
-  data: { front: string; back: string };
+  data: { front: string; back: string; instruction?: string };
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
@@ -11,7 +11,7 @@ export default function Flashcard({ data, onAnswer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <p className="text-gray-500">Tap to reveal</p>
+      <p className="text-gray-500">{data.instruction ?? "Tap to reveal"}</p>
       <motion.div
         onClick={() => setFlipped(!flipped)}
         animate={{ rotateY: flipped ? 180 : 0 }}

@@ -3,13 +3,15 @@ import { motion } from 'framer-motion';
 import { API_URL } from '../../config';
 
 interface Props {
-  data: { word: string; correctImageUrl: string; distractorImages: string[] };
+  data: { word: string; correctImageUrl: string; distractorImages: string[]; instruction?: string };
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function ImageSelect({ data, onAnswer }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
-  const images = [data.correctImageUrl, ...data.distractorImages].sort(() => Math.random() - 0.5);
+  const [images] = useState(
+    () => [data.correctImageUrl, ...data.distractorImages].sort(() => Math.random() - 0.5)
+  );
 
   const handleSelect = (img: string) => {
     if (selected) return;
@@ -22,7 +24,7 @@ export default function ImageSelect({ data, onAnswer }: Props) {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       <h2 className="text-3xl font-bold text-gray-800">{data.word}</h2>
-      <p className="text-gray-500">Select the correct image</p>
+      <p className="text-gray-500">{data.instruction ?? "Select the correct image"}</p>
       <div className="grid grid-cols-2 gap-4 w-full max-w-md">
         {images.map(img => {
           const isCorrect = img === data.correctImageUrl;

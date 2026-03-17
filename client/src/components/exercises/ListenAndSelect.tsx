@@ -4,14 +4,16 @@ import { Volume2 } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 
 interface Props {
-  data: { correctText: string; distractors: string[] };
+  data: { correctText: string; distractors: string[]; instruction?: string };
   audioUrl?: string;
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
-  const options = [data.correctText, ...data.distractors].sort(() => Math.random() - 0.5);
+  const [options] = useState(
+    () => [data.correctText, ...data.distractors].sort(() => Math.random() - 0.5)
+  );
   const { play, isPlaying } = useAudio(audioUrl);
 
   const handleSelect = (opt: string) => {
@@ -25,7 +27,7 @@ export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
       <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
         <Volume2 className="w-12 h-12" />
       </button>
-      <p className="text-gray-500">What did you hear?</p>
+      <p className="text-gray-500">{data.instruction ?? "What did you hear?"}</p>
       <div className="grid gap-3 w-full max-w-md">
         {options.map(opt => {
           const isCorrect = opt === data.correctText;

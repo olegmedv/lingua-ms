@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface Props {
-  data: { sentence: string; correctAnswer: string; distractors: string[] };
+  data: { sentence: string; correctAnswer: string; distractors: string[]; instruction?: string };
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
 export default function FillInBlank({ data, onAnswer }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
-  const options = [data.correctAnswer, ...data.distractors].sort(() => Math.random() - 0.5);
+  const [options] = useState(
+    () => [data.correctAnswer, ...data.distractors].sort(() => Math.random() - 0.5)
+  );
 
   const handleSelect = (opt: string) => {
     if (selected) return;
@@ -23,7 +25,7 @@ export default function FillInBlank({ data, onAnswer }: Props) {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       <h2 className="text-2xl font-bold text-gray-800 text-center">{displaySentence}</h2>
-      <p className="text-gray-500">Fill in the blank</p>
+      <p className="text-gray-500">{data.instruction ?? "Fill in the blank"}</p>
       <div className="grid gap-3 w-full max-w-md">
         {options.map(opt => {
           const isCorrect = opt === data.correctAnswer;

@@ -5,7 +5,7 @@ import { SortableContext, useSortable, horizontalListSortingStrategy, arrayMove 
 import { CSS } from '@dnd-kit/utilities';
 
 interface Props {
-  data: { prompt: string; correctOrder: string[]; distractorWords: string[] };
+  data: { prompt: string; correctOrder: string[]; distractorWords: string[]; instruction?: string };
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
 
@@ -86,7 +86,7 @@ export default function WordBank({ data, onAnswer }: Props) {
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       <p className="text-lg text-gray-600">{data.prompt}</p>
-      <p className="text-gray-500">Tap words to build the sentence</p>
+      <p className="text-gray-500">{data.instruction ?? "Tap words to build the sentence"}</p>
 
       {/* Answer zone — sortable */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

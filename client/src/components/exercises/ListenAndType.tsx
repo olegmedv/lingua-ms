@@ -3,7 +3,7 @@ import { Volume2 } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
 
 interface Props {
-  data: { correctText: string };
+  data: { correctText: string; instruction?: string };
   audioUrl?: string;
   onAnswer: (correct: boolean, correctAnswer?: string) => void;
 }
@@ -25,7 +25,7 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
       <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
         <Volume2 className="w-12 h-12" />
       </button>
-      <p className="text-gray-500">Type what you hear</p>
+      <p className="text-gray-500">{data.instruction ?? "Type what you hear"}</p>
       <input
         value={input}
         onChange={e => setInput(e.target.value)}
