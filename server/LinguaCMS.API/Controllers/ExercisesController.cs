@@ -37,12 +37,15 @@ public class ExercisesController : ControllerBase
     [HttpDelete("exercises/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        var audioUrl = await _mediator.Send(new DeleteExerciseCommand(id));
+        var result = await _mediator.Send(new DeleteExerciseCommand(id));
 
-        if (!string.IsNullOrEmpty(audioUrl))
+        var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
+        var allUrls = new List<string?> { result.AudioUrl };
+        allUrls.AddRange(result.ImageUrls);
+
+        foreach (var url in allUrls.Where(u => !string.IsNullOrEmpty(u)))
         {
-            var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
-            var filePath = Path.Combine(uploadsDir, Path.GetFileName(audioUrl));
+            var filePath = Path.Combine(uploadsDir, Path.GetFileName(url!));
             if (System.IO.File.Exists(filePath))
                 System.IO.File.Delete(filePath);
         }

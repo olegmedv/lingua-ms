@@ -90,6 +90,10 @@ function parseContentToFields(type: number, json: string): Record<string, unknow
 
 function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<typeof Form.useForm>[0]; onUpload: (url: string) => void }) {
   const audioUrl = Form.useWatch('audioUrl', form);
+  const isCorrectImage = Form.useWatch('is_correctImage', form);
+  const isDi1 = Form.useWatch('is_di1', form);
+  const isDi2 = Form.useWatch('is_di2', form);
+  const isDi3 = Form.useWatch('is_di3', form);
 
   const uploadFile = async (file: File, field: string) => {
     const res = await api.upload(API.files.upload, file);
@@ -98,6 +102,23 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
     message.success('Uploaded');
     return false;
   };
+
+  const imageUploadField = (fieldName: string, label: string, currentUrl: string | undefined) => (
+    <Form.Item label={label} required>
+      <Form.Item name={fieldName} noStyle rules={[{ required: true, message: `Upload ${label}` }]}>
+        <input type="hidden" />
+      </Form.Item>
+      <div className="flex items-center gap-3">
+        <Upload accept="image/*" beforeUpload={(f) => { uploadFile(f, fieldName); return false; }} showUploadList={false}>
+          <Button icon={<UploadOutlined />}>Upload Image</Button>
+        </Upload>
+        {currentUrl
+          ? <span className="text-green-600 text-sm font-medium">✓ {currentUrl.split('/').pop()}</span>
+          : <span className="text-gray-400 text-sm">No file selected</span>
+        }
+      </div>
+    </Form.Item>
+  );
 
   const audioUploadField = (required = true) => (
     <Form.Item
@@ -181,15 +202,11 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
       return (
         <>
           <Form.Item name="is_word" label="Word" rules={[{ required: true }]}><Input placeholder="e.g. A'mis" /></Form.Item>
-          <Form.Item name="is_correctImage" label="Correct Image URL" rules={[{ required: true }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'is_correctImage'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />}>Upload Correct Image</Button></Upload>
           <Divider />
-          <Form.Item name="is_di1" label="Distractor Image 1" rules={[{ required: true }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'is_di1'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />} size="small">Upload</Button></Upload>
-          <Form.Item name="is_di2" label="Distractor Image 2" rules={[{ required: true }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'is_di2'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />} size="small">Upload</Button></Upload>
-          <Form.Item name="is_di3" label="Distractor Image 3" rules={[{ required: true }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'is_di3'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />} size="small">Upload</Button></Upload>
+          {imageUploadField('is_correctImage', 'Correct Image', isCorrectImage)}
+          {imageUploadField('is_di1', 'Distractor Image 1', isDi1)}
+          {imageUploadField('is_di2', 'Distractor Image 2', isDi2)}
+          {imageUploadField('is_di3', 'Distractor Image 3', isDi3)}
         </>
       );
     case 5:
@@ -240,6 +257,7 @@ export default function ExerciseBuilder() {
 
   const sessionUploads = useRef<string[]>([]);
   const originalAudioUrl = useRef<string | null>(null);
+  const originalImageUrls = useRef<{ correct: string | null; di1: string | null; di2: string | null; di3: string | null }>({ correct: null, di1: null, di2: null, di3: null });
 
   const deleteFile = (url: string) => api.delete(API.files.delete(url)).catch(() => {});
 
@@ -249,6 +267,7 @@ export default function ExerciseBuilder() {
   const openCreate = () => {
     sessionUploads.current = [];
     originalAudioUrl.current = null;
+    originalImageUrls.current = { correct: null, di1: null, di2: null, di3: null };
     setEditing(null);
     setSelectedType(0);
     form.resetFields();
@@ -259,6 +278,18 @@ export default function ExerciseBuilder() {
   const openEdit = (record: Exercise) => {
     sessionUploads.current = [];
     originalAudioUrl.current = record.audioUrl ?? null;
+    originalImageUrls.current = { correct: null, di1: null, di2: null, di3: null };
+    if (record.type === 4) {
+      try {
+        const d = JSON.parse(record.contentJson);
+        originalImageUrls.current = {
+          correct: d.correctImageUrl ?? null,
+          di1: d.distractorImages?.[0] ?? null,
+          di2: d.distractorImages?.[1] ?? null,
+          di3: d.distractorImages?.[2] ?? null,
+        };
+      } catch { /* ignore */ }
+    }
     setEditing(record);
     setSelectedType(record.type);
     const contentFields = parseContentToFields(record.type, record.contentJson);
@@ -272,6 +303,7 @@ export default function ExerciseBuilder() {
     sessionUploads.current.forEach(deleteFile);
     sessionUploads.current = [];
     originalAudioUrl.current = null;
+    originalImageUrls.current = { correct: null, di1: null, di2: null, di3: null };
     setModalOpen(false);
     setEditing(null);
     form.resetFields();
@@ -280,8 +312,8 @@ export default function ExerciseBuilder() {
   const handleSave = async (values: Record<string, unknown>) => {
     const type = values.type as number;
     const contentJson = buildContentJson(type, values);
-    const savedAudioUrl = (values.audioUrl as string) || null;
-    const payload = { type, contentJson, audioUrl: savedAudioUrl, order: (values.order as number) || 0 };
+    const savedFileUrl = (values.audioUrl as string) || null;
+    const payload = { type, contentJson, audioUrl: savedFileUrl, order: (values.order as number) || 0 };
 
     if (editing) {
       await api.put(API.exercises.byId(editing.id), payload);
@@ -289,15 +321,28 @@ export default function ExerciseBuilder() {
       await api.post(API.lessons.exercises(lessonId!), payload);
     }
 
+    const savedUrls = new Set<string>(savedFileUrl ? [savedFileUrl] : []);
+    if (type === 4) {
+      [values.is_correctImage, values.is_di1, values.is_di2, values.is_di3]
+        .filter(Boolean)
+        .forEach(u => savedUrls.add(u as string));
+    }
+
     // Delete session uploads that weren't saved
-    sessionUploads.current.filter(url => url !== savedAudioUrl).forEach(deleteFile);
-    // Delete original if it was replaced
-    if (originalAudioUrl.current && originalAudioUrl.current !== savedAudioUrl) {
+    sessionUploads.current.filter(url => !savedUrls.has(url)).forEach(deleteFile);
+    // Delete original audio if it was replaced
+    if (originalAudioUrl.current && !savedUrls.has(originalAudioUrl.current)) {
       deleteFile(originalAudioUrl.current);
+    }
+    // Delete original images if they were replaced
+    if (type === 4) {
+      [originalImageUrls.current.correct, originalImageUrls.current.di1, originalImageUrls.current.di2, originalImageUrls.current.di3]
+        .forEach(orig => { if (orig && !savedUrls.has(orig)) deleteFile(orig); });
     }
 
     sessionUploads.current = [];
     originalAudioUrl.current = null;
+    originalImageUrls.current = { correct: null, di1: null, di2: null, di3: null };
     setModalOpen(false);
     setEditing(null);
     form.resetFields();
