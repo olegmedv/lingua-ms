@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Volume2 } from 'lucide-react';
-import { API_URL } from '../../config';
+import { useAudio } from '../../hooks/useAudio';
 
 interface Props {
   data: { correctText: string };
@@ -11,10 +11,7 @@ interface Props {
 export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
   const [input, setInput] = useState('');
   const [checked, setChecked] = useState(false);
-
-  const playAudio = () => {
-    if (audioUrl) new Audio(`${API_URL}${audioUrl}`).play();
-  };
+  const { play, isPlaying } = useAudio(audioUrl);
 
   const handleCheck = () => {
     if (checked) return;
@@ -25,7 +22,7 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <button onClick={playAudio} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors">
+      <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
         <Volume2 className="w-12 h-12" />
       </button>
       <p className="text-gray-500">Type what you hear</p>
