@@ -23,5 +23,6 @@ export const API = {
   },
   files: {
     upload: '/api/files/upload',
+    delete: (url: string) => `/api/files?url=${encodeURIComponent(url)}`,
   },
 };

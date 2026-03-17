@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider } from 'antd';
 import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
@@ -88,13 +88,37 @@ function parseContentToFields(type: number, json: string): Record<string, unknow
   }
 }
 
-function TypeFields({ type, form }: { type: number; form: ReturnType<typeof Form.useForm>[0] }) {
+function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<typeof Form.useForm>[0]; onUpload: (url: string) => void }) {
+  const audioUrl = Form.useWatch('audioUrl', form);
+
   const uploadFile = async (file: File, field: string) => {
     const res = await api.upload(API.files.upload, file);
     form.setFieldsValue({ [field]: res.url });
+    onUpload(res.url);
     message.success('Uploaded');
     return false;
   };
+
+  const audioUploadField = (required = true) => (
+    <Form.Item
+      label="Audio File"
+      required={required}
+      validateStatus={required && !audioUrl ? undefined : undefined}
+    >
+      <Form.Item name="audioUrl" noStyle rules={required ? [{ required: true, message: 'Upload audio file' }] : []}>
+        <input type="hidden" />
+      </Form.Item>
+      <div className="flex items-center gap-3">
+        <Upload accept="audio/*" beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}>
+          <Button icon={<UploadOutlined />}>Upload Audio</Button>
+        </Upload>
+        {audioUrl
+          ? <span className="text-green-600 text-sm font-medium">✓ {audioUrl.split('/').pop()}</span>
+          : <span className="text-gray-400 text-sm">No file selected</span>
+        }
+      </div>
+    </Form.Item>
+  );
 
   switch (type) {
     case 0:
@@ -105,15 +129,13 @@ function TypeFields({ type, form }: { type: number; form: ReturnType<typeof Form
           <Form.Item name="mc_d1" label="Distractor 1" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="mc_d2" label="Distractor 2" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="mc_d3" label="Distractor 3" rules={[{ required: true }]}><Input /></Form.Item>
-          <Form.Item name="audioUrl" label="Audio (optional)"><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />}>Upload Audio</Button></Upload>
+          {audioUploadField(false)}
         </>
       );
     case 1:
       return (
         <>
-          <Form.Item name="audioUrl" label="Audio File" rules={[{ required: true, message: 'Upload audio' }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />}>Upload Audio</Button></Upload>
+          {audioUploadField()}
           <Divider />
           <Form.Item name="ls_correct" label="Correct Text" rules={[{ required: true }]}><Input placeholder="What the audio says" /></Form.Item>
           <Form.Item name="ls_d1" label="Distractor 1" rules={[{ required: true }]}><Input /></Form.Item>
@@ -124,8 +146,7 @@ function TypeFields({ type, form }: { type: number; form: ReturnType<typeof Form
     case 2:
       return (
         <>
-          <Form.Item name="audioUrl" label="Audio File" rules={[{ required: true, message: 'Upload audio' }]}><Input /></Form.Item>
-          <Upload beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}><Button icon={<UploadOutlined />}>Upload Audio</Button></Upload>
+          {audioUploadField()}
           <Divider />
           <Form.Item name="lt_correct" label="Correct Text" rules={[{ required: true }]}><Input placeholder="Text the student must type" /></Form.Item>
         </>
@@ -217,10 +238,17 @@ export default function ExerciseBuilder() {
   const [previewJson, setPreviewJson] = useState('');
   const [form] = Form.useForm();
 
+  const sessionUploads = useRef<string[]>([]);
+  const originalAudioUrl = useRef<string | null>(null);
+
+  const deleteFile = (url: string) => api.delete(API.files.delete(url)).catch(() => {});
+
   const load = () => api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises);
   useEffect(() => { load(); }, [lessonId]);
 
   const openCreate = () => {
+    sessionUploads.current = [];
+    originalAudioUrl.current = null;
     setEditing(null);
     setSelectedType(0);
     form.resetFields();
@@ -229,6 +257,8 @@ export default function ExerciseBuilder() {
   };
 
   const openEdit = (record: Exercise) => {
+    sessionUploads.current = [];
+    originalAudioUrl.current = record.audioUrl ?? null;
     setEditing(record);
     setSelectedType(record.type);
     const contentFields = parseContentToFields(record.type, record.contentJson);
@@ -237,16 +267,37 @@ export default function ExerciseBuilder() {
     setModalOpen(true);
   };
 
+  const handleCancel = () => {
+    // Delete everything uploaded in this session (original untouched)
+    sessionUploads.current.forEach(deleteFile);
+    sessionUploads.current = [];
+    originalAudioUrl.current = null;
+    setModalOpen(false);
+    setEditing(null);
+    form.resetFields();
+  };
+
   const handleSave = async (values: Record<string, unknown>) => {
     const type = values.type as number;
     const contentJson = buildContentJson(type, values);
-    const payload = { type, contentJson, audioUrl: (values.audioUrl as string) || null, order: (values.order as number) || 0 };
+    const savedAudioUrl = (values.audioUrl as string) || null;
+    const payload = { type, contentJson, audioUrl: savedAudioUrl, order: (values.order as number) || 0 };
 
     if (editing) {
       await api.put(API.exercises.byId(editing.id), payload);
     } else {
       await api.post(API.lessons.exercises(lessonId!), payload);
     }
+
+    // Delete session uploads that weren't saved
+    sessionUploads.current.filter(url => url !== savedAudioUrl).forEach(deleteFile);
+    // Delete original if it was replaced
+    if (originalAudioUrl.current && originalAudioUrl.current !== savedAudioUrl) {
+      deleteFile(originalAudioUrl.current);
+    }
+
+    sessionUploads.current = [];
+    originalAudioUrl.current = null;
     setModalOpen(false);
     setEditing(null);
     form.resetFields();
@@ -335,11 +386,11 @@ export default function ExerciseBuilder() {
       <Modal
         title={editing ? 'Edit Exercise' : 'Add Exercise'}
         open={modalOpen}
-        onCancel={() => setModalOpen(false)}
+        onCancel={handleCancel}
         width={640}
         footer={[
           <Button key="preview" onClick={handlePreview}>Preview JSON</Button>,
-          <Button key="cancel" onClick={() => setModalOpen(false)}>Cancel</Button>,
+          <Button key="cancel" onClick={handleCancel}>Cancel</Button>,
           <Button key="save" type="primary" onClick={() => form.submit()}>Save</Button>,
         ]}
       >
@@ -349,7 +400,7 @@ export default function ExerciseBuilder() {
           </Form.Item>
           <Form.Item name="order" label="Order"><InputNumber min={0} className="w-full" /></Form.Item>
           <Divider>Content</Divider>
-          <TypeFields type={selectedType} form={form} />
+          <TypeFields type={selectedType} form={form} onUpload={(url) => { sessionUploads.current.push(url); }} />
         </Form>
       </Modal>
 

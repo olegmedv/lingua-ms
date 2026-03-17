@@ -29,4 +29,21 @@ public class FilesController : ControllerBase
         var url = $"/uploads/{fileName}";
         return Ok(new { url });
     }
+
+    [Authorize(Roles = "Admin")]
+    [HttpDelete]
+    public IActionResult Delete([FromQuery] string url)
+    {
+        var fileName = Path.GetFileName(url);
+        if (string.IsNullOrEmpty(fileName))
+            return BadRequest("Invalid URL");
+
+        var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
+        var filePath = Path.Combine(uploadsDir, fileName);
+
+        if (System.IO.File.Exists(filePath))
+            System.IO.File.Delete(filePath);
+
+        return NoContent();
+    }
 }
