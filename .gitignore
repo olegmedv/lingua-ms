@@ -16,3 +16,7 @@ dist/
 .idea/
 .vscode/
 *.swp
+
+# Demo / uploads
+demo/
+server/LinguaCMS.API/wwwroot/uploads/
