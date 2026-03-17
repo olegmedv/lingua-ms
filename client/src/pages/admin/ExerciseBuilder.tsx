@@ -3,7 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider } from 'antd';
 import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
+import type { Exercise } from '../../types/api';
 
 const exerciseTypes = [
   { value: 0, label: 'Multiple Choice' },
@@ -15,14 +17,6 @@ const exerciseTypes = [
   { value: 6, label: 'Fill in Blank' },
   { value: 7, label: 'Flashcard' },
 ];
-
-interface Exercise {
-  id: string;
-  type: number;
-  contentJson: string;
-  audioUrl: string | null;
-  order: number;
-}
 
 function buildContentJson(type: number, values: Record<string, unknown>): string {
   switch (type) {
@@ -96,7 +90,7 @@ function parseContentToFields(type: number, json: string): Record<string, unknow
 
 function TypeFields({ type, form }: { type: number; form: ReturnType<typeof Form.useForm>[0] }) {
   const uploadFile = async (file: File, field: string) => {
-    const res = await api.upload('/api/files/upload', file);
+    const res = await api.upload(API.files.upload, file);
     form.setFieldsValue({ [field]: res.url });
     message.success('Uploaded');
     return false;
@@ -223,7 +217,7 @@ export default function ExerciseBuilder() {
   const [previewJson, setPreviewJson] = useState('');
   const [form] = Form.useForm();
 
-  const load = () => api.get<Exercise[]>(`/api/lessons/${lessonId}/exercises`).then(setExercises);
+  const load = () => api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises);
   useEffect(() => { load(); }, [lessonId]);
 
   const openCreate = () => {
@@ -249,9 +243,9 @@ export default function ExerciseBuilder() {
     const payload = { type, contentJson, audioUrl: (values.audioUrl as string) || null, order: (values.order as number) || 0 };
 
     if (editing) {
-      await api.put(`/api/exercises/${editing.id}`, payload);
+      await api.put(API.exercises.byId(editing.id), payload);
     } else {
-      await api.post(`/api/lessons/${lessonId}/exercises`, payload);
+      await api.post(API.lessons.exercises(lessonId!), payload);
     }
     setModalOpen(false);
     setEditing(null);
@@ -260,7 +254,7 @@ export default function ExerciseBuilder() {
   };
 
   const handleDelete = async (id: string) => {
-    await api.delete(`/api/exercises/${id}`);
+    await api.delete(API.exercises.byId(id));
     load();
   };
 

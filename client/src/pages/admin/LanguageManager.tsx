@@ -2,16 +2,10 @@ import { useEffect, useState } from 'react';
 import { Modal, Form, Input, Switch, Upload, message, Button } from 'antd';
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
-
-interface Language {
-  id: string;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-  isPublished: boolean;
-}
+import type { Language } from '../../types/api';
 
 export default function LanguageManager() {
   const navigate = useNavigate();
@@ -20,14 +14,14 @@ export default function LanguageManager() {
   const [editing, setEditing] = useState<Language | null>(null);
   const [form] = Form.useForm();
 
-  const load = () => api.get<Language[]>('/api/languages').then(setLanguages);
+  const load = () => api.get<Language[]>(API.languages.list).then(setLanguages);
   useEffect(() => { load(); }, []);
 
   const handleSave = async (values: { name: string; description: string; imageUrl?: string; isPublished: boolean }) => {
     if (editing) {
-      await api.put(`/api/languages/${editing.id}`, values);
+      await api.put(API.languages.byId(editing.id), values);
     } else {
-      await api.post('/api/languages', values);
+      await api.post(API.languages.list, values);
     }
     setModalOpen(false);
     setEditing(null);
@@ -37,7 +31,7 @@ export default function LanguageManager() {
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    await api.delete(`/api/languages/${id}`);
+    await api.delete(API.languages.byId(id));
     load();
   };
 
@@ -49,7 +43,7 @@ export default function LanguageManager() {
   };
 
   const handleUpload = async (file: File) => {
-    const res = await api.upload('/api/files/upload', file);
+    const res = await api.upload(API.files.upload, file);
     form.setFieldsValue({ imageUrl: res.url });
     message.success('Uploaded');
     return false;

@@ -1,20 +1,9 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../store/auth';
-
-
-interface Language {
-  id: string;
-  name: string;
-  description: string;
-  imageUrl: string | null;
-}
-
-interface Stats {
-  totalXp: number;
-  currentStreak: number;
-}
+import type { Language, Stats } from '../../types/api';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -22,8 +11,8 @@ export default function Dashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    api.get<Language[]>('/api/languages').then(setLanguages).catch(() => {});
-    api.get<Stats>('/api/progress/stats').then(setStats).catch(() => {});
+    api.get<Language[]>(API.languages.list).then(setLanguages).catch(() => {});
+    api.get<Stats>(API.progress.stats).then(setStats).catch(() => {});
   }, []);
 
   return (

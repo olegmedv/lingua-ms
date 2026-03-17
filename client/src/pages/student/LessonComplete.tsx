@@ -5,12 +5,13 @@ import { Trophy, Star } from 'lucide-react';
 export default function LessonComplete() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { score = 0, total = 0, correct = 0 } = (location.state as { score: number; total: number; correct: number }) || {};
+  const { score = 0, total = 0, correct = 0, passThreshold = 80 } =
+    (location.state as { score: number; total: number; correct: number; passThreshold: number }) || {};
 
-  const passed = score >= 80;
+  const passed = score >= passThreshold;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-linear-to-b from-white to-gray-50">
       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', duration: 0.6 }}>
         <div className={`w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-6 ${passed ? 'bg-yellow-400' : 'bg-gray-300'}`}>
           {passed ? <Trophy className="w-16 h-16 text-white" /> : <Star className="w-16 h-16 text-gray-500" />}
@@ -25,7 +26,7 @@ export default function LessonComplete() {
       <div className="text-6xl font-bold mb-2" style={{ color: passed ? '#22c55e' : '#ef4444' }}>
         {score}%
       </div>
-      <p className="text-gray-400 mb-8">{passed ? 'Great job!' : 'You need 80% to pass'}</p>
+      <p className="text-gray-400 mb-8">{passed ? 'Great job!' : `You need ${passThreshold}% to pass`}</p>
 
       <div className="flex gap-4">
         <button onClick={() => navigate('/')} className="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-300">

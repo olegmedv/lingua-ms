@@ -1,21 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-
-interface Lesson {
-  id: string;
-  title: string;
-  description: string | null;
-  order: number;
-  passThreshold: number;
-}
-
-interface Progress {
-  lessonId: string;
-  completed: boolean;
-  score: number;
-}
+import type { Lesson, Progress } from '../../types/api';
 
 export default function LessonTree() {
   const { langId } = useParams();
@@ -24,8 +12,8 @@ export default function LessonTree() {
   const [progress, setProgress] = useState<Progress[]>([]);
 
   useEffect(() => {
-    api.get<Lesson[]>(`/api/languages/${langId}/lessons`).then(setLessons).catch(() => {});
-    api.get<Progress[]>('/api/progress/my').then(setProgress).catch(() => {});
+    api.get<Lesson[]>(API.languages.lessons(langId!)).then(setLessons).catch(() => {});
+    api.get<Progress[]>(API.progress.my).then(setProgress).catch(() => {});
   }, [langId]);
 
   const getProgress = (lessonId: string) => progress.find(p => p.lessonId === lessonId);

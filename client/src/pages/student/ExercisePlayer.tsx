@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import ProgressBar from '../../components/ProgressBar';
 import MultipleChoice from '../../components/exercises/MultipleChoice';
 import ListenAndSelect from '../../components/exercises/ListenAndSelect';
@@ -12,14 +13,7 @@ import WordBank from '../../components/exercises/WordBank';
 import FillInBlank from '../../components/exercises/FillInBlank';
 import Flashcard from '../../components/exercises/Flashcard';
 import { X, CheckCircle, XCircle } from 'lucide-react';
-
-interface Exercise {
-  id: string;
-  type: number;
-  contentJson: string;
-  audioUrl: string | null;
-  order: number;
-}
+import type { Exercise, Lesson } from '../../types/api';
 
 interface Feedback {
   correct: boolean;
@@ -30,12 +24,14 @@ export default function ExercisePlayer() {
   const { lessonId } = useParams();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [current, setCurrent] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   useEffect(() => {
-    api.get<Exercise[]>(`/api/lessons/${lessonId}/exercises`).then(setExercises).catch(() => {});
+    api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises).catch(() => {});
+    api.get<Lesson>(API.lessons.byId(lessonId!)).then(setLesson).catch(() => {});
   }, [lessonId]);
 
   const handleAnswer = useCallback((correct: boolean, correctAnswer?: string) => {
@@ -49,9 +45,10 @@ export default function ExercisePlayer() {
     if (current + 1 >= exercises.length) {
       const finalCorrect = correctCount;
       const score = Math.round((finalCorrect / exercises.length) * 100);
-      api.post('/api/progress/submit', { lessonId, score }).then(() => {
+      const passThreshold = lesson?.passThreshold ?? 80;
+      api.post(API.progress.submit, { lessonId, score }).then(() => {
         navigate(`/lessons/${lessonId}/complete`, {
-          state: { score, total: exercises.length, correct: finalCorrect },
+          state: { score, total: exercises.length, correct: finalCorrect, passThreshold },
         });
       });
     } else {
@@ -60,7 +57,7 @@ export default function ExercisePlayer() {
   };
 
   if (exercises.length === 0)
-    return <div className="fixed inset-0 flex items-center justify-center bg-white text-gray-400 z-[100]">Loading...</div>;
+    return <div className="fixed inset-0 flex items-center justify-center bg-white text-gray-400 z-100">Loading...</div>;
 
   const ex = exercises[current];
   const data = JSON.parse(ex.contentJson);
@@ -80,7 +77,7 @@ export default function ExercisePlayer() {
   };
 
   return (
-    <div className="fixed inset-0 bg-white flex flex-col z-[100]">
+    <div className="fixed inset-0 bg-white flex flex-col z-100">
       {/* Header */}
       <div className="shrink-0 p-4 flex items-center gap-4">
         <button onClick={() => navigate(-1)} className="text-gray-400 hover:text-gray-600">

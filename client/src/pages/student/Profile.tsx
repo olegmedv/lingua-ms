@@ -1,29 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../store/auth';
 import { api } from '../../api/client';
-import { useNavigate } from 'react-router-dom';
+import { API } from '../../api/endpoints';
 import { LogOut } from 'lucide-react';
-
-interface Stats {
-  totalXp: number;
-  currentStreak: number;
-  longestStreak: number;
-  completedLessons: number;
-}
+import type { Stats } from '../../types/api';
 
 export default function Profile() {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    api.get<Stats>('/api/progress/stats').then(setStats).catch(() => {});
+    api.get<Stats>(API.progress.stats).then(setStats).catch(() => {});
   }, []);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
 
   return (
     <div className="p-6 md:p-10">
@@ -58,7 +46,7 @@ export default function Profile() {
         )}
 
         <button
-          onClick={handleLogout}
+          onClick={logout}
           className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
         >
           <LogOut className="w-5 h-5" /> Log Out

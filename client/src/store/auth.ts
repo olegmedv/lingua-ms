@@ -1,12 +1,7 @@
 import { create } from 'zustand';
 import { api } from '../api/client';
-
-interface User {
-  id: string;
-  email: string;
-  displayName: string;
-  role: string;
-}
+import { API } from '../api/endpoints';
+import type { User, AuthResponse } from '../types/api';
 
 interface AuthState {
   user: User | null;
@@ -22,13 +17,13 @@ export const useAuth = create<AuthState>((set) => ({
   token: localStorage.getItem('token'),
 
   login: async (email, password) => {
-    const res = await api.post<{ token: string; user: User }>('/api/auth/login', { email, password });
+    const res = await api.post<AuthResponse>(API.auth.login, { email, password });
     localStorage.setItem('token', res.token);
     set({ token: res.token, user: res.user });
   },
 
   register: async (email, displayName, password) => {
-    const res = await api.post<{ token: string; user: User }>('/api/auth/register', { email, displayName, password });
+    const res = await api.post<AuthResponse>(API.auth.register, { email, displayName, password });
     localStorage.setItem('token', res.token);
     set({ token: res.token, user: res.user });
   },
@@ -40,7 +35,7 @@ export const useAuth = create<AuthState>((set) => ({
 
   loadUser: async () => {
     try {
-      const user = await api.get<User>('/api/auth/me');
+      const user = await api.get<User>(API.auth.me);
       set({ user });
     } catch {
       localStorage.removeItem('token');

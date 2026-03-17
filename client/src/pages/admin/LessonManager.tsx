@@ -3,15 +3,9 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Modal, Form, Input, InputNumber, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { api } from '../../api/client';
+import { API } from '../../api/endpoints';
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
-
-interface Lesson {
-  id: string;
-  title: string;
-  description: string | null;
-  order: number;
-  passThreshold: number;
-}
+import type { Lesson } from '../../types/api';
 
 export default function LessonManager() {
   const { langId } = useParams();
@@ -21,14 +15,14 @@ export default function LessonManager() {
   const [editing, setEditing] = useState<Lesson | null>(null);
   const [form] = Form.useForm();
 
-  const load = () => api.get<Lesson[]>(`/api/languages/${langId}/lessons`).then(setLessons);
+  const load = () => api.get<Lesson[]>(API.languages.lessons(langId!)).then(setLessons);
   useEffect(() => { load(); }, [langId]);
 
   const handleSave = async (values: { title: string; description?: string; order: number; passThreshold: number }) => {
     if (editing) {
-      await api.put(`/api/lessons/${editing.id}`, values);
+      await api.put(API.lessons.byId(editing.id), values);
     } else {
-      await api.post(`/api/languages/${langId}/lessons`, values);
+      await api.post(API.languages.lessons(langId!), values);
     }
     setModalOpen(false);
     setEditing(null);
@@ -38,7 +32,7 @@ export default function LessonManager() {
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    await api.delete(`/api/lessons/${id}`);
+    await api.delete(API.lessons.byId(id));
     load();
   };
 
