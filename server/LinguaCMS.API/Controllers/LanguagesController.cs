@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LinguaCMS.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/languages")]
 public class LanguagesController : ControllerBase
 {
     private readonly IMediator _mediator;

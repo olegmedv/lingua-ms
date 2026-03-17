@@ -196,10 +196,10 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
       return (
         <>
           <Form.Item name="wb_prompt" label="Prompt (English sentence)" rules={[{ required: true }]}><Input placeholder="e.g. The dog is big" /></Form.Item>
-          <Form.Item name="wb_correctOrder" label="Correct Word Order (comma-separated)" rules={[{ required: true }]}>
+          <Form.Item name="wb_correctOrder" label="Correct Word Order (comma-separated)" rules={[{ required: true }]} extra={<>Separator: <code style={{ userSelect: 'all', cursor: 'copy' }}>,</code></>}>
             <Input placeholder="e.g. A'mis, ek, aw'ina" />
           </Form.Item>
-          <Form.Item name="wb_distractors" label="Distractor Words (comma-separated)">
+          <Form.Item name="wb_distractors" label="Distractor Words (comma-separated)" extra={<>Separator: <code style={{ userSelect: 'all', cursor: 'copy' }}>,</code></>}>
             <Input placeholder="e.g. nage', gukw" />
           </Form.Item>
         </>
