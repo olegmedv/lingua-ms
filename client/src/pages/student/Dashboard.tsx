@@ -33,15 +33,15 @@ export default function Dashboard() {
               className="bg-white rounded-2xl shadow-md p-5 flex items-center gap-4 hover:shadow-lg transition-shadow"
             >
               {lang.imageUrl ? (
-                <img src={lang.imageUrl} alt={lang.name} className="w-16 h-16 rounded-xl object-cover" />
+                <img src={lang.imageUrl} alt={lang.name} className="w-16 h-16 shrink-0 rounded-xl object-cover" />
               ) : (
-                <div className="w-16 h-16 rounded-xl bg-green-100 flex items-center justify-center">
+                <div className="w-16 h-16 shrink-0 rounded-xl bg-green-100 flex items-center justify-center">
                   <span className="text-2xl">{lang.name[0]}</span>
                 </div>
               )}
-              <div>
-                <h3 className="text-lg font-bold text-gray-800">{lang.name}</h3>
-                <p className="text-sm text-gray-500">{lang.description}</p>
+              <div className="min-w-0">
+                <h3 className="text-lg font-bold text-gray-800 truncate">{lang.name}</h3>
+                <p className="text-sm text-gray-500 line-clamp-2">{lang.description}</p>
               </div>
             </Link>
           ))}
