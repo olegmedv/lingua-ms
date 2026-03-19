@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { DndContext, closestCenter } from '@dnd-kit/core';
+import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -52,6 +52,11 @@ export default function WordBank({ data, onAnswer }: Props) {
     return shuffle(items);
   }, [data.correctOrder, data.distractorWords]);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  );
+
   const [answer, setAnswer] = useState<WordItem[]>([]);
   const [bank, setBank] = useState<WordItem[]>(allItems);
 
@@ -89,7 +94,7 @@ export default function WordBank({ data, onAnswer }: Props) {
       <p className="text-gray-500">{data.instruction ?? "Tap words to build the sentence"}</p>
 
       {/* Answer zone — sortable */}
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={answer.map(w => w.id)} strategy={horizontalListSortingStrategy}>
           <div className="flex flex-wrap gap-2 justify-center min-h-[56px] p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl w-full max-w-lg">
             {answer.length === 0 && (
