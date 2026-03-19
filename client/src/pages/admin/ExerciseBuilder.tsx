@@ -426,18 +426,18 @@ export default function ExerciseBuilder() {
                   <p className="text-sm text-gray-700 line-clamp-2">{getPreview(ex)}</p>
                 </div>
               </div>
-              <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex justify-end gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => openEdit(ex)}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                  className="p-2.5 md:p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Pencil className="w-5 h-5 md:w-4 md:h-4" />
                 </button>
                 <button
                   onClick={() => handleDelete(ex.id)}
-                  className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
+                  className="p-2.5 md:p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
                 >
-                  <Trash2 className="w-4 h-4" />
+                  <Trash2 className="w-5 h-5 md:w-4 md:h-4" />
                 </button>
               </div>
             </div>
