@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -16,7 +16,7 @@ interface WordItem {
 
 function SortableWord({ item, onClick }: { item: WordItem; onClick: () => void }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id });
-  const style = { transform: CSS.Transform.toString(transform), transition };
+  const style = { transform: CSS.Transform.toString(transform), transition, touchAction: 'none' as const };
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners} onClick={onClick}
       className="bg-white border-2 border-gray-300 rounded-xl px-4 py-2 text-lg font-semibold cursor-grab active:cursor-grabbing select-none shadow-sm hover:border-gray-400 transition-colors">
@@ -53,7 +53,7 @@ export default function WordBank({ data, onAnswer }: Props) {
   }, [data.correctOrder, data.distractorWords]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { distance: 5 } }),
     useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
   );
 
