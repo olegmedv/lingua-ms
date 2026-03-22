@@ -36,21 +36,25 @@ export default function ExercisePlayer() {
     api.get<Lesson>(API.lessons.byId(lessonId!)).then(setLesson).catch(() => {});
   }, [lessonId]);
 
+  const isFlashcard = exercises[current]?.type === 7;
+
   const handleAnswer = useCallback((correct: boolean, correctAnswer?: string) => {
     if (feedback) return;
-    if (correct) setCorrectCount(c => c + 1);
+    if (!isFlashcard && correct) setCorrectCount(c => c + 1);
     setFeedback({ correct, correctAnswer });
-  }, [feedback]);
+  }, [feedback, isFlashcard]);
 
   const handleContinue = () => {
     setFeedback(null);
     if (current + 1 >= exercises.length) {
       const finalCorrect = correctCount;
-      const score = Math.round((finalCorrect / exercises.length) * 100);
+      const scoredExercises = exercises.filter(e => e.type !== 7);
+      const totalScored = scoredExercises.length;
+      const score = totalScored > 0 ? Math.round((finalCorrect / totalScored) * 100) : 100;
       const passThreshold = lesson?.passThreshold ?? 80;
       api.post(API.progress.submit, { lessonId, score }).then(() => {
         navigate(`/lessons/${lessonId}/complete`, {
-          state: { score, total: exercises.length, correct: finalCorrect, passThreshold, langId },
+          state: { score, total: totalScored, correct: finalCorrect, passThreshold, langId },
         });
       });
     } else {
@@ -62,6 +66,7 @@ export default function ExercisePlayer() {
     return <div className="fixed inset-0 flex items-center justify-center bg-white text-gray-400 z-100">Loading...</div>;
 
   const ex = exercises[current];
+
   const data = JSON.parse(ex.contentJson);
 
   const renderExercise = () => {
@@ -73,7 +78,7 @@ export default function ExercisePlayer() {
       case 4: return <ImageSelect data={data} onAnswer={handleAnswer} />;
       case 5: return <WordBank data={data} onAnswer={handleAnswer} />;
       case 6: return <FillInBlank data={data} onAnswer={handleAnswer} />;
-      case 7: return <Flashcard data={data} onAnswer={handleAnswer} />;
+      case 7: return <Flashcard data={data} audioUrl={ex.audioUrl ?? undefined} onAnswer={handleAnswer} />;
       default: return <p>Unknown exercise type</p>;
     }
   };

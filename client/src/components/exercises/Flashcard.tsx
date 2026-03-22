@@ -1,19 +1,34 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { Volume2 } from 'lucide-react';
+import { useAudio } from '../../hooks/useAudio';
 
 interface Props {
   data: { front: string; back: string; instruction?: string };
-  onAnswer: (correct: boolean, correctAnswer?: string) => void;
+  audioUrl?: string;
+  onAnswer: (correct: boolean) => void;
 }
 
-export default function Flashcard({ data, onAnswer }: Props) {
+export default function Flashcard({ data, audioUrl, onAnswer }: Props) {
   const [flipped, setFlipped] = useState(false);
+  const revealed = useRef(false);
+  const { play, isPlaying } = useAudio(audioUrl);
+
+  const handleFlip = () => {
+    const willFlip = !flipped;
+    setFlipped(willFlip);
+    if (willFlip && !revealed.current) {
+      revealed.current = true;
+      play();
+      onAnswer(true);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       <p className="text-gray-500">{data.instruction ?? "Tap to reveal"}</p>
       <motion.div
-        onClick={() => setFlipped(!flipped)}
+        onClick={handleFlip}
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5 }}
         style={{ perspective: 1000 }}
@@ -27,15 +42,14 @@ export default function Flashcard({ data, onAnswer }: Props) {
           </p>
         </div>
       </motion.div>
-      {flipped && (
-        <div className="flex gap-4">
-          <button onClick={() => onAnswer(false)} className="bg-red-100 text-red-600 font-bold py-3 px-6 rounded-xl hover:bg-red-200">
-            Didn't know
-          </button>
-          <button onClick={() => onAnswer(true)} className="bg-green-100 text-green-600 font-bold py-3 px-6 rounded-xl hover:bg-green-200">
-            Knew it!
-          </button>
-        </div>
+      {audioUrl && (
+        <button
+          onClick={(e) => { e.stopPropagation(); play(); }}
+          disabled={isPlaying}
+          className="w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          <Volume2 className="w-7 h-7" />
+        </button>
       )}
     </div>
   );

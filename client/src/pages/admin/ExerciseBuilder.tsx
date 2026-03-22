@@ -255,6 +255,8 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
         <>
           <Form.Item name="fc_front" label="Front (word/phrase)" rules={[{ required: true }]}><Input placeholder="e.g. Hello" /></Form.Item>
           <Form.Item name="fc_back" label="Back (meaning)" rules={[{ required: true }]}><Input placeholder="e.g. Greeting" /></Form.Item>
+          <Divider />
+          {audioUploadField(false)}
         </>
       );
     default:
