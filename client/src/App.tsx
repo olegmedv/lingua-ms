@@ -41,7 +41,7 @@ export default function App() {
       <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50">
         <div className="p-5 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-green-500 rounded-xl flex items-center justify-center">
+            <div className="w-9 h-9 bg-brand rounded-xl flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold text-gray-800">LinguaCMS</span>
@@ -57,11 +57,11 @@ export default function App() {
                 to={item.to}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   active
-                    ? 'bg-green-50 text-green-600'
+                    ? 'bg-brand/10 text-brand'
                     : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                 }`}
               >
-                <item.icon className={`w-5 h-5 ${active ? 'text-green-500' : 'text-gray-400'}`} />
+                <item.icon className={`w-5 h-5 ${active ? 'text-brand' : 'text-gray-400'}`} />
                 {item.label}
               </Link>
             );
@@ -71,7 +71,7 @@ export default function App() {
         {user && (
           <div className="p-3 border-t border-gray-100">
             <div className="flex items-center gap-3 px-3 py-2 mb-1">
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 bg-brand rounded-full flex items-center justify-center shrink-0">
                 <span className="text-sm text-white font-bold">{user.displayName?.[0]?.toUpperCase()}</span>
               </div>
               <div className="min-w-0">
@@ -103,7 +103,7 @@ export default function App() {
             <Link
               key={item.to}
               to={item.to}
-              className={`flex flex-col items-center gap-1 px-3 py-1 ${active ? 'text-green-500' : 'text-gray-400'}`}
+              className={`flex flex-col items-center gap-1 px-3 py-1 ${active ? 'text-brand' : 'text-gray-400'}`}
             >
               <item.icon className="w-6 h-6" />
               <span className="text-xs font-medium">{item.label}</span>

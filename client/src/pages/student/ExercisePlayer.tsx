@@ -137,7 +137,7 @@ export default function ExercisePlayer() {
                 onClick={handleContinue}
                 className={`font-bold py-2.5 px-6 rounded-xl text-white shrink-0 ${
                   feedback.correct
-                    ? 'bg-green-500 hover:bg-green-600'
+                    ? 'bg-brand hover:bg-brand-light'
                     : 'bg-red-500 hover:bg-red-600'
                 }`}
               >

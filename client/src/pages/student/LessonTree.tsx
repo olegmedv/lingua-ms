@@ -55,7 +55,7 @@ export default function LessonTree() {
                   <div className="flex items-center gap-3 min-w-0">
                     <div className={`w-3 h-3 rounded-full shrink-0 ${
                       completed
-                        ? 'bg-green-500'
+                        ? 'bg-brand'
                         : isCurrent
                           ? 'bg-yellow-400'
                           : 'bg-gray-300'
@@ -76,7 +76,7 @@ export default function LessonTree() {
 
                 <div className="flex items-center gap-2 mt-3">
                   {completed && lessonProgress && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-green-50 text-green-600">
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
                       {lessonProgress.score}%
                     </span>
                   )}

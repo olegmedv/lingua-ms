@@ -24,7 +24,7 @@ export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+      <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-brand text-white flex items-center justify-center hover:bg-brand-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
         <Volume2 className="w-12 h-12" />
       </button>
       <p className="text-gray-500">{data.instruction ?? "What did you hear?"}</p>
@@ -32,7 +32,7 @@ export default function ListenAndSelect({ data, audioUrl, onAnswer }: Props) {
         {options.map(opt => {
           const isCorrect = opt === data.correctText;
           const isSelected = opt === selected;
-          let bg = 'bg-white border-2 border-gray-200 hover:border-blue-400';
+          let bg = 'bg-white border-2 border-gray-200 hover:border-brand';
           if (selected) {
             if (isSelected && isCorrect) bg = 'bg-green-500 text-white border-2 border-green-500';
             else if (isSelected) bg = 'bg-red-500 text-white border-2 border-red-500';

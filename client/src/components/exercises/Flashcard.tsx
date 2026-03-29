@@ -46,7 +46,7 @@ export default function Flashcard({ data, audioUrl, onAnswer }: Props) {
         <button
           onClick={(e) => { e.stopPropagation(); play(); }}
           disabled={isPlaying}
-          className="w-14 h-14 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-14 h-14 rounded-full bg-brand text-white flex items-center justify-center hover:bg-brand-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           <Volume2 className="w-7 h-7" />
         </button>

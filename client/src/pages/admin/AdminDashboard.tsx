@@ -5,8 +5,8 @@ const adminCards = [
   {
     to: '/admin/languages',
     icon: Globe,
-    color: 'text-blue-500',
-    bg: 'bg-blue-50',
+    color: 'text-brand',
+    bg: 'bg-brand/10',
     title: 'Languages',
     description: 'Manage languages, lessons, and exercises',
   },

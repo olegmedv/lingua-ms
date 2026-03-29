@@ -22,7 +22,7 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
-      <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-blue-500 text-white flex items-center justify-center hover:bg-blue-600 transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+      <button onClick={play} disabled={isPlaying} className="w-24 h-24 rounded-full bg-brand text-white flex items-center justify-center hover:bg-brand-light transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
         <Volume2 className="w-12 h-12" />
       </button>
       <p className="text-gray-500">{data.instruction ?? "Type what you hear"}</p>
@@ -37,7 +37,7 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
         onKeyDown={e => e.key === 'Enter' && !checked && handleCheck()}
       />
       {!checked && (
-        <button onClick={handleCheck} className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl text-lg">
+        <button onClick={handleCheck} className="bg-brand hover:bg-brand-light text-white font-bold py-3 px-8 rounded-xl text-lg">
           Check
         </button>
       )}

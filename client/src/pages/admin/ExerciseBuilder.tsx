@@ -131,7 +131,7 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
           <Button icon={<UploadOutlined />}>Upload Image</Button>
         </Upload>
         {currentUrl
-          ? <span className="text-green-600 text-sm font-medium">✓ {currentUrl.split('/').pop()}</span>
+          ? <span className="text-brand text-sm font-medium">✓ {currentUrl.split('/').pop()}</span>
           : <span className="text-gray-400 text-sm">No file selected</span>
         }
       </div>
@@ -152,7 +152,7 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
           <Button icon={<UploadOutlined />}>Upload Audio</Button>
         </Upload>
         {audioUrl
-          ? <span className="text-green-600 text-sm font-medium">✓ {audioUrl.split('/').pop()}</span>
+          ? <span className="text-brand text-sm font-medium">✓ {audioUrl.split('/').pop()}</span>
           : <span className="text-gray-400 text-sm">No file selected</span>
         }
       </div>
@@ -421,7 +421,7 @@ export default function ExerciseBuilder() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs text-gray-400 font-medium">#{ex.order}</span>
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-600">
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
                       {exerciseTypes.find(t => t.value === ex.type)?.label}
                     </span>
                   </div>

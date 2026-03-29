@@ -1,11 +1,14 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
 import { router } from './router';
 import './index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <ConfigProvider theme={{ token: { colorPrimary: '#1A7A4E' } }}>
+      <RouterProvider router={router} />
+    </ConfigProvider>
   </StrictMode>,
 );

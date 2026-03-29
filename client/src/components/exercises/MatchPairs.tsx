@@ -47,8 +47,8 @@ export default function MatchPairs({ data, onAnswer }: Props) {
               animate={wrongPair?.[0] === w.idx ? { x: [0, -5, 5, -5, 0] } : {}}
               className={`py-3 px-4 rounded-xl text-lg font-semibold border-2 transition-colors ${
                 matched.has(w.idx) ? 'bg-green-100 border-green-400 opacity-50' :
-                selectedWord === w.idx ? 'bg-blue-500 text-white border-blue-500' :
-                'bg-white border-gray-200 hover:border-blue-400'
+                selectedWord === w.idx ? 'bg-brand text-white border-brand' :
+                'bg-white border-gray-200 hover:border-brand'
               }`}
             >
               {w.text}
@@ -63,7 +63,7 @@ export default function MatchPairs({ data, onAnswer }: Props) {
               animate={wrongPair?.[1] === t.idx ? { x: [0, -5, 5, -5, 0] } : {}}
               className={`py-3 px-4 rounded-xl text-lg font-semibold border-2 transition-colors ${
                 matched.has(t.idx) ? 'bg-green-100 border-green-400 opacity-50' :
-                'bg-white border-gray-200 hover:border-blue-400'
+                'bg-white border-gray-200 hover:border-brand'
               }`}
             >
               {t.text}

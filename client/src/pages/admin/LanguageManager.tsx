@@ -71,27 +71,25 @@ export default function LanguageManager() {
               onClick={() => navigate(`/admin/languages/${lang.id}/lessons`)}
               className="bg-white rounded-xl border border-gray-200 p-5 cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all group"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4 mb-3">
                   {lang.imageUrl ? (
-                    <img src={lang.imageUrl} alt={lang.name} className="w-10 h-10 rounded-lg object-cover" />
+                    <img src={lang.imageUrl} alt={lang.name} className="w-16 h-16 shrink-0 rounded-xl object-cover" />
                   ) : (
-                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-lg">
-                      {lang.name[0]}
+                    <div className="w-16 h-16 shrink-0 rounded-xl bg-green-100 flex items-center justify-center">
+                      <span className="text-2xl">{lang.name[0]}</span>
                     </div>
                   )}
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-gray-800">{lang.name}</h3>
                     {lang.description && (
-                      <p className="text-sm text-gray-500 line-clamp-1">{lang.description}</p>
+                      <p className="text-sm text-gray-500 line-clamp-2">{lang.description}</p>
                     )}
                   </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 shrink-0 mt-0.5" />
+                <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 shrink-0" />
               </div>
 
               <div className="flex items-center justify-between">
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${lang.isPublished ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${lang.isPublished ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-500'}`}>
                   {lang.isPublished ? 'Published' : 'Draft'}
                 </span>
                 <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">

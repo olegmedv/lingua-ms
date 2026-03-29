@@ -10,7 +10,7 @@ export default function LessonComplete() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="text-6xl font-bold mb-2" style={{ color: passed ? '#22c55e' : '#ef4444' }}>
+      <div className="text-6xl font-bold mb-2" style={{ color: passed ? '#1A7A4E' : '#ef4444' }}>
         {score}%
       </div>
 
@@ -25,7 +25,7 @@ export default function LessonComplete() {
           Home
         </button>
         {!passed && (
-          <button onClick={() => navigate(-1)} className="bg-green-500 text-white font-bold py-3 px-6 rounded-xl hover:bg-green-600">
+          <button onClick={() => navigate(-1)} className="bg-brand text-white font-bold py-3 px-6 rounded-xl hover:bg-brand-light">
             Try Again
           </button>
         )}

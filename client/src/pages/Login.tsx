@@ -32,7 +32,7 @@ export default function Login() {
             placeholder="Email"
             value={email}
             onChange={e => setEmail(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 text-lg"
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand/40 text-lg"
             required
           />
           <input
@@ -40,18 +40,18 @@ export default function Login() {
             placeholder="Password"
             value={password}
             onChange={e => setPassword(e.target.value)}
-            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-400 text-lg"
+            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brand/40 text-lg"
             required
           />
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl text-lg transition-colors"
+            className="w-full bg-brand hover:bg-brand-light text-white font-bold py-3 rounded-xl text-lg transition-colors"
           >
             Log In
           </button>
         </form>
         <p className="text-center mt-4 text-gray-600">
-          Don't have an account? <Link to="/register" className="text-green-500 font-semibold">Sign up</Link>
+          Don't have an account? <Link to="/register" className="text-brand font-semibold">Sign up</Link>
         </p>
       </div>
     </div>

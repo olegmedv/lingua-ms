@@ -28,7 +28,7 @@ function SortableWord({ item, onClick }: { item: WordItem; onClick: () => void }
 function BankWord({ item, onClick }: { item: WordItem; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className="bg-white border-2 border-gray-300 rounded-xl px-4 py-2 text-lg font-semibold select-none hover:border-blue-400 hover:bg-blue-50 transition-colors">
+      className="bg-white border-2 border-gray-300 rounded-xl px-4 py-2 text-lg font-semibold select-none hover:border-brand hover:bg-brand/5 transition-colors">
       {item.label}
     </button>
   );
@@ -118,7 +118,7 @@ export default function WordBank({ data, onAnswer }: Props) {
       </div>
 
       <button onClick={handleCheck}
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="bg-brand hover:bg-brand-light text-white font-bold py-3 px-8 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={answer.length === 0}>
         Check
       </button>
