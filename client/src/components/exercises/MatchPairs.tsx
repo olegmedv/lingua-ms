@@ -46,7 +46,7 @@ export default function MatchPairs({ data, onAnswer }: Props) {
               onClick={() => !matched.has(w.idx) && setSelectedWord(w.idx)}
               animate={wrongPair?.[0] === w.idx ? { x: [0, -5, 5, -5, 0] } : {}}
               className={`py-3 px-4 rounded-xl text-lg font-semibold border-2 transition-colors ${
-                matched.has(w.idx) ? 'bg-green-100 border-green-400 opacity-50' :
+                matched.has(w.idx) ? 'bg-success-light border-success opacity-50' :
                 selectedWord === w.idx ? 'bg-brand text-white border-brand' :
                 'bg-white border-gray-200 hover:border-brand'
               }`}
@@ -62,7 +62,7 @@ export default function MatchPairs({ data, onAnswer }: Props) {
               onClick={() => handleTranslation(t.idx)}
               animate={wrongPair?.[1] === t.idx ? { x: [0, -5, 5, -5, 0] } : {}}
               className={`py-3 px-4 rounded-xl text-lg font-semibold border-2 transition-colors ${
-                matched.has(t.idx) ? 'bg-green-100 border-green-400 opacity-50' :
+                matched.has(t.idx) ? 'bg-success-light border-success opacity-50' :
                 'bg-white border-gray-200 hover:border-brand'
               }`}
             >

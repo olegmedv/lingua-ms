@@ -4,6 +4,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Lesson, Progress } from '../../types/api';
+import { Card, Badge } from '../../components/ui';
 
 export default function LessonTree() {
   const { langId } = useParams();
@@ -42,14 +43,11 @@ export default function LessonTree() {
             const lessonProgress = getProgress(lesson.id);
 
             return (
-              <div
+              <Card
                 key={lesson.id}
                 onClick={() => unlocked && navigate(`/lessons/${lesson.id}/play`, { state: { langId } })}
-                className={`bg-white rounded-xl border p-5 transition-all ${
-                  unlocked
-                    ? 'border-gray-200 cursor-pointer hover:border-gray-300 hover:shadow-sm group'
-                    : 'border-gray-100 opacity-60 cursor-default'
-                }`}
+                clickable={unlocked}
+                className={!unlocked ? 'opacity-60 cursor-default border-gray-100' : ''}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3 min-w-0">
@@ -57,7 +55,7 @@ export default function LessonTree() {
                       completed
                         ? 'bg-brand'
                         : isCurrent
-                          ? 'bg-yellow-400'
+                          ? 'bg-warning'
                           : 'bg-gray-300'
                     }`} />
                     <div className="min-w-0">
@@ -76,20 +74,16 @@ export default function LessonTree() {
 
                 <div className="flex items-center gap-2 mt-3">
                   {completed && lessonProgress && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
-                      {lessonProgress.score}%
-                    </span>
+                    <Badge variant="brand">{lessonProgress.score}%</Badge>
                   )}
                   {isCurrent && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600">
-                      Start
-                    </span>
+                    <Badge variant="warning">Start</Badge>
                   )}
                   {!unlocked && (
                     <span className="text-xs text-gray-400">Locked</span>
                   )}
                 </div>
-              </div>
+              </Card>
             );
           })}
         </div>

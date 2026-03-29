@@ -31,9 +31,9 @@ export default function ImageSelect({ data, onAnswer }: Props) {
           const isSelected = img === selected;
           let border = 'border-2 border-gray-200';
           if (selected) {
-            if (isSelected && isCorrect) border = 'border-4 border-green-500';
-            else if (isSelected) border = 'border-4 border-red-500';
-            else if (isCorrect) border = 'border-4 border-green-400';
+            if (isSelected && isCorrect) border = 'border-4 border-success';
+            else if (isSelected) border = 'border-4 border-error';
+            else if (isCorrect) border = 'border-4 border-success';
           }
           return (
             <motion.button

@@ -6,6 +6,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import type { Lesson } from '../../types/api';
+import { Card } from '../../components/ui';
 
 export default function LessonManager() {
   const { langId } = useParams();
@@ -60,10 +61,10 @@ export default function LessonManager() {
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {lessons.sort((a, b) => a.order - b.order).map(lesson => (
-            <div
+            <Card
               key={lesson.id}
               onClick={() => navigate(`/admin/lessons/${lesson.id}/exercises`)}
-              className="bg-white rounded-xl border border-gray-200 p-5 cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all group"
+              clickable
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
@@ -95,7 +96,7 @@ export default function LessonManager() {
                   </button>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

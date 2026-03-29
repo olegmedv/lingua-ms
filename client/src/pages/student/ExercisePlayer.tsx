@@ -116,23 +116,23 @@ export default function ExercisePlayer() {
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={`shrink-0 p-5 ${
               feedback.correct
-                ? 'bg-green-100 border-t-2 border-green-400'
-                : 'bg-red-100 border-t-2 border-red-400'
+                ? 'bg-success-light border-t-2 border-success'
+                : 'bg-error-light border-t-2 border-error'
             }`}
           >
             <div className="max-w-lg mx-auto flex items-center justify-between gap-4">
               <div className="flex items-center gap-3 min-w-0">
                 {feedback.correct ? (
-                  <CheckCircle className="w-8 h-8 text-green-600 shrink-0" />
+                  <CheckCircle className="w-8 h-8 text-success shrink-0" />
                 ) : (
-                  <XCircle className="w-8 h-8 text-red-600 shrink-0" />
+                  <XCircle className="w-8 h-8 text-error shrink-0" />
                 )}
                 <div className="min-w-0">
-                  <p className={`font-bold text-lg ${feedback.correct ? 'text-green-700' : 'text-red-700'}`}>
+                  <p className={`font-bold text-lg ${feedback.correct ? 'text-success' : 'text-error'}`}>
                     {feedback.correct ? 'Correct!' : 'Incorrect'}
                   </p>
                   {!feedback.correct && feedback.correctAnswer && (
-                    <p className="text-red-600 text-sm truncate">
+                    <p className="text-error text-sm truncate">
                       Correct answer: <span className="font-semibold">{feedback.correctAnswer}</span>
                     </p>
                   )}
@@ -143,7 +143,7 @@ export default function ExercisePlayer() {
                 className={`font-bold py-2.5 px-6 rounded-xl text-white shrink-0 ${
                   feedback.correct
                     ? 'bg-brand hover:bg-brand-light'
-                    : 'bg-red-500 hover:bg-red-600'
+                    : 'bg-error hover:bg-error/80'
                 }`}
               >
                 Continue

@@ -1,5 +1,6 @@
 import { useAuth } from '../../store/auth';
 import { LogOut } from 'lucide-react';
+import { Button } from '../../components/ui';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -15,12 +16,9 @@ export default function Profile() {
           <p className="text-center text-gray-500">{user?.email}</p>
         </div>
 
-        <button
-          onClick={logout}
-          className="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
-        >
+        <Button variant="danger" fullWidth onClick={logout} className="flex items-center justify-center gap-2">
           <LogOut className="w-5 h-5" /> Log Out
-        </button>
+        </Button>
       </div>
     </div>
   );

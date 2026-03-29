@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '../../components/ui';
 
 export default function LessonComplete() {
   const location = useLocation();
@@ -18,7 +19,7 @@ export default function LessonComplete() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className="text-6xl font-bold mb-2" style={{ color: passed ? '#1A7A4E' : '#ef4444' }}>
+      <div className={`text-6xl font-bold mb-2 ${passed ? 'text-brand' : 'text-error'}`}>
         {score}%
       </div>
 
@@ -29,13 +30,13 @@ export default function LessonComplete() {
       )}
 
       <div className="flex gap-4">
-        <button onClick={handleHome} className="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-300">
+        <Button variant="ghost" onClick={handleHome} className="bg-gray-200 text-gray-700 hover:bg-gray-300">
           {demo ? 'Back to Demo' : 'Home'}
-        </button>
+        </Button>
         {!passed && (
-          <button onClick={() => navigate(-1)} className="bg-brand text-white font-bold py-3 px-6 rounded-xl hover:bg-brand-light">
+          <Button onClick={() => navigate(-1)}>
             Try Again
-          </button>
+          </Button>
         )}
       </div>
     </div>

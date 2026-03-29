@@ -6,6 +6,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
 import type { Exercise } from '../../types/api';
+import { Card, Badge } from '../../components/ui';
 
 const exerciseTypes = [
   { value: 0, label: 'Multiple Choice' },
@@ -413,17 +414,17 @@ export default function ExerciseBuilder() {
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {exercises.sort((a, b) => a.order - b.order).map(ex => (
-            <div
+            <Card
               key={ex.id}
-              className="bg-white rounded-xl border border-gray-200 p-5 group hover:border-gray-300 hover:shadow-sm transition-all"
+              clickable
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs text-gray-400 font-medium">#{ex.order}</span>
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-brand/10 text-brand">
+                    <Badge variant="brand">
                       {exerciseTypes.find(t => t.value === ex.type)?.label}
-                    </span>
+                    </Badge>
                   </div>
                   <p className="text-sm text-gray-700 line-clamp-2">{getPreview(ex)}</p>
                 </div>
@@ -442,7 +443,7 @@ export default function ExerciseBuilder() {
                   <Trash2 className="w-5 h-5 md:w-4 md:h-4" />
                 </button>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

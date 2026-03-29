@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Volume2 } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
+import { Button } from '../ui';
 
 interface Props {
   data: { correctText: string; instruction?: string };
@@ -37,9 +38,9 @@ export default function ListenAndType({ data, audioUrl, onAnswer }: Props) {
         onKeyDown={e => e.key === 'Enter' && !checked && handleCheck()}
       />
       {!checked && (
-        <button onClick={handleCheck} className="bg-brand hover:bg-brand-light text-white font-bold py-3 px-8 rounded-xl text-lg">
+        <Button onClick={handleCheck}>
           Check
-        </button>
+        </Button>
       )}
     </div>
   );

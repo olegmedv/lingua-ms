@@ -6,6 +6,7 @@ import { API } from '../../api/endpoints';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import type { Language } from '../../types/api';
+import { Card, Badge } from '../../components/ui';
 
 export default function LanguageManager() {
   const navigate = useNavigate();
@@ -66,10 +67,10 @@ export default function LanguageManager() {
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {languages.map(lang => (
-            <div
+            <Card
               key={lang.id}
               onClick={() => navigate(`/admin/languages/${lang.id}/lessons`)}
-              className="bg-white rounded-xl border border-gray-200 p-5 cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all group"
+              clickable
             >
               <div className="flex items-center gap-4 mb-3">
                   {lang.imageUrl ? (
@@ -90,11 +91,11 @@ export default function LanguageManager() {
 
               <div className="flex items-center justify-between">
                 <div className="flex gap-1.5">
-                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${lang.isPublished ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-500'}`}>
+                  <Badge variant={lang.isPublished ? 'brand' : 'gray'}>
                     {lang.isPublished ? 'Published' : 'Draft'}
-                  </span>
+                  </Badge>
                   {lang.isDemo && (
-                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600">Demo</span>
+                    <Badge variant="warning">Demo</Badge>
                   )}
                 </div>
                 <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
@@ -112,7 +113,7 @@ export default function LanguageManager() {
                   </button>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

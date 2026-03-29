@@ -27,11 +27,11 @@ export default function MultipleChoice({ data, onAnswer }: Props) {
         {options.map(opt => {
           const isCorrect = opt === data.correctAnswer;
           const isSelected = opt === selected;
-          let bg = 'bg-white border-2 border-gray-200 hover:border-green-400';
+          let bg = 'bg-white border-2 border-gray-200 hover:border-success';
           if (selected) {
-            if (isSelected && isCorrect) bg = 'bg-green-500 text-white border-2 border-green-500';
-            else if (isSelected && !isCorrect) bg = 'bg-red-500 text-white border-2 border-red-500';
-            else if (isCorrect) bg = 'bg-green-100 border-2 border-green-400';
+            if (isSelected && isCorrect) bg = 'bg-success text-white border-2 border-success';
+            else if (isSelected && !isCorrect) bg = 'bg-error text-white border-2 border-error';
+            else if (isCorrect) bg = 'bg-success-light border-2 border-success';
             else bg = 'bg-white border-2 border-gray-200 opacity-50';
           }
           return (

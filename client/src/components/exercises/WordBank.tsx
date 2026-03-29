@@ -3,6 +3,7 @@ import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSens
 import type { DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, useSortable, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Button } from '../ui';
 
 interface Props {
   data: { prompt: string; correctOrder: string[]; distractorWords: string[]; instruction?: string };
@@ -117,11 +118,9 @@ export default function WordBank({ data, onAnswer }: Props) {
         ))}
       </div>
 
-      <button onClick={handleCheck}
-        className="bg-brand hover:bg-brand-light text-white font-bold py-3 px-8 rounded-xl text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={answer.length === 0}>
+      <Button onClick={handleCheck} disabled={answer.length === 0}>
         Check
-      </button>
+      </Button>
     </div>
   );
 }

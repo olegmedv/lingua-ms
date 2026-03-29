@@ -4,6 +4,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronRight } from 'lucide-react';
 import type { Language, Lesson } from '../../types/api';
+import { Card } from '../../components/ui';
 
 export default function DemoLessonTree() {
   const navigate = useNavigate();
@@ -43,14 +44,14 @@ export default function DemoLessonTree() {
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
           {lessons.sort((a, b) => a.order - b.order).map(lesson => (
-            <div
+            <Card
               key={lesson.id}
               onClick={() => navigate(`/demo/lessons/${lesson.id}/play`, { state: { langId: language?.id, demo: true } })}
-              className="bg-white rounded-xl border border-gray-200 p-5 cursor-pointer hover:border-gray-300 hover:shadow-sm transition-all group"
+              clickable
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-3 h-3 rounded-full shrink-0 bg-yellow-400" />
+                  <div className="w-3 h-3 rounded-full shrink-0 bg-warning" />
                   <div className="min-w-0">
                     <h3 className="font-semibold text-gray-800 truncate">{lesson.title}</h3>
                     {lesson.description && (
@@ -60,7 +61,7 @@ export default function DemoLessonTree() {
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 shrink-0 mt-0.5" />
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

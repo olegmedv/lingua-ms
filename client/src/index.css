@@ -7,4 +7,12 @@
   --color-accent: #D4A373;
   --color-accent-light: #E9C46A;
   --color-accent-dark: #b8860b;
+
+  /* Semantic feedback colors */
+  --color-success: #16a34a;
+  --color-success-light: #dcfce7;
+  --color-error: #dc2626;
+  --color-error-light: #fee2e2;
+  --color-warning: #ca8a04;
+  --color-warning-light: #fef9c3;
 }
