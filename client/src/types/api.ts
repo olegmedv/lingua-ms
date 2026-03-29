@@ -46,4 +46,5 @@ export interface Stats {
   currentStreak: number;
   longestStreak: number;
   completedLessons: number;
+  averageScore: number;
 }

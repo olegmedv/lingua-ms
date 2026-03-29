@@ -24,4 +24,5 @@ public class StatsDto
     public int LongestStreak { get; set; }
     public DateTime LastActivityDate { get; set; }
     public int CompletedLessons { get; set; }
+    public int AverageScore { get; set; }
 }

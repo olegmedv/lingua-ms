@@ -19,7 +19,18 @@ public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, Prog
         var lesson = await _db.Lessons.FirstOrNotFoundAsync(l => l.Id == request.LessonId, ct);
 
         var completed = request.Score >= lesson.PassThreshold;
-        var xp = completed ? 10 + (request.Score / 10) : 0;
+        var fullXp = completed ? 10 + (request.Score / 10) : 0;
+
+        // Find previous best attempt for this lesson
+        var previousBest = await _db.LessonProgress
+            .Where(p => p.UserId == request.UserId && p.LessonId == request.LessonId)
+            .OrderByDescending(p => p.XpEarned)
+            .FirstOrDefaultAsync(ct);
+
+        // XP: full on first attempt, only the improvement on repeats
+        var xp = previousBest == null
+            ? fullXp
+            : Math.Max(0, fullXp - previousBest.XpEarned);
 
         var progress = new LessonProgress
         {

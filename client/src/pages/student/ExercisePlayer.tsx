@@ -58,8 +58,8 @@ export default function ExercisePlayer() {
       if (isDemo) {
         navigate(`/demo/lessons/${lessonId}/complete`, { state: completeState });
       } else {
-        api.post(API.progress.submit, { lessonId, score }).then(() => {
-          navigate(`/lessons/${lessonId}/complete`, { state: completeState });
+        api.post<{ xpEarned: number }>(API.progress.submit, { lessonId, score }).then((res) => {
+          navigate(`/lessons/${lessonId}/complete`, { state: { ...completeState, xpEarned: res.xpEarned } });
         });
       }
     } else {
