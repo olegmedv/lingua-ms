@@ -5,7 +5,7 @@ using MediatR;
 
 namespace LinguaCMS.Application.Languages.Commands;
 
-public record CreateLanguageCommand(string Name, string Description, string? ImageUrl, bool IsPublished) : IRequest<LanguageDto>;
+public record CreateLanguageCommand(string Name, string Description, string? ImageUrl, bool IsPublished, bool IsDemo) : IRequest<LanguageDto>;
 
 public class CreateLanguageHandler : IRequestHandler<CreateLanguageCommand, LanguageDto>
 {
@@ -21,12 +21,13 @@ public class CreateLanguageHandler : IRequestHandler<CreateLanguageCommand, Lang
             Description = request.Description,
             ImageUrl = request.ImageUrl,
             IsPublished = request.IsPublished,
+            IsDemo = request.IsDemo,
             CreatedAt = DateTime.UtcNow
         };
 
         _db.Languages.Add(lang);
         await _db.SaveChangesAsync(ct);
 
-        return new LanguageDto { Id = lang.Id, Name = lang.Name, Description = lang.Description, ImageUrl = lang.ImageUrl, IsPublished = lang.IsPublished };
+        return new LanguageDto { Id = lang.Id, Name = lang.Name, Description = lang.Description, ImageUrl = lang.ImageUrl, IsPublished = lang.IsPublished, IsDemo = lang.IsDemo };
     }
 }

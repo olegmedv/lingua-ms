@@ -21,6 +21,14 @@ public class LanguagesController : ControllerBase
         return Ok(await _mediator.Send(new GetLanguagesQuery(isAdmin)));
     }
 
+    [HttpGet("demo")]
+    public async Task<ActionResult<LanguageDto>> GetDemo()
+    {
+        var lang = await _mediator.Send(new GetDemoLanguageQuery());
+        if (lang == null) return NotFound();
+        return Ok(lang);
+    }
+
     [HttpGet("{id}")]
     public async Task<ActionResult<LanguageDto>> GetById(Guid id)
         => Ok(await _mediator.Send(new GetLanguageByIdQuery(id)));
@@ -28,12 +36,12 @@ public class LanguagesController : ControllerBase
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<LanguageDto>> Create(CreateLanguageRequest request)
-        => Ok(await _mediator.Send(new CreateLanguageCommand(request.Name, request.Description, request.ImageUrl, request.IsPublished)));
+        => Ok(await _mediator.Send(new CreateLanguageCommand(request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<ActionResult<LanguageDto>> Update(Guid id, UpdateLanguageRequest request)
-        => Ok(await _mediator.Send(new UpdateLanguageCommand(id, request.Name, request.Description, request.ImageUrl, request.IsPublished)));
+        => Ok(await _mediator.Send(new UpdateLanguageCommand(id, request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
     [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]

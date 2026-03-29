@@ -16,6 +16,7 @@ export interface Language {
   description: string;
   imageUrl: string | null;
   isPublished: boolean;
+  isDemo: boolean;
 }
 
 export interface Lesson {

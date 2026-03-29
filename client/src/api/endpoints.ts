@@ -6,6 +6,7 @@ export const API = {
   },
   languages: {
     list: '/api/languages',
+    demo: '/api/languages/demo',
     byId: (id: string) => `/api/languages/${id}`,
     lessons: (langId: string) => `/api/languages/${langId}/lessons`,
   },

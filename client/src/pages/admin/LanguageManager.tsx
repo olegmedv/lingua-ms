@@ -17,7 +17,7 @@ export default function LanguageManager() {
   const load = () => api.get<Language[]>(API.languages.list).then(setLanguages);
   useEffect(() => { load(); }, []);
 
-  const handleSave = async (values: { name: string; description: string; imageUrl?: string; isPublished: boolean }) => {
+  const handleSave = async (values: { name: string; description: string; imageUrl?: string; isPublished: boolean; isDemo: boolean }) => {
     if (editing) {
       await api.put(API.languages.byId(editing.id), values);
     } else {
@@ -89,9 +89,14 @@ export default function LanguageManager() {
               </div>
 
               <div className="flex items-center justify-between">
-                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${lang.isPublished ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-500'}`}>
-                  {lang.isPublished ? 'Published' : 'Draft'}
-                </span>
+                <div className="flex gap-1.5">
+                  <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${lang.isPublished ? 'bg-brand/10 text-brand' : 'bg-gray-100 text-gray-500'}`}>
+                    {lang.isPublished ? 'Published' : 'Draft'}
+                  </span>
+                  {lang.isDemo && (
+                    <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-yellow-50 text-yellow-600">Demo</span>
+                  )}
+                </div>
                 <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={(e) => handleEdit(e, lang)}
@@ -113,12 +118,13 @@ export default function LanguageManager() {
       )}
 
       <Modal title={editing ? 'Edit Language' : 'Add Language'} open={modalOpen} onCancel={() => setModalOpen(false)} onOk={() => form.submit()}>
-        <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ isPublished: false }}>
+        <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ isPublished: false, isDemo: false }}>
           <Form.Item name="name" label="Name" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="description" label="Description"><Input.TextArea /></Form.Item>
           <Form.Item name="imageUrl" label="Image URL"><Input /></Form.Item>
           <Upload beforeUpload={handleUpload} showUploadList={false}><Button icon={<UploadOutlined />}>Upload Image</Button></Upload>
           <Form.Item name="isPublished" label="Published" valuePropName="checked"><Switch /></Form.Item>
+          <Form.Item name="isDemo" label="Demo Course" valuePropName="checked"><Switch /></Form.Item>
         </Form>
       </Modal>
     </div>

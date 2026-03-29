@@ -7,6 +7,7 @@ public class LanguageDto
     public string Description { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
     public bool IsPublished { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 public class CreateLanguageRequest
@@ -15,6 +16,7 @@ public class CreateLanguageRequest
     public string Description { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
     public bool IsPublished { get; set; }
+    public bool IsDemo { get; set; }
 }
 
 public class UpdateLanguageRequest
@@ -23,4 +25,5 @@ public class UpdateLanguageRequest
     public string Description { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
     public bool IsPublished { get; set; }
+    public bool IsDemo { get; set; }
 }

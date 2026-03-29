@@ -11,6 +11,8 @@ import LanguageManager from './pages/admin/LanguageManager';
 import LessonManager from './pages/admin/LessonManager';
 import ExerciseBuilder from './pages/admin/ExerciseBuilder';
 import App from './App';
+import DemoApp from './DemoApp';
+import DemoLessonTree from './pages/demo/DemoLessonTree';
 
 export const router = createBrowserRouter([
   {
@@ -26,6 +28,15 @@ export const router = createBrowserRouter([
       { path: 'admin/languages', element: <LanguageManager /> },
       { path: 'admin/languages/:langId/lessons', element: <LessonManager /> },
       { path: 'admin/lessons/:lessonId/exercises', element: <ExerciseBuilder /> },
+    ],
+  },
+  {
+    path: '/demo',
+    element: <DemoApp />,
+    children: [
+      { index: true, element: <DemoLessonTree /> },
+      { path: 'lessons/:lessonId/play', element: <ExercisePlayer /> },
+      { path: 'lessons/:lessonId/complete', element: <LessonComplete /> },
     ],
   },
   { path: '/login', element: <Login /> },

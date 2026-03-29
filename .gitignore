@@ -17,8 +17,8 @@ dist/
 .vscode/
 *.swp
 
-# Demo / uploads
-demo/
+# Demo seed scripts / uploads
+/demo/
 server/LinguaCMS.API/wwwroot/uploads/
 
 # Docs

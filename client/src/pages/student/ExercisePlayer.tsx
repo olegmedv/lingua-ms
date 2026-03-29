@@ -24,7 +24,9 @@ export default function ExercisePlayer() {
   const { lessonId } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const langId = (location.state as { langId?: string } | null)?.langId;
+  const state = location.state as { langId?: string; demo?: boolean } | null;
+  const langId = state?.langId;
+  const isDemo = state?.demo === true;
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [current, setCurrent] = useState(0);
@@ -52,11 +54,14 @@ export default function ExercisePlayer() {
       const totalScored = scoredExercises.length;
       const score = totalScored > 0 ? Math.round((finalCorrect / totalScored) * 100) : 100;
       const passThreshold = lesson?.passThreshold ?? 80;
-      api.post(API.progress.submit, { lessonId, score }).then(() => {
-        navigate(`/lessons/${lessonId}/complete`, {
-          state: { score, total: totalScored, correct: finalCorrect, passThreshold, langId },
+      const completeState = { score, total: totalScored, correct: finalCorrect, passThreshold, langId, demo: isDemo };
+      if (isDemo) {
+        navigate(`/demo/lessons/${lessonId}/complete`, { state: completeState });
+      } else {
+        api.post(API.progress.submit, { lessonId, score }).then(() => {
+          navigate(`/lessons/${lessonId}/complete`, { state: completeState });
         });
-      });
+      }
     } else {
       setCurrent(c => c + 1);
     }

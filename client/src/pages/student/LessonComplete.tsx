@@ -3,10 +3,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export default function LessonComplete() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { score = 0, total = 0, correct = 0, passThreshold = 80, langId } =
-    (location.state as { score: number; total: number; correct: number; passThreshold: number; langId?: string }) || {};
+  const { score = 0, total = 0, correct = 0, passThreshold = 80, langId, demo } =
+    (location.state as { score: number; total: number; correct: number; passThreshold: number; langId?: string; demo?: boolean }) || {};
 
-  const passed = score >= passThreshold;
+  const passed = demo || score >= passThreshold;
+
+  const handleHome = () => {
+    if (demo) {
+      navigate('/demo');
+    } else {
+      navigate(langId ? `/languages/${langId}` : '/');
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
@@ -21,8 +29,8 @@ export default function LessonComplete() {
       )}
 
       <div className="flex gap-4">
-        <button onClick={() => navigate(langId ? `/languages/${langId}` : '/')} className="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-300">
-          Home
+        <button onClick={handleHome} className="bg-gray-200 text-gray-700 font-bold py-3 px-6 rounded-xl hover:bg-gray-300">
+          {demo ? 'Back to Demo' : 'Home'}
         </button>
         {!passed && (
           <button onClick={() => navigate(-1)} className="bg-brand text-white font-bold py-3 px-6 rounded-xl hover:bg-brand-light">

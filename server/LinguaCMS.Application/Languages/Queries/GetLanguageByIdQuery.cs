@@ -16,6 +16,6 @@ public class GetLanguageByIdHandler : IRequestHandler<GetLanguageByIdQuery, Lang
     {
         var lang = await _db.Languages.FirstOrNotFoundAsync(l => l.Id == request.Id, ct);
 
-        return new LanguageDto { Id = lang.Id, Name = lang.Name, Description = lang.Description, ImageUrl = lang.ImageUrl, IsPublished = lang.IsPublished };
+        return new LanguageDto { Id = lang.Id, Name = lang.Name, Description = lang.Description, ImageUrl = lang.ImageUrl, IsPublished = lang.IsPublished, IsDemo = lang.IsDemo };
     }
 }

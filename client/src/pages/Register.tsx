@@ -59,6 +59,16 @@ export default function Register() {
             Sign Up
           </button>
         </form>
+        <div className="relative my-6">
+          <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
+          <div className="relative flex justify-center text-sm"><span className="bg-white px-3 text-gray-400">or</span></div>
+        </div>
+        <Link
+          to="/demo"
+          className="block w-full text-center border-2 border-brand text-brand hover:bg-brand/5 font-bold py-3 rounded-xl text-lg transition-colors"
+        >
+          Try Demo
+        </Link>
         <p className="text-center mt-4 text-gray-600">
           Already have an account? <Link to="/login" className="text-brand font-semibold">Log in</Link>
         </p>

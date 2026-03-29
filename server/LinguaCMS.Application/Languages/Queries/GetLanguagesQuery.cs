@@ -20,7 +20,7 @@ public class GetLanguagesHandler : IRequestHandler<GetLanguagesQuery, List<Langu
             query = query.Where(l => l.IsPublished);
 
         return await query
-            .Select(l => new LanguageDto { Id = l.Id, Name = l.Name, Description = l.Description, ImageUrl = l.ImageUrl, IsPublished = l.IsPublished })
+            .Select(l => new LanguageDto { Id = l.Id, Name = l.Name, Description = l.Description, ImageUrl = l.ImageUrl, IsPublished = l.IsPublished, IsDemo = l.IsDemo })
             .ToListAsync(ct);
     }
 }
