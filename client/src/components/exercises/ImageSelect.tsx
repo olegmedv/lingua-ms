@@ -16,7 +16,7 @@ export default function ImageSelect({ data, onAnswer }: Props) {
   const handleSelect = (img: string) => {
     if (selected) return;
     setSelected(img);
-    onAnswer(img === data.correctImageUrl);
+    onAnswer(img === data.correctImageUrl, data.word);
   };
 
   const imgSrc = (url: string) => url.startsWith('http') ? url : `${API_URL}${url}`;
