@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  --font-sans: "Noto Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --color-brand: #1A7A4E;
   --color-brand-light: #22945F;
   --color-brand-dark: #14442D;
