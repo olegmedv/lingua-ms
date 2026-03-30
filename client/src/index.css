@@ -1,15 +1,23 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Noto Sans";
+  font-family: "BCSans";
   font-style: normal;
-  font-weight: 100 900;
+  font-weight: 400;
   font-display: swap;
-  src: url("/fonts/NotoSans.woff2") format("woff2");
+  src: url("/fonts/BCSans-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "BCSans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/BCSans-Bold.woff2") format("woff2");
 }
 
 @theme {
-  --font-sans: "Noto Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: "BCSans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --color-brand: #1A7A4E;
   --color-brand-light: #22945F;
   --color-brand-dark: #14442D;
