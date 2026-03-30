@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/student/Dashboard';
@@ -11,8 +11,6 @@ import LanguageManager from './pages/admin/LanguageManager';
 import LessonManager from './pages/admin/LessonManager';
 import ExerciseBuilder from './pages/admin/ExerciseBuilder';
 import App from './App';
-import DemoApp from './DemoApp';
-import DemoLessonTree from './pages/demo/DemoLessonTree';
 
 export const router = createBrowserRouter([
   {
@@ -30,15 +28,8 @@ export const router = createBrowserRouter([
       { path: 'admin/lessons/:lessonId/exercises', element: <ExerciseBuilder /> },
     ],
   },
-  {
-    path: '/demo',
-    element: <DemoApp />,
-    children: [
-      { index: true, element: <DemoLessonTree /> },
-      { path: 'lessons/:lessonId/play', element: <ExercisePlayer /> },
-      { path: 'lessons/:lessonId/complete', element: <LessonComplete /> },
-    ],
-  },
+  { path: '/demo', element: <Navigate to="/login" replace /> },
+  { path: '/demo/*', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
 ]);

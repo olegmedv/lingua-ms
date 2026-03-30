@@ -2,6 +2,7 @@ export const API = {
   auth: {
     login: '/api/auth/login',
     register: '/api/auth/register',
+    demo: '/api/auth/demo',
     me: '/api/auth/me',
   },
   languages: {

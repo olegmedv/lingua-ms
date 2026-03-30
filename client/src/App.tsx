@@ -4,7 +4,7 @@ import { useAuth } from './store/auth';
 import { Home, User, Shield, LogOut, BookOpen } from 'lucide-react';
 
 export default function App() {
-  const { token, user, loadUser, logout } = useAuth();
+  const { token, user, isDemo, loadUser, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -25,6 +25,8 @@ export default function App() {
     ...(isAdmin ? [{ to: '/admin', icon: Shield, label: 'Admin' }] : []),
   ];
 
+  const isExercise = location.pathname.includes('/play') || location.pathname.includes('/complete');
+
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
@@ -37,8 +39,20 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Demo banner */}
+      {isDemo && !isExercise && (
+        <div className="bg-brand/10 border-b border-brand/20 px-4 py-2 text-center text-sm">
+          <span className="text-brand font-medium">Demo mode</span>
+          <span className="text-gray-600"> — nothing is saved. </span>
+          <Link to="/register" className="text-brand font-semibold hover:underline">Sign up</Link>
+          <span className="text-gray-600"> for full access</span>
+        </div>
+      )}
+
       {/* Desktop Sidebar */}
-      <aside className="hidden md:flex fixed top-0 left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50">
+      <aside className={`hidden md:flex fixed left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50 ${
+        isDemo && !isExercise ? 'top-[41px]' : 'top-0'
+      }`}>
         <div className="p-5 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-brand rounded-xl flex items-center justify-center">
@@ -84,7 +98,7 @@ export default function App() {
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors w-full"
             >
               <LogOut className="w-5 h-5 text-gray-400" />
-              Log Out
+              {isDemo ? 'Exit Demo' : 'Log Out'}
             </button>
           </div>
         )}

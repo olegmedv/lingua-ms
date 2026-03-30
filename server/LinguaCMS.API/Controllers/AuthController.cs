@@ -38,6 +38,14 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    [HttpPost("demo")]
+    public async Task<ActionResult<AuthResponse>> DemoLogin()
+    {
+        var result = await _mediator.Send(new DemoLoginCommand());
+        result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);
+        return Ok(result);
+    }
+
     [Authorize]
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> Me()

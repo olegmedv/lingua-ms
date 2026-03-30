@@ -7,7 +7,7 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, demoLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -18,6 +18,16 @@ export default function Login() {
       navigate('/');
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Login failed');
+    }
+  };
+
+  const handleDemo = async () => {
+    setError('');
+    try {
+      await demoLogin();
+      navigate('/');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Demo login failed');
     }
   };
 
@@ -50,12 +60,12 @@ export default function Login() {
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200" /></div>
           <div className="relative flex justify-center text-sm"><span className="bg-white px-3 text-gray-400">or</span></div>
         </div>
-        <Link
-          to="/demo"
+        <button
+          onClick={handleDemo}
           className="block w-full text-center border-2 border-brand text-brand hover:bg-brand/5 font-bold py-3 rounded-xl text-lg transition-colors"
         >
           Try Demo
-        </Link>
+        </button>
         <p className="text-center mt-4 text-gray-600">
           Don't have an account? <Link to="/register" className="text-brand font-semibold">Sign up</Link>
         </p>

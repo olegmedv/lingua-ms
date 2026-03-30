@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
+import { useAuth } from '../../store/auth';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Lesson, Progress } from '../../types/api';
 import { Card, Badge } from '../../components/ui';
@@ -9,6 +10,7 @@ import { Card, Badge } from '../../components/ui';
 export default function LessonTree() {
   const { langId } = useParams();
   const navigate = useNavigate();
+  const { isDemo } = useAuth();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [progress, setProgress] = useState<Progress[]>([]);
 
@@ -21,6 +23,7 @@ export default function LessonTree() {
   const isCompleted = (lessonId: string) => progress.some(p => p.lessonId === lessonId && p.completed);
 
   const isUnlocked = (index: number) => {
+    if (isDemo) return true;
     if (index === 0) return true;
     return isCompleted(lessons[index - 1].id);
   };

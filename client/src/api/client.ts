@@ -1,6 +1,18 @@
 import { API_URL } from '../config';
+import { toast } from 'sonner';
+
+function isDemoMode() {
+  return localStorage.getItem('isDemo') === 'true';
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const method = options?.method ?? 'GET';
+
+  if (isDemoMode() && method !== 'GET' && !path.startsWith('/api/auth/')) {
+    toast.info('Demo mode — changes are not saved');
+    return {} as T;
+  }
+
   const token = localStorage.getItem('token');
   const res = await fetch(`${API_URL}${path}`, {
     ...options,
@@ -26,6 +38,10 @@ export const api = {
     request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
   upload: async (path: string, file: File) => {
+    if (isDemoMode()) {
+      toast.info('Demo mode — changes are not saved');
+      return { url: '' };
+    }
     const token = localStorage.getItem('token');
     const form = new FormData();
     form.append('file', file);
