@@ -9,6 +9,10 @@ export function useAudio(audioUrl?: string) {
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
+        audioRef.current.onended = null;
+        audioRef.current.onerror = null;
+        audioRef.current.src = '';
+        audioRef.current.load();
         audioRef.current = null;
       }
     };

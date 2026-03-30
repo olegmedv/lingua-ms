@@ -98,18 +98,18 @@ export default function LanguageManager() {
                     <Badge variant="warning">Demo</Badge>
                   )}
                 </div>
-                <div className="flex gap-2 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-2">
                   <button
                     onClick={(e) => handleEdit(e, lang)}
-                    className="p-2.5 md:p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
+                    className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
                   >
-                    <Pencil className="w-5 h-5 md:w-4 md:h-4" />
+                    <Pencil className="w-4 h-4" />
                   </button>
                   <button
                     onClick={(e) => handleDelete(e, lang.id)}
-                    className="p-2.5 md:p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
+                    className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
                   >
-                    <Trash2 className="w-5 h-5 md:w-4 md:h-4" />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>

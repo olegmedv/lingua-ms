@@ -39,7 +39,7 @@ export default function Profile() {
             </div>
             <div className="bg-white rounded-xl shadow p-4 text-center">
               <TrendingUp className="w-6 h-6 text-brand mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-800">{stats.averageScore}%</p>
+              <p className="text-2xl font-bold text-gray-800">{stats.completedLessons > 0 ? `${stats.averageScore}%` : '—'}</p>
               <p className="text-xs text-gray-500">Avg Score</p>
             </div>
           </div>
