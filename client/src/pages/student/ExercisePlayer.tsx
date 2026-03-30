@@ -132,7 +132,7 @@ export default function ExercisePlayer() {
                     {feedback.correct ? 'Correct!' : 'Incorrect'}
                   </p>
                   {!feedback.correct && feedback.correctAnswer && (
-                    <p className="text-error text-sm truncate">
+                    <p className="text-error text-sm">
                       Correct answer: <span className="font-semibold">{feedback.correctAnswer}</span>
                     </p>
                   )}
