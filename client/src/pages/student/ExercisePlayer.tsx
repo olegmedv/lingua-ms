@@ -120,7 +120,7 @@ export default function ExercisePlayer() {
                 : 'bg-error-light border-t-2 border-error'
             }`}
           >
-            <div className="max-w-lg mx-auto flex items-center justify-between gap-4">
+            <div className="max-w-lg mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0">
                 {feedback.correct ? (
                   <CheckCircle className="w-8 h-8 text-success shrink-0" />
@@ -132,7 +132,7 @@ export default function ExercisePlayer() {
                     {feedback.correct ? 'Correct!' : 'Incorrect'}
                   </p>
                   {!feedback.correct && feedback.correctAnswer && (
-                    <p className="text-error text-sm">
+                    <p className="text-error text-sm wrap-break-word">
                       Correct answer: <span className="font-semibold">{feedback.correctAnswer}</span>
                     </p>
                   )}
@@ -140,7 +140,7 @@ export default function ExercisePlayer() {
               </div>
               <button
                 onClick={handleContinue}
-                className={`font-bold py-2.5 px-6 rounded-xl text-white shrink-0 ${
+                className={`font-bold py-2.5 px-6 rounded-xl text-white shrink-0 w-full sm:w-auto ${
                   feedback.correct
                     ? 'bg-brand hover:bg-brand-light'
                     : 'bg-error hover:bg-error/80'
