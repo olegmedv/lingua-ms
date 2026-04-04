@@ -21,6 +21,7 @@ export interface Language {
 
 export interface Lesson {
   id: string;
+  languageId: string;
   title: string;
   description: string | null;
   order: number;

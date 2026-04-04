@@ -5,7 +5,7 @@ import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/i
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
-import type { Exercise } from '../../types/api';
+import type { Exercise, Lesson } from '../../types/api';
 import { Card, Badge } from '../../components/ui';
 
 const exerciseTypes = [
@@ -268,6 +268,7 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
 export default function ExerciseBuilder() {
   const { lessonId } = useParams();
   const [exercises, setExercises] = useState<Exercise[]>([]);
+  const [lesson, setLesson] = useState<Lesson | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Exercise | null>(null);
   const [selectedType, setSelectedType] = useState(0);
@@ -282,7 +283,10 @@ export default function ExerciseBuilder() {
   const deleteFile = (url: string) => api.delete(API.files.delete(url)).catch(() => {});
 
   const load = () => api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises);
-  useEffect(() => { load(); }, [lessonId]);
+  useEffect(() => {
+    load();
+    api.get<Lesson>(API.lessons.byId(lessonId!)).then(setLesson);
+  }, [lessonId]);
 
   const openCreate = () => {
     sessionUploads.current = [];
@@ -401,7 +405,7 @@ export default function ExerciseBuilder() {
 
   return (
     <div className="p-6 md:p-10">
-      <Link to={`/admin/languages`} className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
+      <Link to={lesson ? `/admin/languages/${lesson.languageId}/lessons` : '/admin/languages'} className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
         <ChevronLeft className="w-4 h-4" /> Back to Lessons
       </Link>
       <div className="flex justify-between items-center mb-6">
