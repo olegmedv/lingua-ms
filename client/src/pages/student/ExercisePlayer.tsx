@@ -120,7 +120,7 @@ export default function ExercisePlayer() {
                 : 'bg-error-light border-t-2 border-error'
             }`}
           >
-            <div className="max-w-lg mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className={`max-w-lg mx-auto flex flex-col sm:flex-row sm:items-center gap-3 ${isFlashcard ? 'sm:justify-end' : 'sm:justify-between'}`}>
               {!isFlashcard && (
                 <div className="flex items-center gap-3 min-w-0">
                   {feedback.correct ? (
