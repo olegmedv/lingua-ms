@@ -64,9 +64,9 @@ Command record and Handler — separate files in same folder. One public type pe
 - All endpoints typed end-to-end. Strongly-typed `[FromBody]` Request, explicit `ActionResult<TResponse>`.
 - MediatR + FluentValidation auto-scan via `AddMediatR` / `AddValidatorsFromAssembly`. No manual registration.
 - Pipeline order: `LoggingBehavior` → `ValidationBehavior` → others → Handler. Cross-cutting only in behaviors.
-- Entities are POCO. Logic only in handlers.
+- Entities expose only auto-properties. No methods (instance or static), no computed properties, no constructors with logic. Business logic lives in Application handlers.
 - Current user via `ICurrentUser` (domain interface, infra impl) reading `sub` claim. Never touch `HttpContext.User` in handlers/controllers.
-- Domain interfaces are switchable by config (e.g., `Cache:Provider = "InMemory" | "Redis"`).
+- When a domain interface has multiple implementations, selection happens at DI registration via an `IConfiguration` key (e.g., `Cache:Provider = "InMemory" | "Redis"`). Never via `#if` directives or hardcoded selection. Single-implementation interfaces are exempt.
 - Snake_case DB via `EFCore.NamingConventions`. No `.ToTable()` / `.HasColumnName()` for casing.
 - Secrets in `appsettings.json` + env vars. Never hardcoded.
 - Versions in `Directory.Packages.props`. `Directory.Build.props` enables `Nullable` / `ImplicitUsings` / `TreatWarningsAsErrors`.
