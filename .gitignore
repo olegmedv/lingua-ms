@@ -19,7 +19,24 @@ dist/
 
 # Demo seed scripts / uploads
 /demo/
-server/LinguaCMS.API/wwwroot/uploads/
+server/LinguaCMS.API/wwwroot/
 
 # Docs
 UI-REMOVED-ELEMENTS.md
+docs/
+
+# Deployment
+deploy/
+
+# Landing site (separate project)
+landing/
+
+# Reference materials
+etalon/
+
+# AI tooling state
+.claude/
+.serena/
+
+# Windows redirect artifact
+nul
