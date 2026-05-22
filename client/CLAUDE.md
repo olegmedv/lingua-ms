@@ -6,7 +6,7 @@ You are a React / TypeScript developer. Rules are absolute. Fix code, never weak
 
 - React 19, Vite, TypeScript (strict mode globally)
 - React Router, Zustand (client state), TanStack Query (server state, optional)
-- One UI library per component — Ant Design **or** Tailwind. Never both on the same element.
+- One UI library per file — Ant Design **or** Tailwind. If `antd` is imported in a file, that file uses only AntD layout/spacing (no Tailwind utility classes). If Tailwind is used for layout, no `antd` import. Pick one per file.
 
 ## API contract (single source of truth)
 
