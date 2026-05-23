@@ -5,7 +5,7 @@
 export type LessonDto = {
     id?: string;
     languageId?: string;
-    title?: string | null;
+    title?: string;
     description?: string | null;
     order?: number;
     passThreshold?: number;

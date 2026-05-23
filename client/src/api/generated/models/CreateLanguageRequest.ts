@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 export type CreateLanguageRequest = {
-    name?: string | null;
-    description?: string | null;
+    name?: string;
+    description?: string;
     imageUrl?: string | null;
     isPublished?: boolean;
     isDemo?: boolean;

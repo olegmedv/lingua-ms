@@ -7,7 +7,7 @@ export type ExerciseDto = {
     id?: string;
     lessonId?: string;
     type?: ExerciseType;
-    contentJson?: string | null;
+    contentJson?: string;
     audioUrl?: string | null;
     order?: number;
 };

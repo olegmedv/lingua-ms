@@ -4,7 +4,7 @@
 /* eslint-disable */
 import type { UserDto } from './UserDto';
 export type AuthResponse = {
-    token?: string | null;
+    token?: string;
     user?: UserDto;
 };
 

@@ -5,7 +5,7 @@
 import type { ExerciseType } from './ExerciseType';
 export type UpdateExerciseRequest = {
     type?: ExerciseType;
-    contentJson?: string | null;
+    contentJson?: string;
     audioUrl?: string | null;
     order?: number;
 };

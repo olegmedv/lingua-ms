@@ -3,6 +3,6 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UploadFileResponse = {
-    url?: string | null;
+    url?: string;
 };
 

@@ -5,7 +5,7 @@
 export type ProgressDto = {
     id?: string;
     lessonId?: string;
-    lessonTitle?: string | null;
+    lessonTitle?: string;
     score?: number;
     completed?: boolean;
     xpEarned?: number;

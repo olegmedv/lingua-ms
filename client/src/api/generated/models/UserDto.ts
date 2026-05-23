@@ -4,8 +4,8 @@
 /* eslint-disable */
 export type UserDto = {
     id?: string;
-    email?: string | null;
-    displayName?: string | null;
-    role?: string | null;
+    email?: string;
+    displayName?: string;
+    role?: string;
 };
 

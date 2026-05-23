@@ -4,8 +4,8 @@
 /* eslint-disable */
 export type LanguageDto = {
     id?: string;
-    name?: string | null;
-    description?: string | null;
+    name?: string;
+    description?: string;
     imageUrl?: string | null;
     isPublished?: boolean;
     isDemo?: boolean;

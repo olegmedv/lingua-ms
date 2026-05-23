@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export type UpdateLessonRequest = {
-    title?: string | null;
+    title?: string;
     description?: string | null;
     order?: number;
     passThreshold?: number;
