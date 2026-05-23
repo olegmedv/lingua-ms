@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 11 | Done: 1 | Blocked: 0 | Superseded: 0
+- Pending: 10 | Done: 2 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -102,7 +102,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - `dotnet test` (architecture tests) passes.
 
 ### FEAT-002 — Switch `DemoLoginHandler` to issue `UserRole.Demo` (including for pre-existing demo rows)
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: MED (was LOW — raised after Critique 1 HIGH#1: handler must also re-role the pre-existing demo user row, not just newly-created ones)
 - **Requires decision**: N
 - **Spec reference**: "users with Role=Demo" — and Discovery: `DemoLoginHandler:39` currently hardcodes `Admin`.
