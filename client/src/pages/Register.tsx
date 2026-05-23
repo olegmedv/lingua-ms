@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '../store/auth';
+import { useAuthStore } from '../store/auth';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Input } from '../components/ui';
 
@@ -8,7 +8,7 @@ export default function Register() {
   const [displayName, setDisplayName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { register, demoLogin } = useAuth();
+  const { register, demoLogin } = useAuthStore();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {

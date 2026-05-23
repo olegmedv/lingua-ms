@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
-import { useAuth } from './store/auth';
+import { useAuthStore } from './store/auth';
 import { Home, User, Shield, LogOut, BookOpen } from 'lucide-react';
 
 export default function App() {
-  const { token, user, isDemo, loadUser, logout } = useAuth();
+  const { token, user, isDemo, loadUser, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 

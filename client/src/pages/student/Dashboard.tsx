@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../store/auth';
+import { useAuthStore } from '../../store/auth';
 import type { Language } from '../../types/api';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user } = useAuthStore();
   const [languages, setLanguages] = useState<Language[]>([]);
 
   useEffect(() => {

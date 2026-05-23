@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../../store/auth';
+import { useAuthStore } from '../../store/auth';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { LogOut, Trophy, CheckCircle, TrendingUp } from 'lucide-react';
@@ -7,7 +7,7 @@ import { Button } from '../../components/ui';
 import type { Stats } from '../../types/api';
 
 export default function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
