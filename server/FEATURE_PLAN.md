@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 1 | Done: 13 | Blocked: 0 | Superseded: 0
+- Pending: 0 | Done: 14 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -261,7 +261,9 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - Manual verification: log in as the seeded demo user, visit `/admin/languages` → see warning banner, see every Add/Edit/Delete/Upload button greyed out with tooltip on hover. Visit `/admin/languages/:id/lessons` → same. Visit `/admin/lessons/:id/exercises` → same, including modal Save button disabled and modal Cancel/Preview buttons still enabled.
 
 ### FEAT-014 — Verify no new `[Authorize(Roles = "Admin")]` mutation endpoints (backend grep audit)
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Audit result**: Clean. `grep -rE 'Roles\s*=\s*"Admin"' server/LinguaCMS.API/Controllers/` returns ZERO matches. The broader `grep -rE 'Roles\s*='` returns 11 sites, all `"Admin,Demo"`, matching FEAT-006's documented widening: FilesController (2 at L18,23), LanguagesController (3 at L29,34,39), LessonsController (3 at L25,30,35), ExercisesController (3 at L21,26,31). No drift since 2026-05-23 — demo can reach every mutation endpoint; the 401 from `DemoUserRestrictionBehavior` is the sole behavioral gate. Two class-level `[Authorize]` attributes (no role) on ProgressController and AuthController are appropriate — they admit any authenticated user, and demo-blocked commands are caught at the MediatR layer (ExercisePlayer already skips POST /progress for `isDemo` per the existing student-demo branch).
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Backend requirements: … No backend changes expected — verify by enumerating any new mutation surfaces."
