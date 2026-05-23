@@ -1,13 +1,41 @@
 # Refactor Plan
 
-Generated: 2026-05-23. Re-audited: 2026-05-23 (5th pass, post-REF-023 execution). Source: server/CLAUDE.md.
+Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities rule). Source: server/CLAUDE.md.
 
 ## Summary
-- Total items: 25
-- Pending: 2 | Done: 18 | Blocked: 0 | Superseded: 5
-- Items requiring user decision: 7
+- Total items: 29
+- Pending: 6 | Done: 18 | Blocked: 0 | Superseded: 5
+- Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
+
+## Pre-approvals (2026-05-23)
+User pre-approved all open decisions to unblock the execute-plan loop:
+- **REF-024**: Option B — custom model binder; empty-file check moves to FluentValidation validator on `UploadFileCommand`. Keeps `LinguaCMS.Application` free of `IFormFile` / ASP.NET types.
+- **REF-025**: default approach — `GetDemoLanguageQuery` becomes `IRequest<LanguageDto>` (non-nullable); handler throws `NotFoundException`; middleware translates to 404. No alternatives existed.
+- **REF-026**: UserStats **included** in full audit (no exemption). Migration defaults: `CreatedAt` via `HasDefaultValueSql("now() at time zone 'utc'")`; `IsDeleted` via `HasDefaultValue(false)`; `UpdatedAt` / `DeletedAt` nullable, no default.
+- **REF-027**: `SaveChangesInterceptor` in `LinguaCMS.Data/Interceptors/`; `IAuditable` marker interface in `LinguaCMS.Domain/Interfaces/`; remove all manual `CreatedAt = DateTime.UtcNow` from handlers and Program.cs seeding.
+- **REF-028**: soft delete pattern `entity.IsDeleted = true; entity.DeletedAt = DateTime.UtcNow;` in all three delete handlers; no `_db.Remove()` calls remain.
+- **REF-029**: `HasQueryFilter(x => !x.IsDeleted)` on all six user-facing entity configurations (including UserStats).
+
+## Re-audit notes (2026-05-23, 6th pass)
+- CLAUDE.md gained one new code-shape rule in commit `ecfafb9`: **Auditable entities** — user-facing persisted entities must declare `CreatedAt` / `UpdatedAt` / `IsDeleted` / `DeletedAt`; `CreatedAt`/`UpdatedAt` are maintained by a single `SaveChanges` interceptor in `LinguaCMS.Data` (handlers never set them manually); deletes are soft (`entity.IsDeleted = true; entity.DeletedAt = DateTime.UtcNow;` — never `_db.Remove()` / `_db.RemoveRange()`); every entity's EF configuration calls `HasQueryFilter(x => !x.IsDeleted)`; lookup entities are exempted with a comment in the configuration.
+- Per-entity audit against the new rule (every file in [LinguaCMS.Domain/Entities/](LinguaCMS.Domain/Entities/)):
+  - [AppUser.cs](LinguaCMS.Domain/Entities/AppUser.cs) — has `CreatedAt`; missing `UpdatedAt`, `IsDeleted`, `DeletedAt`.
+  - [Language.cs](LinguaCMS.Domain/Entities/Language.cs) — has `CreatedAt`; missing `UpdatedAt`, `IsDeleted`, `DeletedAt`.
+  - [Lesson.cs](LinguaCMS.Domain/Entities/Lesson.cs) — has `CreatedAt`; missing `UpdatedAt`, `IsDeleted`, `DeletedAt`.
+  - [Exercise.cs](LinguaCMS.Domain/Entities/Exercise.cs) — no audit fields at all.
+  - [LessonProgress.cs](LinguaCMS.Domain/Entities/LessonProgress.cs) — has `CompletedAt` (semantically distinct from `CreatedAt`); no `CreatedAt`, `UpdatedAt`, `IsDeleted`, `DeletedAt`.
+  - [UserStats.cs](LinguaCMS.Domain/Entities/UserStats.cs) — no audit fields. Borderline classification: `SubmitProgressHandler` mutates it on every progress submission, so it IS user-modified (not lookup data). Recommended: include in full audit; alternative is to declare exemption with a comment as a denormalized aggregate. Decision required.
+- No `SaveChangesInterceptor` / `ISaveChangesInterceptor` implementation exists anywhere in the solution. `RegisterHandler`, `CreateLanguageHandler`, `CreateLessonHandler`, and the admin-seeding block in [Program.cs](LinguaCMS.API/Program.cs) all set `CreatedAt = DateTime.UtcNow` manually — once the interceptor lands, these manual assignments must be removed.
+- Three delete handlers use hard delete: [DeleteLanguageHandler.cs:16](LinguaCMS.Application/Languages/Commands/DeleteLanguage/DeleteLanguageHandler.cs#L16) (`_db.Languages.Remove(lang)`), [DeleteLessonHandler.cs:16](LinguaCMS.Application/Lessons/Commands/DeleteLesson/DeleteLessonHandler.cs#L16) (`_db.Lessons.Remove(lesson)`), [DeleteExerciseHandler.cs:41](LinguaCMS.Application/Exercises/Commands/DeleteExercise/DeleteExerciseHandler.cs#L41) (`_db.Exercises.Remove(exercise)`). All three violate the soft-delete mandate.
+- No EF configuration under [LinguaCMS.Data/Configurations/](LinguaCMS.Data/Configurations/) calls `HasQueryFilter(...)`. No exemption comments either.
+- These violations are not independent — they cannot all be applied atomically (e.g., `HasQueryFilter(x => !x.IsDeleted)` won't compile until `IsDeleted` exists on the entity). They split per the skill's grouping rules into four items, with strict ordering: **add properties + migration (REF-026) → interceptor + remove manual sets (REF-027) → soft-delete handlers (REF-028) → query filters (REF-029)**.
+- Re-verified the two pending items from the 5th pass: REF-024 ([FilesController.Upload](LinguaCMS.API/Controllers/FilesController.cs)) and REF-025 ([LanguagesController.GetDemo](LinguaCMS.API/Controllers/LanguagesController.cs)) still violate the controller-thinness rule. Quoted bodies unchanged from 5th-pass capture.
+- Per-rule sweep of the remaining 15 code-shape rules — clean (no new violations beyond the new auditable-entities rule).
+- One earlier audit had a (false) claim that `LinguaCMS.Infrastructure.csproj` was missing references to `LinguaCMS.Application` and `LinguaCMS.Data`. Re-checked: the CLAUDE.md graph "Infrastructure → Domain, Application, Data, ExternalServices.*.Providers" describes the *allowed* upstream set, not a required set. Current Infrastructure references only Domain — a subset of the allowed deps and no forbidden refs. Not a violation; not recorded as an item.
+- IDs preserved: REF-001..REF-025. IDs issued: REF-026, REF-027, REF-028, REF-029.
+- 0 items silently resolved between audits.
 
 ## Re-audit notes (2026-05-23, 5th pass)
 - REF-023 verified done: `c.SupportNonNullableReferenceTypes()` present at [LinguaCMS.API/Program.cs:58](LinguaCMS.API/Program.cs#L58).
@@ -515,18 +543,16 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (5th pass, post-REF-023 execution)
 ### REF-024 — Thin FilesController.Upload: move empty-file check and IFormFile binding out of the controller
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N (pre-approved 2026-05-23 — **Option B**)
 - **Rule**: "Controllers contain **only** `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return."
 - **Scope**:
   - `LinguaCMS.API/Controllers/FilesController.cs` (the `Upload` action body — currently performs `if (file.Length == 0) return BadRequest(...)` and `await using var stream = file.OpenReadStream();` before the Send call)
-  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileCommand.cs` (command shape may need to change depending on the chosen approach)
-  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileHandler.cs`
-  - Possibly `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileValidator.cs` (new — if the empty-file check moves to a FluentValidation validator)
+  - `LinguaCMS.API/ModelBinders/UploadFileModelBinder.cs` (new — converts the incoming `IFormFile` from the form into a `UploadFileCommand` instance: `new UploadFileCommand(file.OpenReadStream(), file.FileName, file.Length)`)
+  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileCommand.cs` (gain a `long Length` field so the validator can assert non-empty without re-reading the stream)
+  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileHandler.cs` (unchanged behavior; may need the new field if it logs size)
+  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileValidator.cs` (new — `RuleFor(x => x.Length).GreaterThan(0).WithMessage("Empty file")`)
 - **Depends on**: REF-018 (done)
-- **Decision needed**: two valid architectural fixes for the controller-thinness violation:
-  - **Option A — Command takes `IFormFile` directly**: controller becomes `=> Ok(await _mediator.Send(new UploadFileCommand(file)))`. Requires `LinguaCMS.Application` to reference `Microsoft.AspNetCore.Http.Features` (the `IFormFile` interface lives there) — couples Application to ASP.NET Core. Empty-file check moves into `UploadFileValidator`.
-  - **Option B — Custom model binder**: a binder converts `IFormFile` to a `(Stream, string fileName)` pair before the action method runs, so the controller signature stays `(Stream content, string fileName)` and the action body is a single Send. Empty-file check moves into a validator on the command. No new package; keeps Application ASP.NET-free.
-  - **Option C — Accept the controller minor logic as pragmatic**: weaken the rule. Not recommended per "Fix code, never weaken rules."
+- **Pre-approved decision (2026-05-23)**: **Option B — custom model binder**. Selected because it keeps `LinguaCMS.Application` free of ASP.NET Core types (`IFormFile` lives in `Microsoft.AspNetCore.Http.Features`), preserving the CLAUDE.md dependency graph "Application → Domain, Data" with no ASP.NET reference. Empty-file check moves into a FluentValidation validator on `UploadFileCommand`, processed by the existing `ValidationBehavior` pipeline behavior (REF-009).
 - **DoD**:
   - `FilesController.Upload` body is a single expression: `=> Ok(await _mediator.Send(...))` or equivalent one-line dispatch
   - The empty-file check no longer lives in the controller; it lives in either a validator (preferred) or the handler
@@ -548,6 +574,92 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (5th pass, post-REF-023 execution)
   - `LanguagesController.GetDemo` body is a single expression-bodied `=> Ok(await _mediator.Send(new GetDemoLanguageQuery()))`
   - `GetDemoLanguageQuery` implements `IRequest<LanguageDto>` (non-nullable)
   - Handler throws `NotFoundException` when no demo language exists; `ExceptionHandlerMiddleware` translates it to 404 (pattern already established elsewhere)
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
+
+### REF-026 — Add audit fields (CreatedAt, UpdatedAt, IsDeleted, DeletedAt) to user-facing entities + EF migration
+- **Status**: pending
+- **Risk**: MED
+- **Requires decision**: Y
+- **Rule**: "user-facing persisted entities (those modified by user actions: Languages, Lessons, Exercises, Users, Progress, etc.) declare `CreatedAt DateTime` (UTC, set on insert), `UpdatedAt DateTime?` (UTC, set on every update), `IsDeleted bool` (default false), `DeletedAt DateTime?` (default null)."
+- **Scope**:
+  - `LinguaCMS.Domain/Entities/AppUser.cs` (add `UpdatedAt`, `IsDeleted`, `DeletedAt`; existing `CreatedAt` stays)
+  - `LinguaCMS.Domain/Entities/Language.cs` (add `UpdatedAt`, `IsDeleted`, `DeletedAt`; existing `CreatedAt` stays)
+  - `LinguaCMS.Domain/Entities/Lesson.cs` (add `UpdatedAt`, `IsDeleted`, `DeletedAt`; existing `CreatedAt` stays)
+  - `LinguaCMS.Domain/Entities/Exercise.cs` (add all four: `CreatedAt`, `UpdatedAt`, `IsDeleted`, `DeletedAt`)
+  - `LinguaCMS.Domain/Entities/LessonProgress.cs` (add `CreatedAt`, `UpdatedAt`, `IsDeleted`, `DeletedAt`; keep `CompletedAt` — it's a domain concept, not the audit timestamp)
+  - `LinguaCMS.Domain/Entities/UserStats.cs` (add all four audit properties — per pre-approved decision below, UserStats is **included** in the full audit, not exempted)
+  - `LinguaCMS.Data/Migrations/<auto>_AddAuditFields.cs` (new — CLI-generated; never hand-edit per CLAUDE.md)
+  - `LinguaCMS.Data/AppDbContextModelSnapshot.cs` (auto-updated by migration generator)
+- **Depends on**: none
+- **Pre-approved decision (2026-05-23)**:
+  - **UserStats classification**: **included in full audit** (no exemption). All six entities — AppUser, Language, Lesson, Exercise, LessonProgress, UserStats — gain the four properties.
+  - **Migration defaults for existing rows**: in EF configuration, set `CreatedAt` column default to `HasDefaultValueSql("now() at time zone 'utc'")` so the migration emits a `DEFAULT` clause that backfills existing rows on apply. `IsDeleted` column default `false` via `HasDefaultValue(false)`. `UpdatedAt` and `DeletedAt` stay nullable with no default (NULL for existing rows). After the migration runs, drop the `HasDefaultValueSql` from the configuration in a follow-up only if desired — for now leave it in place so the DB constraint stays declared.
+- **DoD**:
+  - Every in-scope entity declares the four properties as plain auto-properties (`public DateTime CreatedAt { get; set; }`, `public DateTime? UpdatedAt { get; set; }`, `public bool IsDeleted { get; set; }`, `public DateTime? DeletedAt { get; set; }`) — no method bodies, no expression-bodied members (per the existing entity rule)
+  - `dotnet ef migrations add AddAuditFields -p LinguaCMS.Data -s LinguaCMS.API` produces a migration that adds the new columns with non-destructive defaults
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
+
+### REF-027 — Add SaveChanges interceptor for CreatedAt/UpdatedAt; remove manual assignments from handlers & seeding
+- **Status**: pending
+- **Risk**: MED
+- **Requires decision**: N
+- **Rule**: "`CreatedAt`/`UpdatedAt` maintained by a single `SaveChanges` interceptor in `<Sln>.Data` — handlers never set them manually."
+- **Scope**:
+  - `LinguaCMS.Data/Interceptors/AuditableEntitiesInterceptor.cs` (new — `SaveChangesInterceptor` subclass; on `SavingChanges`/`SavingChangesAsync`, walks `ChangeTracker.Entries()`, sets `CreatedAt = DateTime.UtcNow` on entries in `Added` state, `UpdatedAt = DateTime.UtcNow` on entries in `Modified` state — for entities exposing the four audit properties)
+  - `LinguaCMS.Domain/Interfaces/IAuditable.cs` (new — marker interface declaring the four properties; lets the interceptor identify in-scope entities without reflection-by-name)
+  - `LinguaCMS.Domain/Entities/AppUser.cs`, `Language.cs`, `Lesson.cs`, `Exercise.cs`, `LessonProgress.cs`, (optionally `UserStats.cs`) — implement `IAuditable`
+  - `LinguaCMS.API/Program.cs` — register the interceptor (`services.AddSingleton<AuditableEntitiesInterceptor>();`) and chain it on the DbContext options (`options.AddInterceptors(sp.GetRequiredService<AuditableEntitiesInterceptor>())` inside `AddDbContext((sp, options) => ...)`)
+  - `LinguaCMS.Application/Auth/Commands/Register/RegisterHandler.cs` — remove `CreatedAt = DateTime.UtcNow` from the `AppUser` initializer
+  - `LinguaCMS.Application/Languages/Commands/CreateLanguage/CreateLanguageHandler.cs` — remove `CreatedAt = DateTime.UtcNow`
+  - `LinguaCMS.Application/Lessons/Commands/CreateLesson/CreateLessonHandler.cs` — remove `CreatedAt = DateTime.UtcNow`
+  - `LinguaCMS.API/Program.cs` (admin-seeding block) — remove manual `CreatedAt = DateTime.UtcNow` on the seeded `AppUser`
+  - Entity files in REF-026 scope — drop the `= DateTime.UtcNow` declarative initializer on `CreatedAt` since the interceptor is now authoritative (declarative init would still produce a sensible value on instantiation, but it shadows the interceptor's invariant of "value set at insert time")
+- **Depends on**: REF-026
+- **DoD**:
+  - Exactly one `ISaveChangesInterceptor` implementation exists in the solution, located in `LinguaCMS.Data/Interceptors/`
+  - The interceptor sets `CreatedAt` only on `EntityState.Added` and `UpdatedAt` only on `EntityState.Modified`
+  - No `CreatedAt = ...` or `UpdatedAt = ...` assignment exists anywhere outside the interceptor (verified by grep)
+  - `Program.cs` calls `AddInterceptors(...)` (or equivalent) inside the `AddDbContext` configuration
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
+
+### REF-028 — Convert hard delete to soft delete in DeleteLanguage, DeleteLesson, DeleteExercise handlers
+- **Status**: pending
+- **Risk**: MED
+- **Requires decision**: N
+- **Rule**: "`IsDeleted`/`DeletedAt` set by Delete handlers (`entity.IsDeleted = true; entity.DeletedAt = DateTime.UtcNow;`), never `_db.Remove()` or `_db.RemoveRange()`."
+- **Scope**:
+  - `LinguaCMS.Application/Languages/Commands/DeleteLanguage/DeleteLanguageHandler.cs` (line 16: replace `_db.Languages.Remove(lang);` with `lang.IsDeleted = true; lang.DeletedAt = DateTime.UtcNow;`)
+  - `LinguaCMS.Application/Lessons/Commands/DeleteLesson/DeleteLessonHandler.cs` (line 16: same pattern with `lesson`)
+  - `LinguaCMS.Application/Exercises/Commands/DeleteExercise/DeleteExerciseHandler.cs` (line 41: same pattern with `exercise` — keep the surrounding file-deletion logic that REF-018 introduced)
+- **Depends on**: REF-026
+- **DoD**:
+  - No `_db.<Set>.Remove(...)` or `_db.<Set>.RemoveRange(...)` call exists in any user-facing delete handler (verified by grep over `LinguaCMS.Application/**/Delete*Handler.cs`)
+  - Each delete handler sets `IsDeleted = true; DeletedAt = DateTime.UtcNow;` on the target entity and calls `_db.SaveChangesAsync(cancellationToken)`
+  - After REF-029 lands, existing queries (e.g., `GetLanguagesHandler`) continue to return only non-deleted rows because the global query filter handles the predicate — verify by spot-reading two query handlers
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
+
+### REF-029 — Add HasQueryFilter(x => !x.IsDeleted) to user-facing EF configurations
+- **Status**: pending
+- **Risk**: MED
+- **Requires decision**: N (pre-approved 2026-05-23 — all six entities get the filter)
+- **Rule**: "Every entity has a global EF query filter `HasQueryFilter(x => !x.IsDeleted)` so queries skip soft-deleted rows by default. Internal-only / lookup entities (enum-like reference data, never user-modified) are exempt — declare exemption in the entity's EF configuration with a comment."
+- **Scope**:
+  - `LinguaCMS.Data/Configurations/AppUserConfiguration.cs` (add `builder.HasQueryFilter(x => !x.IsDeleted);`)
+  - `LinguaCMS.Data/Configurations/LanguageConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/LessonConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/ExerciseConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/LessonProgressConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/UserStatsConfiguration.cs` (same — UserStats is in full audit per REF-026 pre-approval, no exemption)
+- **Depends on**: REF-026
+- **Pre-approved decision (2026-05-23)**: every user-facing entity — including UserStats — gets `HasQueryFilter(x => !x.IsDeleted)`. No exemptions.
+- **DoD**:
+  - Every in-scope entity's EF configuration calls `HasQueryFilter(x => !x.IsDeleted)` (verified by grep)
+  - Any exempt entity's EF configuration includes the exemption comment with rationale
+  - After this item + REF-028 land, a `_db.Languages.Where(...)` style query in a handler returns no soft-deleted rows by default; an explicit `IgnoreQueryFilters()` is required to see deleted rows
   - `dotnet build` returns 0
   - `dotnet test` returns 0 with test count ≥ baseline
 
