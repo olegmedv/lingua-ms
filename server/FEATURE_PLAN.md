@@ -4,7 +4,7 @@ Generated: 2026-05-23. Source spec: "Block demo user (Role == Demo) from mutatio
 
 ## Summary
 - Total items: 7
-- Pending: 6 | Done: 1 | Blocked: 0 | Superseded: 0
+- Pending: 5 | Done: 2 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0 (all decisions resolved during iteration 1)
 - Critic iterations: 2
 - Critic verdict: approved (only LOW notes after iteration 2)
@@ -30,7 +30,8 @@ FEAT-001 → FEAT-002 → FEAT-003 → FEAT-007 → FEAT-006 → FEAT-005 → FE
   - `dotnet build` returns 0
 
 ### FEAT-002 — Add `IsInRole(string)` to ICurrentUser + impl
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Behavior checks ... if ICurrentUser.IsInRole(\"Demo\")."
