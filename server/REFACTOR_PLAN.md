@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 2 | Done: 15 | Blocked: 0 | Superseded: 5
+- Pending: 1 | Done: 16 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -44,7 +44,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-002 — Add Directory.Build.props with Nullable/ImplicitUsings/TreatWarningsAsErrors
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: HIGH
 - **Requires decision**: Y
 - **Rule**: "`Directory.Build.props` enables `Nullable` / `ImplicitUsings` / `TreatWarningsAsErrors`."
