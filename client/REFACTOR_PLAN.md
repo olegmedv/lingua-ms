@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 10 | Done: 5 | Blocked: 1
+- Pending: 9 | Done: 6 | Blocked: 1
 - Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -162,7 +162,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Decision (2026-05-23)**: place under `src/components/ui/` alongside Button, Input, Card, Badge. Export through the `ui/` barrel.
 
 ### REF-009 — Resolve unregistered demo files (`src/DemoApp.tsx`, `src/pages/demo/DemoLessonTree.tsx`)
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Add a page not registered in `src/router.tsx`." (Never list)
