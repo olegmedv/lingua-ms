@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 5 | Done: 13 | Blocked: 0 | Superseded: 4
+- Pending: 4 | Done: 14 | Blocked: 0 | Superseded: 4
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -453,7 +453,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-022 — Create LinguaCMS.ArchitectureTests project with NetArchTest assertions
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: Y
 - **Rule**: "Enforce via `NetArchTest`, not via review." (Implies an executable, asserting architecture rules; today no tests project exists.)
