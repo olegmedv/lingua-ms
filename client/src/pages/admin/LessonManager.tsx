@@ -23,7 +23,7 @@ import {
 } from '@ant-design/icons';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import type { Lesson } from '../../types/api';
+import type { LessonDto as Lesson } from '../../api/generated';
 
 export default function LessonManager() {
   const { langId } = useParams();
@@ -38,7 +38,7 @@ export default function LessonManager() {
 
   const handleSave = async (values: { title: string; description?: string; order: number; passThreshold: number }) => {
     if (editing) {
-      await api.put(API.lessons.byId(editing.id), values);
+      await api.put(API.lessons.byId(editing.id!), values);
     } else {
       await api.post(API.languages.lessons(langId!), values);
     }
@@ -84,7 +84,7 @@ export default function LessonManager() {
         <Empty description="No lessons yet. Create one to get started." />
       ) : (
         <Row gutter={[12, 12]}>
-          {lessons.sort((a, b) => a.order - b.order).map(lesson => (
+          {lessons.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map(lesson => (
             <Col xs={24} md={12} lg={8} key={lesson.id}>
               <Card hoverable onClick={() => navigate(`/admin/lessons/${lesson.id}/exercises`)}>
                 <Flex align="flex-start" justify="space-between">
@@ -106,7 +106,7 @@ export default function LessonManager() {
                   <Typography.Text type="secondary">Pass: {lesson.passThreshold}%</Typography.Text>
                   <Space>
                     <Button type="text" icon={<EditOutlined />} onClick={(e) => handleEdit(e, lesson)} />
-                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lesson.id)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lesson.id!)} />
                   </Space>
                 </Flex>
               </Card>

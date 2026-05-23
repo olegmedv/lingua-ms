@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { ChevronRight } from 'lucide-react';
-import type { Language, Lesson } from '../../types/api';
+import type { LanguageDto as Language, LessonDto as Lesson } from '../../api/generated';
 import { Card } from '../../components/ui';
 
 export default function DemoLessonTree() {
@@ -16,7 +16,7 @@ export default function DemoLessonTree() {
     api.get<Language>(API.languages.demo)
       .then(lang => {
         setLanguage(lang);
-        return api.get<Lesson[]>(API.languages.lessons(lang.id));
+        return api.get<Lesson[]>(API.languages.lessons(lang.id!));
       })
       .then(setLessons)
       .catch(() => setError(true));
@@ -43,7 +43,7 @@ export default function DemoLessonTree() {
         <p className="text-gray-400 py-12 text-center">Loading...</p>
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {lessons.sort((a, b) => a.order - b.order).map(lesson => (
+          {lessons.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map(lesson => (
             <Card
               key={lesson.id}
               onClick={() => navigate(`/demo/lessons/${lesson.id}/play`, { state: { langId: language?.id, demo: true } })}

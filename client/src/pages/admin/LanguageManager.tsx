@@ -28,7 +28,7 @@ import {
 } from '@ant-design/icons';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import type { Language } from '../../types/api';
+import type { LanguageDto as Language } from '../../api/generated';
 
 export default function LanguageManager() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export default function LanguageManager() {
 
   const handleSave = async (values: { name: string; description: string; imageUrl?: string; isPublished: boolean; isDemo: boolean }) => {
     if (editing) {
-      await api.put(API.languages.byId(editing.id), values);
+      await api.put(API.languages.byId(editing.id!), values);
     } else {
       await api.post(API.languages.list, values);
     }
@@ -102,7 +102,7 @@ export default function LanguageManager() {
                   <Space size={16}>
                     {lang.imageUrl
                       ? <Avatar src={lang.imageUrl} shape="square" size={64} />
-                      : <Avatar shape="square" size={64}>{lang.name[0]}</Avatar>
+                      : <Avatar shape="square" size={64}>{lang.name?.[0]}</Avatar>
                     }
                     <div>
                       <Typography.Text strong>{lang.name}</Typography.Text>
@@ -125,7 +125,7 @@ export default function LanguageManager() {
                   </Space>
                   <Space>
                     <Button type="text" icon={<EditOutlined />} onClick={(e) => handleEdit(e, lang)} />
-                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lang.id)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lang.id!)} />
                   </Space>
                 </Flex>
               </Card>

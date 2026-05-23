@@ -4,7 +4,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { useAuthStore } from '../../store/auth';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import type { Lesson, Progress } from '../../types/api';
+import type { LessonDto as Lesson, ProgressDto as Progress } from '../../api/generated';
 import { Card, Badge } from '../../components/ui';
 
 export default function LessonTree() {
@@ -25,7 +25,7 @@ export default function LessonTree() {
   const isUnlocked = (index: number) => {
     if (isDemo) return true;
     if (index === 0) return true;
-    return isCompleted(lessons[index - 1].id);
+    return isCompleted(lessons[index - 1].id!);
   };
 
   return (
@@ -39,11 +39,11 @@ export default function LessonTree() {
         <p className="text-gray-400 py-12 text-center">No lessons available yet.</p>
       ) : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {lessons.sort((a, b) => a.order - b.order).map((lesson, i) => {
-            const completed = isCompleted(lesson.id);
+          {lessons.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map((lesson, i) => {
+            const completed = isCompleted(lesson.id!);
             const unlocked = isUnlocked(i);
             const isCurrent = unlocked && !completed;
-            const lessonProgress = getProgress(lesson.id);
+            const lessonProgress = getProgress(lesson.id!);
 
             return (
               <Card

@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 4 | Done: 12 | Blocked: 0
+- Pending: 3 | Done: 13 | Blocked: 0
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -33,9 +33,11 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Notes**: blocks REF-002, REF-003, REF-004, REF-005. Backend must be reachable at `${VITE_API_URL}/swagger/v1/swagger.json` at codegen time — if not, the item will be marked blocked and the plan re-attempted when the server is up.
 
 ### REF-002 — Replace hand-written `src/types/api.ts` with generated DTOs
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: HIGH
 - **Requires decision**: N
+- **Implementation note**: Consumers import the generated DTOs with a local alias (`import type { UserDto as User } from '../api/generated'`) so the existing variable/state references stay unchanged. Since the codegen marks every field optional, accesses fall into three patterns: (a) `!` non-null assertion where the API guarantees the field (IDs, tokens, save responses) — backed by the runtime contract; (b) `?? 0` defaults for numeric ordering used inside `.sort()`; (c) optional chaining for display-only access (`lang.name?.[0]`). No `any`/`as any`/`@ts-ignore` introduced.
 - **Decision (2026-05-23)**: types come from REF-001 output (`openapi-typescript-codegen`).
 - **Rule**: "No manual API request/response types. Everything from `src/api/generated/`." / "Non-API domain types: `src/types/<name>.ts`."
 - **Scope**:

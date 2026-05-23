@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { api } from '../api/client';
 import { API } from '../api/endpoints';
-import type { User, AuthResponse } from '../types/api';
+import type { UserDto as User, AuthResponse } from '../api/generated';
 
 interface AuthState {
   user: User | null;
@@ -21,23 +21,23 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   login: async (email, password) => {
     const res = await api.post<AuthResponse>(API.auth.login, { email, password });
-    localStorage.setItem('token', res.token);
+    localStorage.setItem('token', res.token!);
     localStorage.removeItem('isDemo');
-    set({ token: res.token, user: res.user, isDemo: false });
+    set({ token: res.token!, user: res.user ?? null, isDemo: false });
   },
 
   register: async (email, displayName, password) => {
     const res = await api.post<AuthResponse>(API.auth.register, { email, displayName, password });
-    localStorage.setItem('token', res.token);
+    localStorage.setItem('token', res.token!);
     localStorage.removeItem('isDemo');
-    set({ token: res.token, user: res.user, isDemo: false });
+    set({ token: res.token!, user: res.user ?? null, isDemo: false });
   },
 
   demoLogin: async () => {
     const res = await api.post<AuthResponse>(API.auth.demo);
-    localStorage.setItem('token', res.token);
+    localStorage.setItem('token', res.token!);
     localStorage.setItem('isDemo', 'true');
-    set({ token: res.token, user: res.user, isDemo: true });
+    set({ token: res.token!, user: res.user ?? null, isDemo: true });
   },
 
   logout: () => {

@@ -3,7 +3,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
-import type { Language } from '../../types/api';
+import type { LanguageDto as Language } from '../../api/generated';
 
 export default function Dashboard() {
   const { user } = useAuthStore();
@@ -36,7 +36,7 @@ export default function Dashboard() {
                 <img src={lang.imageUrl} alt={lang.name} className="w-16 h-16 shrink-0 rounded-xl object-cover" />
               ) : (
                 <div className="w-16 h-16 shrink-0 rounded-xl bg-green-100 flex items-center justify-center">
-                  <span className="text-2xl">{lang.name[0]}</span>
+                  <span className="text-2xl">{lang.name?.[0]}</span>
                 </div>
               )}
               <div className="min-w-0">

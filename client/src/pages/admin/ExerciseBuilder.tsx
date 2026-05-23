@@ -25,7 +25,7 @@ import {
 } from '@ant-design/icons';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import type { Exercise, Lesson } from '../../types/api';
+import type { ExerciseDto as Exercise, LessonDto as Lesson } from '../../api/generated';
 import ExerciseTypeFields from './ExerciseTypeFields';
 
 const exerciseTypes = [
@@ -167,7 +167,7 @@ export default function ExerciseBuilder() {
     originalImageUrls.current = { correct: null, di1: null, di2: null, di3: null };
     if (record.type === 4) {
       try {
-        const d = JSON.parse(record.contentJson);
+        const d = JSON.parse(record.contentJson ?? '{}');
         originalImageUrls.current = {
           correct: d.correctImageUrl ?? null,
           di1: d.distractorImages?.[0] ?? null,
@@ -177,8 +177,8 @@ export default function ExerciseBuilder() {
       } catch { /* ignore */ }
     }
     setEditing(record);
-    setSelectedType(record.type);
-    const contentFields = parseContentToFields(record.type, record.contentJson);
+    setSelectedType(record.type ?? 0);
+    const contentFields = parseContentToFields(record.type ?? 0, record.contentJson ?? '{}');
     form.resetFields();
     form.setFieldsValue({ type: record.type, order: record.order, audioUrl: record.audioUrl, ...contentFields });
     setModalOpen(true);
@@ -201,7 +201,7 @@ export default function ExerciseBuilder() {
     const payload = { type, contentJson, audioUrl: savedFileUrl, order: (values.order as number) || 0 };
 
     if (editing) {
-      await api.put(API.exercises.byId(editing.id), payload);
+      await api.put(API.exercises.byId(editing.id!), payload);
     } else {
       await api.post(API.lessons.exercises(lessonId!), payload);
     }
@@ -246,7 +246,7 @@ export default function ExerciseBuilder() {
 
   const getPreview = (record: Exercise) => {
     try {
-      const d = JSON.parse(record.contentJson);
+      const d = JSON.parse(record.contentJson ?? '{}');
       switch (record.type) {
         case 0: return `"${d.word}" → ${d.correctAnswer}`;
         case 1: return `Listen → ${d.correctText}`;
@@ -282,7 +282,7 @@ export default function ExerciseBuilder() {
         <Empty description="No exercises yet. Create one to get started." />
       ) : (
         <Row gutter={[12, 12]}>
-          {exercises.sort((a, b) => a.order - b.order).map(ex => (
+          {exercises.sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).map(ex => (
             <Col xs={24} md={12} lg={8} key={ex.id}>
               <Card>
                 <Flex align="flex-start" justify="space-between" style={{ marginBottom: 8 }}>
@@ -299,7 +299,7 @@ export default function ExerciseBuilder() {
                 <Flex justify="flex-end">
                   <Space>
                     <Button type="text" icon={<EditOutlined />} onClick={() => openEdit(ex)} />
-                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(ex.id)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(ex.id!)} />
                   </Space>
                 </Flex>
               </Card>

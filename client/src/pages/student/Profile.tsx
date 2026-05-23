@@ -4,7 +4,7 @@ import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
 import { LogOut, Trophy, CheckCircle, TrendingUp } from 'lucide-react';
 import { Button } from '../../components/ui';
-import type { Stats } from '../../types/api';
+import type { StatsDto as Stats } from '../../api/generated';
 
 export default function Profile() {
   const { user, logout } = useAuthStore();
@@ -39,7 +39,7 @@ export default function Profile() {
             </div>
             <div className="bg-white rounded-xl shadow p-4 text-center">
               <TrendingUp className="w-6 h-6 text-brand mx-auto mb-2" />
-              <p className="text-2xl font-bold text-gray-800">{stats.completedLessons > 0 ? `${stats.averageScore}%` : '—'}</p>
+              <p className="text-2xl font-bold text-gray-800">{(stats.completedLessons ?? 0) > 0 ? `${stats.averageScore}%` : '—'}</p>
               <p className="text-xs text-gray-500">Avg Score</p>
             </div>
           </div>

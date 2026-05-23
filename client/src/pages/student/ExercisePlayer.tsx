@@ -13,7 +13,7 @@ import WordBank from '../../components/exercises/WordBank';
 import FillInBlank from '../../components/exercises/FillInBlank';
 import Flashcard from '../../components/exercises/Flashcard';
 import { X, CheckCircle, XCircle } from 'lucide-react';
-import type { Exercise, Lesson } from '../../types/api';
+import type { ExerciseDto as Exercise, LessonDto as Lesson } from '../../api/generated';
 
 interface Feedback {
   correct: boolean;
@@ -72,7 +72,7 @@ export default function ExercisePlayer() {
 
   const ex = exercises[current];
 
-  const data = JSON.parse(ex.contentJson);
+  const data = JSON.parse(ex.contentJson ?? '{}');
 
   const renderExercise = () => {
     switch (ex.type) {
