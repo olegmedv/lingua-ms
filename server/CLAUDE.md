@@ -70,6 +70,7 @@ Command record and Handler — separate files in same folder. One public type pe
 - Snake_case DB via `EFCore.NamingConventions`. No `.ToTable()` / `.HasColumnName()` for casing.
 - Secrets in `appsettings.json` + env vars. Never hardcoded.
 - Versions in `Directory.Packages.props`. `Directory.Build.props` enables `Nullable` / `ImplicitUsings` / `TreatWarningsAsErrors`.
+- **OpenAPI schema accuracy**: Swashbuckle is configured to honor C# nullability annotations and `[Required]` attributes. Non-nullable reference types in DTOs produce `required: true, nullable: false` in the schema. Nullable reference types produce `nullable: true`. The generated frontend client must reflect the true runtime contract — no all-fields-optional schema drift.
 
 ## Workflow
 
