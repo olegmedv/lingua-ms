@@ -1,7 +1,6 @@
 using System.Text;
 using LinguaCMS.API.Middleware;
 using FluentValidation;
-using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Common.Behaviors;
 using LinguaCMS.Data;
 using LinguaCMS.Domain.Interfaces;
@@ -45,6 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
@@ -96,6 +96,7 @@ using (var scope = app.Services.CreateScope())
 
     if (!db.Users.Any(u => u.Role == LinguaCMS.Domain.Enums.UserRole.Admin))
     {
+        var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
         var adminEmail = app.Configuration["AdminSeed:Email"]!;
         var adminPassword = app.Configuration["AdminSeed:Password"]!;
         var adminName = app.Configuration["AdminSeed:DisplayName"]!;
@@ -104,7 +105,7 @@ using (var scope = app.Services.CreateScope())
             Id = Guid.NewGuid(),
             Email = adminEmail,
             DisplayName = adminName,
-            PasswordHash = PasswordHasher.Hash(adminPassword),
+            PasswordHash = hasher.Hash(adminPassword),
             Role = LinguaCMS.Domain.Enums.UserRole.Admin,
             CreatedAt = DateTime.UtcNow
         });

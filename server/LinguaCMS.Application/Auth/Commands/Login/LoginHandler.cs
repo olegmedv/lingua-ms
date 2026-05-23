@@ -1,5 +1,4 @@
 using LinguaCMS.Application.Auth.Models;
-using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Exceptions;
 using LinguaCMS.Data;
 using LinguaCMS.Domain.Interfaces;
@@ -12,11 +11,13 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponse>
 {
     private readonly AppDbContext _db;
     private readonly IJwtTokenService _jwt;
+    private readonly IPasswordHasher _hasher;
 
-    public LoginHandler(AppDbContext db, IJwtTokenService jwt)
+    public LoginHandler(AppDbContext db, IJwtTokenService jwt, IPasswordHasher hasher)
     {
         _db = db;
         _jwt = jwt;
+        _hasher = hasher;
     }
 
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken ct)
@@ -24,7 +25,7 @@ public class LoginHandler : IRequestHandler<LoginCommand, AuthResponse>
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email, ct)
             ?? throw new UnauthorizedException("Invalid credentials");
 
-        if (!PasswordHasher.Verify(request.Password, user.PasswordHash))
+        if (!_hasher.Verify(request.Password, user.PasswordHash))
             throw new UnauthorizedException("Invalid credentials");
 
         return new AuthResponse

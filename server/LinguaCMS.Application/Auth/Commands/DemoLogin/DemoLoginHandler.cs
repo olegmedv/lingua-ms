@@ -1,5 +1,4 @@
 using LinguaCMS.Application.Auth.Models;
-using LinguaCMS.Application.Common;
 using LinguaCMS.Data;
 using LinguaCMS.Domain.Entities;
 using LinguaCMS.Domain.Enums;
@@ -13,14 +12,16 @@ public class DemoLoginHandler : IRequestHandler<DemoLoginCommand, AuthResponse>
 {
     private readonly AppDbContext _db;
     private readonly IJwtTokenService _jwt;
+    private readonly IPasswordHasher _hasher;
 
     private const string DemoEmail = "demo@linguacms.com";
     private const string DemoName = "Demo Admin";
 
-    public DemoLoginHandler(AppDbContext db, IJwtTokenService jwt)
+    public DemoLoginHandler(AppDbContext db, IJwtTokenService jwt, IPasswordHasher hasher)
     {
         _db = db;
         _jwt = jwt;
+        _hasher = hasher;
     }
 
     public async Task<AuthResponse> Handle(DemoLoginCommand request, CancellationToken ct)
@@ -34,7 +35,7 @@ public class DemoLoginHandler : IRequestHandler<DemoLoginCommand, AuthResponse>
                 Id = Guid.NewGuid(),
                 Email = DemoEmail,
                 DisplayName = DemoName,
-                PasswordHash = PasswordHasher.Hash(Guid.NewGuid().ToString()),
+                PasswordHash = _hasher.Hash(Guid.NewGuid().ToString()),
                 Role = UserRole.Admin,
                 CreatedAt = DateTime.UtcNow
             };

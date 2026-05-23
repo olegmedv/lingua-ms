@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 6 | Done: 12 | Blocked: 0 | Superseded: 4
+- Pending: 5 | Done: 13 | Blocked: 0 | Superseded: 4
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -291,7 +291,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-013 — Move PasswordHasher to Infrastructure as IPasswordHasher implementation
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: Y
 - **Rule**: "Domain interface | `<Sln>.Domain/Interfaces/I<Name>.cs`" / "Domain interface impl | `<Sln>.Infrastructure/Services/<Name>Service.cs`". `PasswordHasher` is currently a static utility in `LinguaCMS.Application/Common/` consumed by handlers and Program.cs seeding code; per the architecture it belongs to Infrastructure behind a domain interface.

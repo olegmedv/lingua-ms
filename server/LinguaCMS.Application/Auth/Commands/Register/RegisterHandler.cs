@@ -1,5 +1,4 @@
 using LinguaCMS.Application.Auth.Models;
-using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Exceptions;
 using LinguaCMS.Data;
 using LinguaCMS.Domain.Entities;
@@ -14,11 +13,13 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponse>
 {
     private readonly AppDbContext _db;
     private readonly IJwtTokenService _jwt;
+    private readonly IPasswordHasher _hasher;
 
-    public RegisterHandler(AppDbContext db, IJwtTokenService jwt)
+    public RegisterHandler(AppDbContext db, IJwtTokenService jwt, IPasswordHasher hasher)
     {
         _db = db;
         _jwt = jwt;
+        _hasher = hasher;
     }
 
     public async Task<AuthResponse> Handle(RegisterCommand request, CancellationToken ct)
@@ -31,7 +32,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponse>
             Id = Guid.NewGuid(),
             Email = request.Email,
             DisplayName = request.DisplayName,
-            PasswordHash = PasswordHasher.Hash(request.Password),
+            PasswordHash = _hasher.Hash(request.Password),
             Role = UserRole.Student,
             CreatedAt = DateTime.UtcNow
         };

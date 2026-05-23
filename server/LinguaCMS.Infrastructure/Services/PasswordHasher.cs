@@ -1,15 +1,16 @@
 using System.Security.Cryptography;
 using System.Text;
+using LinguaCMS.Domain.Interfaces;
 
-namespace LinguaCMS.Application.Common;
+namespace LinguaCMS.Infrastructure.Services;
 
-public static class PasswordHasher
+public class PasswordHasher : IPasswordHasher
 {
     private const int SaltSize = 16;
     private const int HashSize = 32;
     private const int Iterations = 100_000;
 
-    public static string Hash(string password)
+    public string Hash(string password)
     {
         var salt = RandomNumberGenerator.GetBytes(SaltSize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
@@ -21,7 +22,7 @@ public static class PasswordHasher
         return Convert.ToBase64String(result);
     }
 
-    public static bool Verify(string password, string hashedPassword)
+    public bool Verify(string password, string hashedPassword)
     {
         var bytes = Convert.FromBase64String(hashedPassword);
 
