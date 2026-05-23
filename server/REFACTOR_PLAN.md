@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities
 
 ## Summary
 - Total items: 29
-- Pending: 6 | Done: 18 | Blocked: 0 | Superseded: 5
+- Pending: 5 | Done: 19 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -541,7 +541,8 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - Frontend OpenAPI codegen consumes the regenerated schema and produces required/non-nullable types for the affected fields (validated by the frontend client build — out of scope for this item's commit, but follows naturally)
 
 ### REF-024 — Thin FilesController.Upload: move empty-file check and IFormFile binding out of the controller
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N (pre-approved 2026-05-23 — **Option B**)
 - **Rule**: "Controllers contain **only** `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return."

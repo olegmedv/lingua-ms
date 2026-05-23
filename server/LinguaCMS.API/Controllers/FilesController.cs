@@ -1,3 +1,4 @@
+using LinguaCMS.API.ModelBinders;
 using LinguaCMS.Application.Files.Commands.DeleteFile;
 using LinguaCMS.Application.Files.Commands.UploadFile;
 using LinguaCMS.Application.Files.Models;
@@ -16,15 +17,8 @@ public class FilesController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost("upload")]
-    public async Task<ActionResult<UploadFileResponse>> Upload(IFormFile file)
-    {
-        if (file.Length == 0)
-            return BadRequest("Empty file");
-
-        await using var stream = file.OpenReadStream();
-        var response = await _mediator.Send(new UploadFileCommand(stream, file.FileName));
-        return Ok(response);
-    }
+    public async Task<ActionResult<UploadFileResponse>> Upload([ModelBinder(typeof(UploadFileModelBinder))] UploadFileCommand command)
+        => Ok(await _mediator.Send(command));
 
     [Authorize(Roles = "Admin")]
     [HttpDelete]
