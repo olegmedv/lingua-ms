@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 1 | Done: 16 | Blocked: 0 | Superseded: 5
+- Pending: 0 | Done: 17 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -254,7 +254,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-011 — Add EFCore.NamingConventions + snake_case migration
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: HIGH
 - **Requires decision**: Y
 - **Rule**: "Snake_case DB via `EFCore.NamingConventions`. No `.ToTable()` / `.HasColumnName()` for casing."
