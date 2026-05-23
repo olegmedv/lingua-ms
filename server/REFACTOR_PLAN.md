@@ -1,6 +1,6 @@
 # Refactor Plan
 
-Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities rule). Source: server/CLAUDE.md.
+Generated: 2026-05-23. Re-audited: 2026-05-23 (7th pass, delta audit against DemoUserRestrictionBehavior feature commits 8e788fa → bc000b8). Source: server/CLAUDE.md.
 
 ## Summary
 - Total items: 29
@@ -8,6 +8,38 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities
 - Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
+
+## Re-audit notes (2026-05-23, 7th pass)
+- Trigger: 7 feature commits landed via `/loop execute-plan` driving `FEATURE_PLAN.md` (`feat(FEAT-001..007)` between `8e788fa` and `bc000b8`). All-FEAT, no REF items touched.
+- Scope: delta audit only — verify the new code does not introduce code-shape violations. Done items from 6th pass not re-checked.
+- Files inspected:
+  - [LinguaCMS.Domain/Enums/UserRole.cs](LinguaCMS.Domain/Enums/UserRole.cs) — `Demo = 2` added
+  - [LinguaCMS.Domain/Interfaces/ICurrentUser.cs](LinguaCMS.Domain/Interfaces/ICurrentUser.cs) — `bool IsInRole(string)` added
+  - [LinguaCMS.Infrastructure/Services/CurrentUser.cs](LinguaCMS.Infrastructure/Services/CurrentUser.cs) — `IsInRole` impl
+  - [LinguaCMS.Application/Common/Behaviors/DemoUserRestrictionBehavior.cs](LinguaCMS.Application/Common/Behaviors/DemoUserRestrictionBehavior.cs) — new pipeline behavior
+  - [LinguaCMS.Application/Auth/Commands/DemoLogin/DemoLoginHandler.cs](LinguaCMS.Application/Auth/Commands/DemoLogin/DemoLoginHandler.cs) — `Role = UserRole.Demo` + migrate existing demo-email user
+  - [LinguaCMS.API/Controllers/LanguagesController.cs](LinguaCMS.API/Controllers/LanguagesController.cs), [LessonsController.cs](LinguaCMS.API/Controllers/LessonsController.cs), [ExercisesController.cs](LinguaCMS.API/Controllers/ExercisesController.cs), [FilesController.cs](LinguaCMS.API/Controllers/FilesController.cs) — `[Authorize(Roles = "Admin")]` → `"Admin,Demo"` on 11 mutation attributes
+  - [LinguaCMS.API/Program.cs](LinguaCMS.API/Program.cs) — `DemoUserRestrictionBehavior` registered after `ValidationBehavior` (line 30)
+  - [LinguaCMS.ArchitectureTests/NamingConventionTests.cs](LinguaCMS.ArchitectureTests/NamingConventionTests.cs) — new `Requests_end_with_Command_or_Query_suffix` fact (FEAT-007)
+- Per-rule sweep verdict against the 16 code-shape rules: **13/13 relevant checks pass.**
+  - Folder convention ✓ — behavior at `<Sln>.Application/Common/Behaviors/<Name>Behavior.cs`.
+  - Naming ✓ — class ends with `Behavior`; file name = type name.
+  - Cross-cutting concerns in `IPipelineBehavior<,>` only ✓ — grep for `IsInRole("Demo")` returns exactly the interface, impl, and behavior (no duplicate authorization check leaked into controllers/handlers).
+  - Pipeline order ✓ — Program.cs registrations: `LoggingBehavior` → `ValidationBehavior` → `DemoUserRestrictionBehavior` → Handler.
+  - `ICurrentUser` usage (no `HttpContext.User`) ✓ — constructor-injected; no `Microsoft.AspNetCore.*` imports in the Application file.
+  - Application has no ASP.NET Core types ✓.
+  - Entities expose only auto-properties ✓ — `UserRole` is an enum, `ICurrentUser` is an interface; no entity body changes in this feature.
+  - No empty `catch` / no `catch (Exception)` outside Middleware ✓.
+  - No `HttpContext` / claim reads in handlers ✓ — `DemoLoginHandler` mutates domain model only.
+  - No `dynamic` / `object` on API boundaries ✓.
+  - One public type per file ✓.
+  - OpenAPI schema accuracy ✓ — no DTO changes; `SupportNonNullableReferenceTypes()` still configured.
+  - Auditable entities ✓ — `AppUser` retains all four fields; no entity-property changes.
+- Controller authorization widening (`[Authorize(Roles = "Admin")]` → `"Admin,Demo"`) is a **contract widening at the controller layer**, gated behaviorally at the pipeline layer by `DemoUserRestrictionBehavior`. Layering remains clean: controller grants access, behavior enforces restrictions. Not a violation.
+- Enum addition `UserRole.Demo = 2` is stored as int — no EF schema change, no migration generated. CLAUDE.md workflow rule "Domain or EF change → `dotnet ef migrations add`" is process-shape; running migrations-add against this would produce an empty migration. Out of audit scope.
+- 0 items silently resolved between audits (none could be — all prior items already done).
+- IDs preserved: REF-001..REF-029. IDs issued: none.
+- 0 new violations → no new REF items.
 
 ## Pre-approvals (2026-05-23)
 User pre-approved all open decisions to unblock the execute-plan loop:
