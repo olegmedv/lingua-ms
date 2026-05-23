@@ -71,6 +71,7 @@ Command record and Handler — separate files in same folder. One public type pe
 - Secrets in `appsettings.json` + env vars. Never hardcoded.
 - Versions in `Directory.Packages.props`. `Directory.Build.props` enables `Nullable` / `ImplicitUsings` / `TreatWarningsAsErrors`.
 - **OpenAPI schema accuracy**: Swashbuckle is configured to honor C# nullability annotations and `[Required]` attributes. Non-nullable reference types in DTOs produce `required: true, nullable: false` in the schema. Nullable reference types produce `nullable: true`. The generated frontend client must reflect the true runtime contract — no all-fields-optional schema drift.
+- **Auditable entities**: user-facing persisted entities (those modified by user actions: Languages, Lessons, Exercises, Users, Progress, etc.) declare `CreatedAt DateTime` (UTC, set on insert), `UpdatedAt DateTime?` (UTC, set on every update), `IsDeleted bool` (default false), `DeletedAt DateTime?` (default null). `CreatedAt`/`UpdatedAt` maintained by a single `SaveChanges` interceptor in `<Sln>.Data` — handlers never set them manually. `IsDeleted`/`DeletedAt` set by Delete handlers (`entity.IsDeleted = true; entity.DeletedAt = DateTime.UtcNow;`), never `_db.Remove()` or `_db.RemoveRange()`. Every entity has a global EF query filter `HasQueryFilter(x => !x.IsDeleted)` so queries skip soft-deleted rows by default. Internal-only / lookup entities (enum-like reference data, never user-modified) are exempt — declare exemption in the entity's EF configuration with a comment.
 
 ## Workflow
 
