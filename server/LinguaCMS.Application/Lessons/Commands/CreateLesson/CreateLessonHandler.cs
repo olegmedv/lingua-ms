@@ -19,8 +19,7 @@ public class CreateLessonHandler : IRequestHandler<CreateLessonCommand, LessonDt
             Title = request.Title,
             Description = request.Description,
             Order = request.Order,
-            PassThreshold = request.PassThreshold,
-            CreatedAt = DateTime.UtcNow
+            PassThreshold = request.PassThreshold
         };
 
         _db.Lessons.Add(lesson);

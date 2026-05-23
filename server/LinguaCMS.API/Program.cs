@@ -3,6 +3,7 @@ using LinguaCMS.API.Middleware;
 using FluentValidation;
 using LinguaCMS.Application.Common.Behaviors;
 using LinguaCMS.Data;
+using LinguaCMS.Data.Interceptors;
 using LinguaCMS.Domain.Interfaces;
 using LinguaCMS.Infrastructure.Services;
 using MediatR;
@@ -14,9 +15,11 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Database
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddSingleton<AuditableEntitiesInterceptor>();
+builder.Services.AddDbContext<AppDbContext>((sp, options) =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-           .UseSnakeCaseNamingConvention());
+           .UseSnakeCaseNamingConvention()
+           .AddInterceptors(sp.GetRequiredService<AuditableEntitiesInterceptor>()));
 
 // MediatR
 builder.Services.AddMediatR(cfg =>
@@ -109,8 +112,7 @@ using (var scope = app.Services.CreateScope())
             Email = adminEmail,
             DisplayName = adminName,
             PasswordHash = hasher.Hash(adminPassword),
-            Role = LinguaCMS.Domain.Enums.UserRole.Admin,
-            CreatedAt = DateTime.UtcNow
+            Role = LinguaCMS.Domain.Enums.UserRole.Admin
         });
         db.SaveChanges();
     }

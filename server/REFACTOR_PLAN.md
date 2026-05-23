@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities
 
 ## Summary
 - Total items: 29
-- Pending: 3 | Done: 21 | Blocked: 0 | Superseded: 5
+- Pending: 2 | Done: 22 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -611,7 +611,8 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - `dotnet test` returns 0 with test count ≥ baseline
 
 ### REF-027 — Add SaveChanges interceptor for CreatedAt/UpdatedAt; remove manual assignments from handlers & seeding
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "`CreatedAt`/`UpdatedAt` maintained by a single `SaveChanges` interceptor in `<Sln>.Data` — handlers never set them manually."
@@ -621,6 +622,7 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - `LinguaCMS.Domain/Entities/AppUser.cs`, `Language.cs`, `Lesson.cs`, `Exercise.cs`, `LessonProgress.cs`, (optionally `UserStats.cs`) — implement `IAuditable`
   - `LinguaCMS.API/Program.cs` — register the interceptor (`services.AddSingleton<AuditableEntitiesInterceptor>();`) and chain it on the DbContext options (`options.AddInterceptors(sp.GetRequiredService<AuditableEntitiesInterceptor>())` inside `AddDbContext((sp, options) => ...)`)
   - `LinguaCMS.Application/Auth/Commands/Register/RegisterHandler.cs` — remove `CreatedAt = DateTime.UtcNow` from the `AppUser` initializer
+  - `LinguaCMS.Application/Auth/Commands/DemoLogin/DemoLoginHandler.cs` — remove `CreatedAt = DateTime.UtcNow` from the demo `AppUser` initializer (missed in initial audit enumeration; surfaced during REF-027 execution via grep against the DoD's "no `CreatedAt = ...` outside interceptor" assertion)
   - `LinguaCMS.Application/Languages/Commands/CreateLanguage/CreateLanguageHandler.cs` — remove `CreatedAt = DateTime.UtcNow`
   - `LinguaCMS.Application/Lessons/Commands/CreateLesson/CreateLessonHandler.cs` — remove `CreatedAt = DateTime.UtcNow`
   - `LinguaCMS.API/Program.cs` (admin-seeding block) — remove manual `CreatedAt = DateTime.UtcNow` on the seeded `AppUser`

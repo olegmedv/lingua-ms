@@ -1,6 +1,8 @@
+using LinguaCMS.Domain.Interfaces;
+
 namespace LinguaCMS.Domain.Entities;
 
-public class Lesson
+public class Lesson : IAuditable
 {
     public Guid Id { get; set; }
     public Guid LanguageId { get; set; }
@@ -9,7 +11,7 @@ public class Lesson
     public string? Description { get; set; }
     public int Order { get; set; }
     public int PassThreshold { get; set; } = 80;
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }

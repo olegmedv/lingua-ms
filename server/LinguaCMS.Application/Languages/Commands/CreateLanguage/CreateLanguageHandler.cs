@@ -19,8 +19,7 @@ public class CreateLanguageHandler : IRequestHandler<CreateLanguageCommand, Lang
             Description = request.Description,
             ImageUrl = request.ImageUrl,
             IsPublished = request.IsPublished,
-            IsDemo = request.IsDemo,
-            CreatedAt = DateTime.UtcNow
+            IsDemo = request.IsDemo
         };
 
         _db.Languages.Add(lang);

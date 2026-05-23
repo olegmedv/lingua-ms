@@ -1,6 +1,8 @@
+using LinguaCMS.Domain.Interfaces;
+
 namespace LinguaCMS.Domain.Entities;
 
-public class Language
+public class Language : IAuditable
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -8,7 +10,7 @@ public class Language
     public string? ImageUrl { get; set; }
     public bool IsPublished { get; set; }
     public bool IsDemo { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }
     public DateTime? DeletedAt { get; set; }

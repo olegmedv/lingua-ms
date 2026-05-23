@@ -33,8 +33,7 @@ public class RegisterHandler : IRequestHandler<RegisterCommand, AuthResponse>
             Email = request.Email,
             DisplayName = request.DisplayName,
             PasswordHash = _hasher.Hash(request.Password),
-            Role = UserRole.Student,
-            CreatedAt = DateTime.UtcNow
+            Role = UserRole.Student
         };
 
         _db.Users.Add(user);
