@@ -36,6 +36,20 @@ public class NamingConventionTests
     }
 
     [Fact]
+    public void Requests_end_with_Command_or_Query_suffix()
+    {
+        var result = Types.InAssembly(AppAssembly)
+            .That()
+            .ImplementInterface(typeof(IRequest<>))
+            .Or()
+            .ImplementInterface(typeof(IRequest))
+            .Should()
+            .HaveNameMatching(@"(Command|Query)$")
+            .GetResult();
+        Assert.True(result.IsSuccessful, Format(result));
+    }
+
+    [Fact]
     public void Interfaces_start_with_I()
     {
         var result = Types.InAssembly(typeof(LinguaCMS.Domain.Interfaces.IJwtTokenService).Assembly)
