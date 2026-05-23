@@ -19,6 +19,7 @@
     <ProjectReference Include="..\LinguaCMS.Application\LinguaCMS.Application.csproj" />
     <ProjectReference Include="..\LinguaCMS.Infrastructure\LinguaCMS.Infrastructure.csproj" />
     <ProjectReference Include="..\LinguaCMS.Domain\LinguaCMS.Domain.csproj" />
+    <ProjectReference Include="..\LinguaCMS.Data\LinguaCMS.Data.csproj" />
   </ItemGroup>
 
 </Project>

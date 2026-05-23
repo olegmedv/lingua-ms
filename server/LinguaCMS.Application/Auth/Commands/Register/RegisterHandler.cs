@@ -3,7 +3,7 @@ using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Exceptions;
 using LinguaCMS.Domain.Entities;
 using LinguaCMS.Domain.Enums;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

@@ -2,7 +2,7 @@ using LinguaCMS.Application.Auth.Models;
 using LinguaCMS.Application.Common;
 using LinguaCMS.Domain.Entities;
 using LinguaCMS.Domain.Enums;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

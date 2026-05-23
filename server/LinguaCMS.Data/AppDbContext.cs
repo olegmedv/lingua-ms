@@ -1,7 +1,7 @@
 using LinguaCMS.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace LinguaCMS.Infrastructure.Data;
+namespace LinguaCMS.Data;
 
 public class AppDbContext : DbContext
 {

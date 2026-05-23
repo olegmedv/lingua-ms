@@ -1,6 +1,6 @@
 using LinguaCMS.Application.Lessons.Models;
 using LinguaCMS.Domain.Entities;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 
 namespace LinguaCMS.Application.Lessons.Commands;

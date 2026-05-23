@@ -1,6 +1,6 @@
 using LinguaCMS.Application.Auth.Models;
 using LinguaCMS.Application.Extensions;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 
 namespace LinguaCMS.Application.Auth.Queries;

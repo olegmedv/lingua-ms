@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace LinguaCMS.Infrastructure.Migrations
+namespace LinguaCMS.Data.Migrations
 {
     /// <inheritdoc />
     public partial class AddIsDemoToLanguage : Migration

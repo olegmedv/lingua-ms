@@ -1,7 +1,7 @@
 using System.Text.Json;
 using LinguaCMS.Application.Extensions;
 using LinguaCMS.Domain.Enums;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 
 namespace LinguaCMS.Application.Exercises.Commands;

@@ -1,5 +1,5 @@
 using LinguaCMS.Application.Progress.Models;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

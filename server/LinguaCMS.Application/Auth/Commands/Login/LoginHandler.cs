@@ -1,7 +1,7 @@
 using LinguaCMS.Application.Auth.Models;
 using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Exceptions;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

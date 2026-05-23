@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 14 | Done: 7 | Blocked: 1
+- Pending: 12 | Done: 8 | Blocked: 0 | Superseded: 2
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -60,9 +60,10 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - Per-csproj `<Nullable>` and `<ImplicitUsings>` declarations removed (deduped)
   - `dotnet build` returns 0 (warnings, including nullable-reference warnings, may need to be fixed before turning on `TreatWarningsAsErrors` — split into a follow-up item if blocking)
 
-### REF-003 — Create LinguaCMS.Data project; move AppDbContext into it
-- **Status**: blocked
-- **Blocked reason**: scope expansion required — the DoD's "namespace `LinguaCMS.Data`" combined with "dotnet build returns 0" cannot both hold without modifying 20+ Application handlers (all `using LinguaCMS.Infrastructure.Data;` directives) and `LinguaCMS.Application.csproj` / `LinguaCMS.API.csproj`, which are REF-005's scope. REF-005 depends on REF-003 — circular. Re-audit needed: merge REF-003 + REF-005 into a single atomic item, or split the namespace rename into a separate later item and keep the namespace at `LinguaCMS.Infrastructure.Data` during REF-003.
+### REF-003 — Create LinguaCMS.Data project; move AppDbContext + migrations; realign project references
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Re-audit note (2026-05-23)**: merged with REF-004 and REF-005. The original three-item split was unbuildable atomically (circular deps between REF-003 namespace change and REF-005 caller updates; migration usings also tied to the namespace, pulling REF-004 in). User approved merge.
 - **Risk**: HIGH
 - **Requires decision**: N
 - **Rule**: "`<Sln>.Data` → Domain. `AppDbContext`, EF configurations, migrations, seeders." / "AppDbContext, EF configs, or migrations outside `<Sln>.Data`" (Never).
@@ -79,7 +80,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0 (callers temporarily allowed to reference Data via REF-005)
 
 ### REF-004 — Move migrations from LinguaCMS.Infrastructure to LinguaCMS.Data
-- **Status**: pending
+- **Status**: superseded
+- **Superseded by**: REF-003 (merged 2026-05-23 — migration namespaces are tied to AppDbContext's namespace, so the move must be atomic).
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "Migration | `<Sln>.Data/Migrations/<auto>.cs`" / "AppDbContext, EF configs, or migrations outside `<Sln>.Data`" (Never).
@@ -98,7 +100,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-005 — Realign project references to CLAUDE.md dependency graph
-- **Status**: pending
+- **Status**: superseded
+- **Superseded by**: REF-003 (merged 2026-05-23 — caller using-directive updates and project-reference realignment are inseparable from the AppDbContext namespace change in REF-003).
 - **Risk**: HIGH
 - **Requires decision**: N
 - **Rule**: "`<Sln>.Application` → Domain, Data." / "`<Sln>.Infrastructure` → Domain, Application, Data, `ExternalServices.*.Providers`." (Application currently references Infrastructure — inverted.)

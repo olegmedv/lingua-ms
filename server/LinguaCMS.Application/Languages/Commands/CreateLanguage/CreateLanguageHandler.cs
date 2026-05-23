@@ -1,6 +1,6 @@
 using LinguaCMS.Application.Languages.Models;
 using LinguaCMS.Domain.Entities;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 
 namespace LinguaCMS.Application.Languages.Commands;

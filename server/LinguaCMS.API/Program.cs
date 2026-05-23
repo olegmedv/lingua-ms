@@ -4,7 +4,7 @@ using LinguaCMS.API.Services;
 using FluentValidation;
 using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Common.Behaviors;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;

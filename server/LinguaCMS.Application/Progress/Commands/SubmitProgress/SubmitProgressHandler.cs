@@ -1,7 +1,7 @@
 using LinguaCMS.Application.Extensions;
 using LinguaCMS.Application.Progress.Models;
 using LinguaCMS.Domain.Entities;
-using LinguaCMS.Infrastructure.Data;
+using LinguaCMS.Data;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
