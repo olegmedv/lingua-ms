@@ -2,7 +2,9 @@ using System.Text;
 using LinguaCMS.API.Middleware;
 using LinguaCMS.API.Services;
 using LinguaCMS.Application.Common;
+using LinguaCMS.Application.Common.Behaviors;
 using LinguaCMS.Infrastructure.Data;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,6 +19,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // MediatR
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(LinguaCMS.Application.Auth.Commands.RegisterCommand).Assembly));
+
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 
 // JWT Auth
 var jwtKey = builder.Configuration["Jwt:Key"]!;

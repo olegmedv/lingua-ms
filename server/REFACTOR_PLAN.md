@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 18 | Done: 3 | Blocked: 1
+- Pending: 17 | Done: 4 | Blocked: 1
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -233,7 +233,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-010 — Add LoggingBehavior pipeline behavior
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Pipeline order: `LoggingBehavior` → `ValidationBehavior` → others → Handler. Cross-cutting only in behaviors." / "Pipeline behavior | `<Sln>.Application/Common/Behaviors/<Name>Behavior.cs`".
