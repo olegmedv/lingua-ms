@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 12 | Done: 4 | Blocked: 0
+- Pending: 11 | Done: 4 | Blocked: 1
 - Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -14,7 +14,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ## Items
 
 ### REF-001 — Set up OpenAPI codegen and generate `src/api/generated/`
-- **Status**: pending
+- **Status**: blocked
+- **Blocked reason (2026-05-23)**: backend swagger endpoint not reachable. Probed `http://localhost:5292/swagger/v1/swagger.json` (timeout) and `.env.production` has `VITE_API_URL=` empty. The codegen needs a running backend to fetch the OpenAPI document; nothing to generate from. Resume by starting the API and running the next `/loop refactor-execute`. Transitively blocks REF-002, REF-003, REF-004, REF-005 (they stay `pending` because their `Depends on` chain leads here).
 - **Risk**: HIGH
 - **Requires decision**: N
 - **Rule**: "API types and services are **generated** from backend OpenAPI. Never hand-written." / "Generator: `openapi-typescript-codegen` (or equivalent). Output: `src/api/generated/`." / "Script: `npm run generate-api` pulls from `${VITE_API_URL}/swagger/v1/swagger.json`."
