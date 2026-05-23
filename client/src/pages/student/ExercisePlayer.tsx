@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import ProgressBar from '../../components/ProgressBar';
+import { ProgressBar } from '../../components/ui';
 import MultipleChoice from '../../components/exercises/MultipleChoice';
 import ListenAndSelect from '../../components/exercises/ListenAndSelect';
 import ListenAndType from '../../components/exercises/ListenAndType';

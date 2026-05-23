@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 11 | Done: 4 | Blocked: 1
+- Pending: 10 | Done: 5 | Blocked: 1
 - Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -146,7 +146,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
   - `npm run build` returns 0
 
 ### REF-008 — Move `ProgressBar.tsx` into a `src/components/<group>/` subfolder
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Shared component: `src/components/<group>/<Name>.tsx`."
