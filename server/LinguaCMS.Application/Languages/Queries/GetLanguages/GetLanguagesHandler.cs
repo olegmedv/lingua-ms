@@ -21,7 +21,7 @@ public class GetLanguagesHandler : IRequestHandler<GetLanguagesQuery, List<Langu
     {
         var query = _db.Languages.AsQueryable();
 
-        if (!_currentUser.IsAdmin)
+        if (!_currentUser.HasAdminAccess)
             query = query.Where(l => l.IsPublished);
 
         return await query

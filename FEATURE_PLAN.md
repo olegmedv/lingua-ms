@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 2 | Done: 10 | Blocked: 0 | Superseded: 0
+- Pending: 1 | Done: 11 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -283,7 +283,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - Manual D (no first-paint flicker): hard-refresh `/admin/languages` while logged in as demo; banner appears on the first paint (verifies FEAT-008's persisted-user fix).
 
 ### FEAT-012 — Widen read-side admin gate in `GetLanguagesHandler` to include Demo role
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "users with Role=Demo see and use full admin UI **exactly like a regular admin**" — implies same READ access, not just same write paths.
