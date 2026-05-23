@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 4 | Done: 8 | Blocked: 0 | Superseded: 0
+- Pending: 3 | Done: 9 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -243,7 +243,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - Manual B (state cleanup on logout): logout, confirm `localStorage.getItem('auth')` no longer contains `user`, confirm `/admin` redirects to `/login`.
 
 ### FEAT-009 — Create `DemoModeBanner` component
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "persistent dismissible banner 'Demo mode — your changes are not saved' on every admin page"
