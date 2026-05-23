@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities
 
 ## Summary
 - Total items: 29
-- Pending: 1 | Done: 23 | Blocked: 0 | Superseded: 5
+- Pending: 0 | Done: 24 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -655,7 +655,8 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - `dotnet test` returns 0 with test count ≥ baseline
 
 ### REF-029 — Add HasQueryFilter(x => !x.IsDeleted) to user-facing EF configurations
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N (pre-approved 2026-05-23 — all six entities get the filter)
 - **Rule**: "Every entity has a global EF query filter `HasQueryFilter(x => !x.IsDeleted)` so queries skip soft-deleted rows by default. Internal-only / lookup entities (enum-like reference data, never user-modified) are exempt — declare exemption in the entity's EF configuration with a comment."

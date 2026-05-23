@@ -13,5 +13,6 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
         builder.HasOne(l => l.Language).WithMany(la => la.Lessons).HasForeignKey(l => l.LanguageId);
         builder.Property(l => l.CreatedAt).HasDefaultValueSql("now()");
         builder.Property(l => l.IsDeleted).HasDefaultValue(false);
+        builder.HasQueryFilter(l => !l.IsDeleted);
     }
 }

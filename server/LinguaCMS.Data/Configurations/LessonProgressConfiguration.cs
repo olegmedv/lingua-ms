@@ -13,5 +13,6 @@ public class LessonProgressConfiguration : IEntityTypeConfiguration<LessonProgre
         builder.HasOne(p => p.Lesson).WithMany().HasForeignKey(p => p.LessonId);
         builder.Property(p => p.CreatedAt).HasDefaultValueSql("now()");
         builder.Property(p => p.IsDeleted).HasDefaultValue(false);
+        builder.HasQueryFilter(p => !p.IsDeleted);
     }
 }

@@ -15,5 +15,6 @@ public class AppUserConfiguration : IEntityTypeConfiguration<AppUser>
         builder.Property(u => u.PasswordHash).IsRequired();
         builder.Property(u => u.CreatedAt).HasDefaultValueSql("now()");
         builder.Property(u => u.IsDeleted).HasDefaultValue(false);
+        builder.HasQueryFilter(u => !u.IsDeleted);
     }
 }

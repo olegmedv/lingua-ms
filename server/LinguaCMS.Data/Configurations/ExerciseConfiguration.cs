@@ -13,5 +13,6 @@ public class ExerciseConfiguration : IEntityTypeConfiguration<Exercise>
         builder.HasOne(ex => ex.Lesson).WithMany(l => l.Exercises).HasForeignKey(ex => ex.LessonId);
         builder.Property(ex => ex.CreatedAt).HasDefaultValueSql("now()");
         builder.Property(ex => ex.IsDeleted).HasDefaultValue(false);
+        builder.HasQueryFilter(ex => !ex.IsDeleted);
     }
 }
