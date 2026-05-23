@@ -63,7 +63,7 @@ Command record and Handler — separate files in same folder. One public type pe
 - Handlers depend on `AppDbContext` directly. No repositories, no `IAppDbContext`, no UnitOfWork.
 - All endpoints typed end-to-end. Strongly-typed `[FromBody]` Request, explicit `ActionResult<TResponse>`.
 - MediatR + FluentValidation auto-scan via `AddMediatR` / `AddValidatorsFromAssembly`. No manual registration.
-- Pipeline order: `LoggingBehavior` → `ValidationBehavior` → others → Handler. Cross-cutting only in behaviors.
+- Pipeline order: `LoggingBehavior` → `ValidationBehavior` → others → Handler. Cross-cutting concerns (logging, validation, authorization, transactions, caching) live only in `IPipelineBehavior<,>` implementations. Handlers contain domain logic only — no logging, no validation calls, no transaction scopes, no cache reads/writes.
 - Entities expose only auto-properties. Declarative initializers are allowed (`= new List<T>()`, `= DateTime.UtcNow`, constants). No methods (instance or static), no computed/expression-bodied properties, no constructors with logic. Business logic lives in Application handlers.
 - Current user via `ICurrentUser` (domain interface, infra impl) reading `sub` claim. Never touch `HttpContext.User` in handlers/controllers.
 - When a domain interface has multiple implementations, selection happens at DI registration via an `IConfiguration` key (e.g., `Cache:Provider = "InMemory" | "Redis"`). Never via `#if` directives or hardcoded selection. Single-implementation interfaces are exempt.
@@ -92,7 +92,7 @@ Command record and Handler — separate files in same folder. One public type pe
 - Domain interface implementation outside `<Sln>.Infrastructure` or `<Sln>.ExternalServices.*.Providers`.
 - `dynamic` / `object` / untyped dictionaries on API boundaries.
 - Controller action that doesn't dispatch through `IMediator`.
-- Catch exceptions to hide them — let middleware handle.
+- No empty `catch` blocks. No `catch (Exception)` outside `<Sln>.API/Middleware/`. Let middleware handle global error translation.
 - Read claims / `HttpContext` / env vars in handlers.
 - Reference `<Sln>.*` from an `ExternalServices.<Name>` client project.
 - Introduce `IAppDbContext`, Repository, UnitOfWork, or AutoMapper.
