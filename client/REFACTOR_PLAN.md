@@ -5,7 +5,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 ## Summary
 - Total items: 16
 - Pending: 6 | Done: 9 | Blocked: 1
-- Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
+- Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
 
@@ -255,30 +255,33 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-015 — `WordBank.tsx`: split into one component per file
 - **Status**: pending
 - **Risk**: LOW
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "One component per file."
 - **Scope**:
   - [src/components/exercises/WordBank.tsx](src/components/exercises/WordBank.tsx) — currently defines `SortableWord` (line 18), `BankWord` (line 29), and `WordBank` (line 47)
+  - `src/components/exercises/SortableWord.tsx` — new file (extracted helper)
+  - `src/components/exercises/BankWord.tsx` — new file (extracted helper)
 - **Depends on**: none
 - **DoD**:
-  - File defines exactly one component (`WordBank`)
-  - `SortableWord` and `BankWord` extracted to their own files under `src/components/<group>/`
+  - WordBank.tsx defines exactly one component (`WordBank`)
+  - `SortableWord` and `BankWord` live in their own files under `src/components/exercises/`
   - `npm run build` returns 0
-- **Notes**: User decision — where to place the extracted helpers (a new `wordbank/` subgroup, or alongside `exercises/`).
+- **Decision (2026-05-23)**: extract into the same folder (`src/components/exercises/`), no new subgroup.
 
 ### REF-016 — `ExerciseBuilder.tsx`: split into one component per file
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "One component per file."
 - **Scope**:
-  - [src/pages/admin/ExerciseBuilder.tsx](src/pages/admin/ExerciseBuilder.tsx) — defines `TypeFields` (line 110) alongside the page-default `ExerciseBuilder` (line 268)
+  - [src/pages/admin/ExerciseBuilder.tsx](src/pages/admin/ExerciseBuilder.tsx) — defines `TypeFields` alongside the page-default `ExerciseBuilder`
+  - `src/pages/admin/ExerciseTypeFields.tsx` — new file (extracted `TypeFields` renamed to `ExerciseTypeFields` to match file name; or keep `TypeFields` export — see Decision)
 - **Depends on**: none
 - **DoD**:
-  - File defines exactly one component
-  - `TypeFields` extracted to a separate file (likely `src/components/<group>/TypeFields.tsx` or `src/pages/admin/ExerciseTypeFields.tsx`)
+  - ExerciseBuilder.tsx defines exactly one component
+  - The extracted helper lives in `src/pages/admin/ExerciseTypeFields.tsx`
   - `npm run build` returns 0
-- **Notes**: may be subsumed by REF-012 if rewriting the UI library reshapes the form structure entirely.
+- **Decision (2026-05-23)**: extract to `src/pages/admin/ExerciseTypeFields.tsx`, alongside the page. Export name `ExerciseTypeFields` to match the file name (CLAUDE.md: file name == default export).
 
 ## Out of audit scope (workflow rules)
 
