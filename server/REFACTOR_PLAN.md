@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 21 | Done: 1 | Blocked: 0
+- Pending: 20 | Done: 1 | Blocked: 1
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -61,7 +61,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0 (warnings, including nullable-reference warnings, may need to be fixed before turning on `TreatWarningsAsErrors` — split into a follow-up item if blocking)
 
 ### REF-003 — Create LinguaCMS.Data project; move AppDbContext into it
-- **Status**: pending
+- **Status**: blocked
+- **Blocked reason**: scope expansion required — the DoD's "namespace `LinguaCMS.Data`" combined with "dotnet build returns 0" cannot both hold without modifying 20+ Application handlers (all `using LinguaCMS.Infrastructure.Data;` directives) and `LinguaCMS.Application.csproj` / `LinguaCMS.API.csproj`, which are REF-005's scope. REF-005 depends on REF-003 — circular. Re-audit needed: merge REF-003 + REF-005 into a single atomic item, or split the namespace rename into a separate later item and keep the namespace at `LinguaCMS.Infrastructure.Data` during REF-003.
 - **Risk**: HIGH
 - **Requires decision**: N
 - **Rule**: "`<Sln>.Data` → Domain. `AppDbContext`, EF configurations, migrations, seeders." / "AppDbContext, EF configs, or migrations outside `<Sln>.Data`" (Never).
