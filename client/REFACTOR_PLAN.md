@@ -5,7 +5,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 ## Summary
 - Total items: 16
 - Pending: 12 | Done: 4 | Blocked: 0
-- Items requiring user decision: 12
+- Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
 
@@ -16,22 +16,24 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-001 — Set up OpenAPI codegen and generate `src/api/generated/`
 - **Status**: pending
 - **Risk**: HIGH
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "API types and services are **generated** from backend OpenAPI. Never hand-written." / "Generator: `openapi-typescript-codegen` (or equivalent). Output: `src/api/generated/`." / "Script: `npm run generate-api` pulls from `${VITE_API_URL}/swagger/v1/swagger.json`."
 - **Scope**:
-  - [package.json](package.json) — add `openapi-typescript-codegen` (or equivalent) dev dep and `generate-api` npm script (requires user approval per "Add a new dependency without user approval" — see workflow rules)
+  - [package.json](package.json) — add `openapi-typescript-codegen` dev dep and `generate-api` npm script (dep approved by user 2026-05-23)
   - `src/api/generated/` — new directory, populated by codegen (do not hand-edit)
 - **Depends on**: none
 - **DoD**:
   - `npm run generate-api` exists in [package.json](package.json) and produces files under `src/api/generated/`
   - Generated services read `VITE_API_URL` (via [src/config.ts](src/config.ts)) and use a token resolver
   - `npm run build` returns 0
-- **Notes**: blocks REF-002, REF-003, REF-004, REF-005. The server must expose `/swagger/v1/swagger.json` at codegen time. User decision needed on (a) which codegen library, (b) where to commit/gitignore generated output.
+- **Decision (2026-05-23)**: `openapi-typescript-codegen` + thin hand-written hooks (no TanStack Query).
+- **Notes**: blocks REF-002, REF-003, REF-004, REF-005. Backend must be reachable at `${VITE_API_URL}/swagger/v1/swagger.json` at codegen time — if not, the item will be marked blocked and the plan re-attempted when the server is up.
 
 ### REF-002 — Replace hand-written `src/types/api.ts` with generated DTOs
 - **Status**: pending
 - **Risk**: HIGH
-- **Requires decision**: Y
+- **Requires decision**: N
+- **Decision (2026-05-23)**: types come from REF-001 output (`openapi-typescript-codegen`).
 - **Rule**: "No manual API request/response types. Everything from `src/api/generated/`." / "Non-API domain types: `src/types/<name>.ts`."
 - **Scope**:
   - [src/types/api.ts](src/types/api.ts) — delete (hand-writes `User`, `AuthResponse`, `Language`, `Lesson`, `Exercise`, `Progress`, `Stats`)
@@ -54,7 +56,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-003 — Introduce hooks layer; pages call hooks, hooks call generated services
 - **Status**: pending
 - **Risk**: HIGH
-- **Requires decision**: Y
+- **Requires decision**: N
+- **Decision (2026-05-23)**: thin hand-written hooks over generated services (no TanStack Query).
 - **Rule**: "No direct HTTP from components. Components call hooks; hooks call generated services."
 - **Scope**:
   - `src/hooks/use<Name>.ts` — new files (one hook per resource: e.g. `useLanguages`, `useLessons`, `useExercises`, `useProgress`, `useStats`)
@@ -76,7 +79,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-004 — Remove hand-written `src/api/client.ts` and `src/api/endpoints.ts`
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N
+- **Decision (2026-05-23)**: delete both files entirely (no empty slot). Auth store uses generated `AuthService`.
 - **Rule**: "API types and services are **generated** from backend OpenAPI. Never hand-written." / "Hand-written API wrapper: `src/api/client.ts`." (the wrapper exists as a slot, but its current contents duplicate generator output and must be retired once consumers migrate)
 - **Scope**:
   - [src/api/client.ts](src/api/client.ts) — delete (hand-written fetch wrapper)
@@ -92,7 +96,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-005 — Confine all `localStorage` access to the auth store; generated client pulls token via store
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N
+- **Decision (2026-05-23)**: use `zustand/middleware` `persist` rather than scattered `localStorage` calls.
 - **Rule**: "Stores own persisted state. Components never touch `localStorage` / `sessionStorage` directly." / "Read `localStorage` / `sessionStorage` outside a store." (Never list)
 - **Scope**:
   - [src/api/client.ts](src/api/client.ts) — 3 `localStorage` reads (removed by REF-004; ensure no replacement re-introduces direct access)
@@ -142,69 +147,74 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ### REF-008 — Move `ProgressBar.tsx` into a `src/components/<group>/` subfolder
 - **Status**: pending
 - **Risk**: LOW
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "Shared component: `src/components/<group>/<Name>.tsx`."
 - **Scope**:
-  - [src/components/ProgressBar.tsx](src/components/ProgressBar.tsx) → `src/components/<group>/ProgressBar.tsx`
+  - [src/components/ProgressBar.tsx](src/components/ProgressBar.tsx) → `src/components/ui/ProgressBar.tsx`
   - [src/pages/student/ExercisePlayer.tsx](src/pages/student/ExercisePlayer.tsx) — update import
-  - [src/components/ui/index.ts](src/components/ui/index.ts) — only if user chooses the `ui/` group
+  - [src/components/ui/index.ts](src/components/ui/index.ts) — add ProgressBar to the barrel
 - **Depends on**: none
 - **DoD**:
   - No `.tsx` file directly under `src/components/`
   - `npm run build` returns 0
-- **Notes**: User decision — place under `ui/` (lightweight presentational) or create a new group such as `progress/`.
+- **Decision (2026-05-23)**: place under `src/components/ui/` alongside Button, Input, Card, Badge. Export through the `ui/` barrel.
 
 ### REF-009 — Resolve unregistered demo files (`src/DemoApp.tsx`, `src/pages/demo/DemoLessonTree.tsx`)
 - **Status**: pending
 - **Risk**: LOW
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "Add a page not registered in `src/router.tsx`." (Never list)
 - **Scope**:
-  - [src/DemoApp.tsx](src/DemoApp.tsx) — page-like layout shell, no importers, not in router
-  - [src/pages/demo/DemoLessonTree.tsx](src/pages/demo/DemoLessonTree.tsx) — page, not in router (router only redirects `/demo*` → `/login`)
-  - [src/router.tsx](src/router.tsx) — only if user chooses to register
+  - [src/DemoApp.tsx](src/DemoApp.tsx) — register as the `/demo` layout
+  - [src/pages/demo/DemoLessonTree.tsx](src/pages/demo/DemoLessonTree.tsx) — register as the `/demo` index page
+  - [src/router.tsx](src/router.tsx) — replace the `/demo` and `/demo/*` `<Navigate to="/login">` redirects with real route definitions (DemoApp as layout, DemoLessonTree as index, plus `/demo/lessons/:lessonId/play` → ExercisePlayer and `/demo/lessons/:lessonId/complete` → LessonComplete to match what ExercisePlayer already navigates to)
 - **Depends on**: none
 - **DoD**:
-  - Either both files are deleted (and any importers removed) OR both are registered in [src/router.tsx](src/router.tsx)
+  - Both files are registered in [src/router.tsx](src/router.tsx); no orphan demo pages
   - `npm run build` returns 0
-- **Notes**: `/demo` is currently redirected to `/login` ([src/router.tsx:31-32](src/router.tsx#L31-L32)), suggesting deletion is correct. Note that [src/pages/student/ExercisePlayer.tsx:59](src/pages/student/ExercisePlayer.tsx#L59) still navigates to `/demo/lessons/.../complete` from demo mode — that destination is also unregistered. The user owns the product decision (delete the dead demo paths or build them out).
+- **Decision (2026-05-23)**: register both — build out the demo flow rather than delete. Restores the previously-broken `/demo/lessons/.../complete` navigation from ExercisePlayer.
 
 ### REF-010 — `LanguageManager.tsx`: pick one UI library (AntD ↔ Tailwind)
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: "One UI library per file — Ant Design **or** Tailwind. If `antd` is imported in a file, that file uses only AntD layout/spacing (no Tailwind utility classes)."
 - **Scope**:
-  - [src/pages/admin/LanguageManager.tsx](src/pages/admin/LanguageManager.tsx) — imports `antd` (`Modal`, `Form`, `Input`, `Switch`, `Upload`, `Button`) and also uses Tailwind classes (`p-6 md:p-10`, `grid gap-3`, `flex justify-between`, etc.)
+  - [src/pages/admin/LanguageManager.tsx](src/pages/admin/LanguageManager.tsx) — keep `antd`; strip all Tailwind utility classes from JSX in this file. Layout via AntD `Space`/`Row`/`Col`/`Card`; the local `Card`/`Badge` imports from `src/components/ui/` are Tailwind-based and should be replaced with AntD equivalents (`AntdCard`, `Tag`) to keep the file purely AntD.
 - **Depends on**: none
 - **DoD**:
-  - File either imports `antd` and contains no Tailwind utility classes, OR drops `antd` imports in favor of Tailwind/headless equivalents
+  - File contains zero Tailwind utility classes (no `className="p-..."`, `flex`, `grid`, etc.)
+  - File imports nothing from `src/components/ui/` (those are Tailwind primitives)
   - `npm run build` returns 0
+- **Decision (2026-05-23)**: keep AntD, drop Tailwind. The admin pages are AntD-heavy already (Modal, Form, Upload).
 
 ### REF-011 — `LessonManager.tsx`: pick one UI library
 - **Status**: pending
 - **Risk**: MED
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: Same as REF-010.
 - **Scope**:
-  - [src/pages/admin/LessonManager.tsx](src/pages/admin/LessonManager.tsx) — imports `antd` and uses Tailwind classes
+  - [src/pages/admin/LessonManager.tsx](src/pages/admin/LessonManager.tsx) — keep `antd`; strip Tailwind classes and the `src/components/ui/Card` import.
 - **Depends on**: none
 - **DoD**:
-  - File uses exactly one UI library
+  - File contains zero Tailwind utility classes
+  - File imports nothing from `src/components/ui/`
   - `npm run build` returns 0
+- **Decision (2026-05-23)**: keep AntD, drop Tailwind.
 
 ### REF-012 — `ExerciseBuilder.tsx`: pick one UI library
 - **Status**: pending
 - **Risk**: HIGH
-- **Requires decision**: Y
+- **Requires decision**: N
 - **Rule**: Same as REF-010.
 - **Scope**:
-  - [src/pages/admin/ExerciseBuilder.tsx](src/pages/admin/ExerciseBuilder.tsx) — imports `antd` (`Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider`) and uses Tailwind classes
+  - [src/pages/admin/ExerciseBuilder.tsx](src/pages/admin/ExerciseBuilder.tsx) — keep `antd`; strip all Tailwind classes and the `src/components/ui/` imports.
 - **Depends on**: none
 - **DoD**:
-  - File uses exactly one UI library
+  - File contains zero Tailwind utility classes
+  - File imports nothing from `src/components/ui/`
   - `npm run build` returns 0
-- **Notes**: largest of the three; may invalidate or subsume REF-014 and REF-016 depending on how rewriting proceeds.
+- **Decision (2026-05-23)**: keep AntD, drop Tailwind. Largest of the three; may need careful staging of file content within the single commit.
 
 ### REF-013 — `Flashcard.tsx`: remove multi-property inline `style={{}}`
 - **Status**: done
