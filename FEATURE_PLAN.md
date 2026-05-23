@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 6 | Done: 6 | Blocked: 0 | Superseded: 0
+- Pending: 5 | Done: 7 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -199,7 +199,9 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - Manual: with a Demo JWT, hit POST `/api/languages` and receive 200 (not 401/403).
 
 ### FEAT-007 — Regenerate frontend API client to surface new `Demo` enum value
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
+- **Completion note**: Verified via the "role remains bare string" path documented in the original DoD. Backend `UserDto.Role` is `public string Role { get; set; }` (not enum-typed); generated `UserDto.role` is `string` too. A live `npm run generate-api` against the running backend (port 5292) confirmed zero diff on UserDto/AuthResponse. `'Demo'` is therefore already a valid runtime value with no client regeneration needed for this feature. **Deferred to a future item**: the same regen surfaced pre-existing FilesService drift (upload endpoint swagger now emits `query: { command }` instead of `multipart/form-data`, breaking `client/src/hooks/useFiles.ts:8`). This drift is unrelated to the Demo role and out of FEAT-007's scope; it needs its own atomic item covering backend swagger annotations + regen + caller fix together. Reverted the FilesService changes from the regen attempt; tree clean.
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "detect Role=Demo from JWT" — role is part of generated `UserDto`.
