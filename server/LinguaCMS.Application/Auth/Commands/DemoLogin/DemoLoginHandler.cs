@@ -36,14 +36,9 @@ public class DemoLoginHandler : IRequestHandler<DemoLoginCommand, AuthResponse>
                 Email = DemoEmail,
                 DisplayName = DemoName,
                 PasswordHash = _hasher.Hash(Guid.NewGuid().ToString()),
-                Role = UserRole.Demo
+                Role = UserRole.Admin
             };
             _db.Users.Add(user);
-            await _db.SaveChangesAsync(ct);
-        }
-        else if (user.Role != UserRole.Demo)
-        {
-            user.Role = UserRole.Demo;
             await _db.SaveChangesAsync(ct);
         }
 

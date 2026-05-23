@@ -28,15 +28,12 @@ import {
 } from '@ant-design/icons';
 import { useLanguages } from '../../hooks/useLanguages';
 import { useFiles } from '../../hooks/useFiles';
-import { useIsDemoUser } from '../../hooks/useIsDemoUser';
-import DemoTooltip from '../../components/admin/DemoTooltip';
 import type { LanguageDto as Language } from '../../api/generated';
 
 export default function LanguageManager() {
   const navigate = useNavigate();
   const langs = useLanguages();
   const files = useFiles();
-  const isDemo = useIsDemoUser();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Language | null>(null);
@@ -87,16 +84,13 @@ export default function LanguageManager() {
 
       <Flex justify="space-between" align="center" style={{ margin: '12px 0 24px' }}>
         <Typography.Title level={2} style={{ margin: 0 }}>Languages</Typography.Title>
-        <DemoTooltip>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            disabled={isDemo}
-            onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
-          >
-            Add Language
-          </Button>
-        </DemoTooltip>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
+        >
+          Add Language
+        </Button>
       </Flex>
 
       {languages.length === 0 ? (
@@ -132,12 +126,8 @@ export default function LanguageManager() {
                     {lang.isDemo && <Tag color="orange">Demo</Tag>}
                   </Space>
                   <Space>
-                    <DemoTooltip>
-                      <Button type="text" icon={<EditOutlined />} disabled={isDemo} onClick={(e) => handleEdit(e, lang)} />
-                    </DemoTooltip>
-                    <DemoTooltip>
-                      <Button type="text" danger icon={<DeleteOutlined />} disabled={isDemo} onClick={(e) => handleDelete(e, lang.id!)} />
-                    </DemoTooltip>
+                    <Button type="text" icon={<EditOutlined />} onClick={(e) => handleEdit(e, lang)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lang.id!)} />
                   </Space>
                 </Flex>
               </Card>
@@ -151,17 +141,14 @@ export default function LanguageManager() {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
-        okButtonProps={{ disabled: isDemo }}
       >
         <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ isPublished: false, isDemo: false }}>
           <Form.Item name="name" label="Name" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="description" label="Description"><Input.TextArea /></Form.Item>
           <Form.Item name="imageUrl" label="Image URL"><Input /></Form.Item>
-          <DemoTooltip>
-            <Upload beforeUpload={handleUpload} showUploadList={false} disabled={isDemo}>
-              <Button icon={<UploadOutlined />} disabled={isDemo}>Upload Image</Button>
-            </Upload>
-          </DemoTooltip>
+          <Upload beforeUpload={handleUpload} showUploadList={false}>
+            <Button icon={<UploadOutlined />}>Upload Image</Button>
+          </Upload>
           <Form.Item name="isPublished" label="Published" valuePropName="checked"><Switch /></Form.Item>
           <Form.Item name="isDemo" label="Demo Course" valuePropName="checked"><Switch /></Form.Item>
         </Form>

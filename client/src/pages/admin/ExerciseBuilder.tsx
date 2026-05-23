@@ -26,8 +26,6 @@ import {
 import { useLessons } from '../../hooks/useLessons';
 import { useExercises } from '../../hooks/useExercises';
 import { useFiles } from '../../hooks/useFiles';
-import { useIsDemoUser } from '../../hooks/useIsDemoUser';
-import DemoTooltip from '../../components/admin/DemoTooltip';
 import type { ExerciseDto as Exercise, ExerciseType, LessonDto as Lesson } from '../../api/generated';
 import ExerciseTypeFields from './ExerciseTypeFields';
 
@@ -135,7 +133,6 @@ export default function ExerciseBuilder() {
   const lessonsApi = useLessons();
   const exercisesApi = useExercises();
   const files = useFiles();
-  const isDemo = useIsDemoUser();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -282,9 +279,7 @@ export default function ExerciseBuilder() {
 
       <Flex justify="space-between" align="center" style={{ margin: '12px 0 24px' }}>
         <Typography.Title level={2} style={{ margin: 0 }}>Exercises</Typography.Title>
-        <DemoTooltip>
-          <Button type="primary" icon={<PlusOutlined />} disabled={isDemo} onClick={openCreate}>Add Exercise</Button>
-        </DemoTooltip>
+        <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>Add Exercise</Button>
       </Flex>
 
       {exercises.length === 0 ? (
@@ -307,12 +302,8 @@ export default function ExerciseBuilder() {
                 </Flex>
                 <Flex justify="flex-end">
                   <Space>
-                    <DemoTooltip>
-                      <Button type="text" icon={<EditOutlined />} disabled={isDemo} onClick={() => openEdit(ex)} />
-                    </DemoTooltip>
-                    <DemoTooltip>
-                      <Button type="text" danger icon={<DeleteOutlined />} disabled={isDemo} onClick={() => handleDelete(ex.id!)} />
-                    </DemoTooltip>
+                    <Button type="text" icon={<EditOutlined />} onClick={() => openEdit(ex)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(ex.id!)} />
                   </Space>
                 </Flex>
               </Card>
@@ -329,9 +320,7 @@ export default function ExerciseBuilder() {
         footer={[
           <Button key="preview" onClick={handlePreview}>Preview JSON</Button>,
           <Button key="cancel" onClick={handleCancel}>Cancel</Button>,
-          <DemoTooltip key="save">
-            <Button type="primary" disabled={isDemo} onClick={() => form.submit()}>Save</Button>
-          </DemoTooltip>,
+          <Button key="save" type="primary" onClick={() => form.submit()}>Save</Button>,
         ]}
       >
         <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ order: 0, type: 0 }}>

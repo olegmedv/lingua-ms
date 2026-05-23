@@ -27,7 +27,6 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DemoUserRestrictionBehavior<,>));
 builder.Services.AddValidatorsFromAssembly(typeof(LinguaCMS.Application.Auth.Commands.RegisterCommand).Assembly);
 
 // JWT Auth

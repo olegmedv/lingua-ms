@@ -24,6 +24,4 @@ public class CurrentUser : ICurrentUser
     public string Role => User?.FindFirstValue(ClaimTypes.Role) ?? string.Empty;
 
     public bool IsAdmin => User?.IsInRole("Admin") ?? false;
-
-    public bool IsInRole(string role) => User?.IsInRole(role) ?? false;
 }
