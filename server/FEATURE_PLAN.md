@@ -4,7 +4,7 @@ Generated: 2026-05-23. Source spec: "Block demo user (Role == Demo) from mutatio
 
 ## Summary
 - Total items: 7
-- Pending: 5 | Done: 2 | Blocked: 0 | Superseded: 0
+- Pending: 4 | Done: 3 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0 (all decisions resolved during iteration 1)
 - Critic iterations: 2
 - Critic verdict: approved (only LOW notes after iteration 2)
@@ -46,7 +46,8 @@ FEAT-001 → FEAT-002 → FEAT-003 → FEAT-007 → FEAT-006 → FEAT-005 → FE
   - `dotnet build` returns 0
 
 ### FEAT-003 — Create DemoUserRestrictionBehavior
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N (exemption list resolved iteration 1)
 - **Spec reference**: "Use MediatR pipeline behavior DemoUserRestrictionBehavior in Application/Common/Behaviors/. Behavior checks if command is *Command (not *Query) and if ICurrentUser.IsInRole(\"Demo\"). If both true, throw UnauthorizedException with message 'Demo users cannot modify content'. Exempt DemoLoginCommand (auth, not business mutation)."
