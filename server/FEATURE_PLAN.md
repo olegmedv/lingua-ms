@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 6 | Done: 8 | Blocked: 0 | Superseded: 0
+- Pending: 5 | Done: 9 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -156,7 +156,8 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - `npm run build` returns 0
 
 ### FEAT-009 — Add UI session store with admin-banner dismiss state
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Banner color: warning (yellow/orange), dismissible per session."
