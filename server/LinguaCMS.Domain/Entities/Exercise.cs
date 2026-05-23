@@ -11,4 +11,8 @@ public class Exercise
     public string ContentJson { get; set; } = string.Empty;
     public string? AudioUrl { get; set; }
     public int Order { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
 }

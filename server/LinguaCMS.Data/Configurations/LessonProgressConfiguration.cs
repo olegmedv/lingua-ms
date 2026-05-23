@@ -11,5 +11,7 @@ public class LessonProgressConfiguration : IEntityTypeConfiguration<LessonProgre
         builder.HasKey(p => p.Id);
         builder.HasOne(p => p.User).WithMany().HasForeignKey(p => p.UserId);
         builder.HasOne(p => p.Lesson).WithMany().HasForeignKey(p => p.LessonId);
+        builder.Property(p => p.CreatedAt).HasDefaultValueSql("now()");
+        builder.Property(p => p.IsDeleted).HasDefaultValue(false);
     }
 }

@@ -10,5 +10,8 @@ public class Lesson
     public int Order { get; set; }
     public int PassThreshold { get; set; } = 80;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public ICollection<Exercise> Exercises { get; set; } = new List<Exercise>();
 }

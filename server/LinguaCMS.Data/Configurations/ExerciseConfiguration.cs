@@ -11,5 +11,7 @@ public class ExerciseConfiguration : IEntityTypeConfiguration<Exercise>
         builder.HasKey(ex => ex.Id);
         builder.Property(ex => ex.ContentJson).IsRequired();
         builder.HasOne(ex => ex.Lesson).WithMany(l => l.Exercises).HasForeignKey(ex => ex.LessonId);
+        builder.Property(ex => ex.CreatedAt).HasDefaultValueSql("now()");
+        builder.Property(ex => ex.IsDeleted).HasDefaultValue(false);
     }
 }

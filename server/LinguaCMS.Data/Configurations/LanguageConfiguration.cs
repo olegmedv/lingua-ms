@@ -10,5 +10,7 @@ public class LanguageConfiguration : IEntityTypeConfiguration<Language>
     {
         builder.HasKey(l => l.Id);
         builder.Property(l => l.Name).IsRequired().HasMaxLength(100);
+        builder.Property(l => l.CreatedAt).HasDefaultValueSql("now()");
+        builder.Property(l => l.IsDeleted).HasDefaultValue(false);
     }
 }

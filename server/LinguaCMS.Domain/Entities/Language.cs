@@ -9,5 +9,8 @@ public class Language
     public bool IsPublished { get; set; }
     public bool IsDemo { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
     public ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 }

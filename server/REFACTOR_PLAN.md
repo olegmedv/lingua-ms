@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (6th pass, post auditable-entities
 
 ## Summary
 - Total items: 29
-- Pending: 4 | Done: 20 | Blocked: 0 | Superseded: 5
+- Pending: 3 | Done: 21 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6 (all already done/superseded — REF-024 / REF-026 / REF-029 pre-approved 2026-05-23)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -580,7 +580,8 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - `dotnet test` returns 0 with test count ≥ baseline
 
 ### REF-026 — Add audit fields (CreatedAt, UpdatedAt, IsDeleted, DeletedAt) to user-facing entities + EF migration
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: Y
 - **Rule**: "user-facing persisted entities (those modified by user actions: Languages, Lessons, Exercises, Users, Progress, etc.) declare `CreatedAt DateTime` (UTC, set on insert), `UpdatedAt DateTime?` (UTC, set on every update), `IsDeleted bool` (default false), `DeletedAt DateTime?` (default null)."
@@ -591,6 +592,12 @@ User pre-approved all open decisions to unblock the execute-plan loop:
   - `LinguaCMS.Domain/Entities/Exercise.cs` (add all four: `CreatedAt`, `UpdatedAt`, `IsDeleted`, `DeletedAt`)
   - `LinguaCMS.Domain/Entities/LessonProgress.cs` (add `CreatedAt`, `UpdatedAt`, `IsDeleted`, `DeletedAt`; keep `CompletedAt` — it's a domain concept, not the audit timestamp)
   - `LinguaCMS.Domain/Entities/UserStats.cs` (add all four audit properties — per pre-approved decision below, UserStats is **included** in the full audit, not exempted)
+  - `LinguaCMS.Data/Configurations/AppUserConfiguration.cs` (add `HasDefaultValueSql("now()")` for `CreatedAt`, `HasDefaultValue(false)` for `IsDeleted` — per the pre-approved migration-defaults decision)
+  - `LinguaCMS.Data/Configurations/LanguageConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/LessonConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/ExerciseConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/LessonProgressConfiguration.cs` (same)
+  - `LinguaCMS.Data/Configurations/UserStatsConfiguration.cs` (same)
   - `LinguaCMS.Data/Migrations/<auto>_AddAuditFields.cs` (new — CLI-generated; never hand-edit per CLAUDE.md)
   - `LinguaCMS.Data/AppDbContextModelSnapshot.cs` (auto-updated by migration generator)
 - **Depends on**: none

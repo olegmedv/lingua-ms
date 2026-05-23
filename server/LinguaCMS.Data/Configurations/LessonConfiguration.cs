@@ -11,5 +11,7 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
         builder.HasKey(l => l.Id);
         builder.Property(l => l.Title).IsRequired().HasMaxLength(200);
         builder.HasOne(l => l.Language).WithMany(la => la.Lessons).HasForeignKey(l => l.LanguageId);
+        builder.Property(l => l.CreatedAt).HasDefaultValueSql("now()");
+        builder.Property(l => l.IsDeleted).HasDefaultValue(false);
     }
 }
