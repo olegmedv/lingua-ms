@@ -4,7 +4,7 @@ Generated: 2026-05-23. Source spec: "Block demo user (Role == Demo) from mutatio
 
 ## Summary
 - Total items: 7
-- Pending: 1 | Done: 6 | Blocked: 0 | Superseded: 0
+- Pending: 0 | Done: 7 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0 (all decisions resolved during iteration 1)
 - Critic iterations: 2
 - Critic verdict: approved (only LOW notes after iteration 2)
@@ -64,7 +64,8 @@ FEAT-001 → FEAT-002 → FEAT-003 → FEAT-007 → FEAT-006 → FEAT-005 → FE
   - Existing `Pipeline_behaviors_end_with_Behavior_suffix` architecture test still passes (validates the new behavior's naming)
 
 ### FEAT-004 — Register DemoUserRestrictionBehavior in Program.cs after ValidationBehavior
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Register after ValidationBehavior in Program.cs."
