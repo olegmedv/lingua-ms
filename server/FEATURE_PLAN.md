@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 5 | Done: 9 | Blocked: 0 | Superseded: 0
+- Pending: 4 | Done: 10 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -175,7 +175,9 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - `npm run lint` returns 0; `npm run build` returns 0
 
 ### FEAT-010 — Add `<DemoTooltip>` wrapper component
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Implementation note**: Used single-property `style={{ display: 'inline-block' }}` rather than the DoD's two-property literal. Reason: the two-property form (`display` + `cursor: not-allowed`) violates the CLAUDE.md "single one-off property" rule. The CSS-module alternative the DoD authorized would have expanded scope beyond the single `.tsx` file. Dropping `cursor: not-allowed` is the cleanest in-scope, rule-compliant path — the disabled AntD button's greyed appearance and the tooltip text already communicate inability. If real-world hover testing during FEAT-013 manual verification shows the cursor change is missed, the lift to a `DemoTooltip.module.css` is a 2-line follow-up.
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Disable all mutation buttons (delete/edit/save/upload) for demo users with tooltip 'Demo cannot modify'."
