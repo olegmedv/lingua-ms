@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 13 | Done: 3 | Blocked: 0
+- Pending: 12 | Done: 4 | Blocked: 0
 - Items requiring user decision: 12
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -222,7 +222,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Notes**: silently resolved between audits — re-audit confirmed every `style={{}}` literal in this file holds exactly one property. The rule "beyond a single one-off property" is read per-element, so the file is compliant. No code change was needed; the prior audit flagged it for human review and the resolution is "no action".
 
 ### REF-014 — `ExerciseBuilder.tsx`: remove multi-property inline `style={{}}`
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Use inline `style={{}}` beyond a single one-off property." (Never list)
