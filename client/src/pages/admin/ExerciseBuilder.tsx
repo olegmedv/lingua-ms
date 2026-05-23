@@ -1,12 +1,35 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Button, Modal, Form, Input, InputNumber, Select, Upload, message, Space, Divider } from 'antd';
-import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Upload,
+  message,
+  Space,
+  Divider,
+  Card,
+  Tag,
+  Empty,
+  Row,
+  Col,
+  Flex,
+  Typography,
+} from 'antd';
+import {
+  PlusOutlined,
+  UploadOutlined,
+  MinusCircleOutlined,
+  LeftOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import { ChevronLeft, Pencil, Trash2 } from 'lucide-react';
 import type { Exercise, Lesson } from '../../types/api';
-import { Card, Badge } from '../../components/ui';
 
 const exerciseTypes = [
   { value: 0, label: 'Multiple Choice' },
@@ -127,15 +150,15 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
       <Form.Item name={fieldName} noStyle rules={[{ required: true, message: `Upload ${label}` }]}>
         <input type="hidden" />
       </Form.Item>
-      <div className="flex items-center gap-3">
+      <Space size={12}>
         <Upload accept="image/*" beforeUpload={(f) => { uploadFile(f, fieldName); return false; }} showUploadList={false}>
           <Button icon={<UploadOutlined />}>Upload Image</Button>
         </Upload>
         {currentUrl
-          ? <span className="text-brand text-sm font-medium">✓ {currentUrl.split('/').pop()}</span>
-          : <span className="text-gray-400 text-sm">No file selected</span>
+          ? <Typography.Text type="success">✓ {currentUrl.split('/').pop()}</Typography.Text>
+          : <Typography.Text type="secondary">No file selected</Typography.Text>
         }
-      </div>
+      </Space>
     </Form.Item>
   );
 
@@ -148,15 +171,15 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
       <Form.Item name="audioUrl" noStyle rules={required ? [{ required: true, message: 'Upload audio file' }] : []}>
         <input type="hidden" />
       </Form.Item>
-      <div className="flex items-center gap-3">
+      <Space size={12}>
         <Upload accept="audio/*" beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}>
           <Button icon={<UploadOutlined />}>Upload Audio</Button>
         </Upload>
         {audioUrl
-          ? <span className="text-brand text-sm font-medium">✓ {audioUrl.split('/').pop()}</span>
-          : <span className="text-gray-400 text-sm">No file selected</span>
+          ? <Typography.Text type="success">✓ {audioUrl.split('/').pop()}</Typography.Text>
+          : <Typography.Text type="secondary">No file selected</Typography.Text>
         }
-      </div>
+      </Space>
     </Form.Item>
   );
 
@@ -193,12 +216,14 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
     case 3:
       return (
         <>
-          <p className="text-gray-500 mb-2">Add word/translation pairs (minimum 3)</p>
+          <Typography.Paragraph type="secondary" style={{ marginBottom: 8 }}>
+            Add word/translation pairs (minimum 3)
+          </Typography.Paragraph>
           <Form.List name="mp_pairs" initialValue={[{ word: '', translation: '' }, { word: '', translation: '' }, { word: '', translation: '' }]}>
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...rest }) => (
-                  <Space key={key} align="baseline" className="flex mb-2">
+                  <Space key={key} align="baseline" style={{ marginBottom: 8 }}>
                     <Form.Item {...rest} name={[name, 'word']} rules={[{ required: true, message: 'Word required' }]}>
                       <Input placeholder="Word" />
                     </Form.Item>
@@ -227,18 +252,27 @@ function TypeFields({ type, form, onUpload }: { type: number; form: ReturnType<t
           {imageUploadField('is_di3', 'Distractor Image 3', isDi3)}
         </>
       );
-    case 5:
+    case 5: {
+      const separatorHint = (
+        <>
+          Separator:{' '}
+          <span style={{ cursor: 'copy' }}>
+            <code style={{ userSelect: 'all' }}>,</code>
+          </span>
+        </>
+      );
       return (
         <>
           <Form.Item name="wb_prompt" label="Prompt (English sentence)" rules={[{ required: true }]}><Input placeholder="e.g. The dog is big" /></Form.Item>
-          <Form.Item name="wb_correctOrder" label="Correct Word Order (comma-separated)" rules={[{ required: true }]} extra={<>Separator: <code className="select-all cursor-copy">,</code></>}>
+          <Form.Item name="wb_correctOrder" label="Correct Word Order (comma-separated)" rules={[{ required: true }]} extra={separatorHint}>
             <Input placeholder="e.g. The, dog, is, big" />
           </Form.Item>
-          <Form.Item name="wb_distractors" label="Distractor Words (comma-separated)" extra={<>Separator: <code className="select-all cursor-copy">,</code></>}>
+          <Form.Item name="wb_distractors" label="Distractor Words (comma-separated)" extra={separatorHint}>
             <Input placeholder="e.g. cat, small" />
           </Form.Item>
         </>
       );
+    }
     case 6:
       return (
         <>
@@ -323,7 +357,6 @@ export default function ExerciseBuilder() {
   };
 
   const handleCancel = () => {
-    // Delete everything uploaded in this session (original untouched)
     sessionUploads.current.forEach(deleteFile);
     sessionUploads.current = [];
     originalAudioUrl.current = null;
@@ -352,13 +385,10 @@ export default function ExerciseBuilder() {
         .forEach(u => savedUrls.add(u as string));
     }
 
-    // Delete session uploads that weren't saved
     sessionUploads.current.filter(url => !savedUrls.has(url)).forEach(deleteFile);
-    // Delete original audio if it was replaced
     if (originalAudioUrl.current && !savedUrls.has(originalAudioUrl.current)) {
       deleteFile(originalAudioUrl.current);
     }
-    // Delete original images if they were replaced
     if (type === 4) {
       [originalImageUrls.current.correct, originalImageUrls.current.di1, originalImageUrls.current.di2, originalImageUrls.current.di3]
         .forEach(orig => { if (orig && !savedUrls.has(orig)) deleteFile(orig); });
@@ -403,53 +433,51 @@ export default function ExerciseBuilder() {
     } catch { return '—'; }
   };
 
+  const previewText = (() => {
+    try { return JSON.stringify(JSON.parse(previewJson), null, 2); } catch { return previewJson; }
+  })();
+
   return (
-    <div className="p-6 md:p-10">
-      <Link to={lesson ? `/admin/languages/${lesson.languageId}/lessons` : '/admin/languages'} className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
-        <ChevronLeft className="w-4 h-4" /> Back to Lessons
+    <div style={{ padding: 24 }}>
+      <Link to={lesson ? `/admin/languages/${lesson.languageId}/lessons` : '/admin/languages'}>
+        <Space size={4}>
+          <LeftOutlined /> Back to Lessons
+        </Space>
       </Link>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Exercises</h1>
+
+      <Flex justify="space-between" align="center" style={{ margin: '12px 0 24px' }}>
+        <Typography.Title level={2} style={{ margin: 0 }}>Exercises</Typography.Title>
         <Button type="primary" icon={<PlusOutlined />} onClick={openCreate}>Add Exercise</Button>
-      </div>
+      </Flex>
 
       {exercises.length === 0 ? (
-        <p className="text-gray-400 py-12 text-center">No exercises yet. Create one to get started.</p>
+        <Empty description="No exercises yet. Create one to get started." />
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <Row gutter={[12, 12]}>
           {exercises.sort((a, b) => a.order - b.order).map(ex => (
-            <Card
-              key={ex.id}
-              clickable
-            >
-              <div className="flex items-start justify-between mb-2">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs text-gray-400 font-medium">#{ex.order}</span>
-                    <Badge variant="brand">
-                      {exerciseTypes.find(t => t.value === ex.type)?.label}
-                    </Badge>
+            <Col xs={24} md={12} lg={8} key={ex.id}>
+              <Card>
+                <Flex align="flex-start" justify="space-between" style={{ marginBottom: 8 }}>
+                  <div>
+                    <Space size={8} style={{ marginBottom: 4 }}>
+                      <Typography.Text type="secondary">#{ex.order}</Typography.Text>
+                      <Tag color="green">{exerciseTypes.find(t => t.value === ex.type)?.label}</Tag>
+                    </Space>
+                    <Typography.Paragraph ellipsis={{ rows: 2 }} style={{ marginBottom: 0 }}>
+                      {getPreview(ex)}
+                    </Typography.Paragraph>
                   </div>
-                  <p className="text-sm text-gray-700 line-clamp-2">{getPreview(ex)}</p>
-                </div>
-              </div>
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => openEdit(ex)}
-                  className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDelete(ex.id)}
-                  className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </Card>
+                </Flex>
+                <Flex justify="flex-end">
+                  <Space>
+                    <Button type="text" icon={<EditOutlined />} onClick={() => openEdit(ex)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={() => handleDelete(ex.id)} />
+                  </Space>
+                </Flex>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
       )}
 
       <Modal
@@ -467,7 +495,9 @@ export default function ExerciseBuilder() {
           <Form.Item name="type" label="Exercise Type">
             <Select options={exerciseTypes} onChange={(v) => setSelectedType(v)} />
           </Form.Item>
-          <Form.Item name="order" label="Order"><InputNumber min={0} className="w-full" /></Form.Item>
+          <Form.Item name="order" label="Order">
+            <InputNumber min={0} style={{ width: '100%' }} />
+          </Form.Item>
           <Divider>Content</Divider>
           <TypeFields type={selectedType} form={form} onUpload={(url) => { sessionUploads.current.push(url); }} />
           <Divider />
@@ -482,9 +512,7 @@ export default function ExerciseBuilder() {
       </Modal>
 
       <Modal title="Content JSON Preview" open={previewOpen} onCancel={() => setPreviewOpen(false)} footer={null} width={500}>
-        <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-auto max-h-80 whitespace-pre-wrap">
-          {(() => { try { return JSON.stringify(JSON.parse(previewJson), null, 2); } catch { return previewJson; } })()}
-        </pre>
+        <Input.TextArea value={previewText} readOnly autoSize={{ minRows: 5, maxRows: 15 }} />
       </Modal>
     </div>
   );
