@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 1 | Done: 11 | Blocked: 0 | Superseded: 0
+- Pending: 0 | Done: 12 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -301,7 +301,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - **Why this matters (rationale)**: without it, the demo user lands on `/admin/languages` and sees a strictly smaller list than the Admin sees on the same page — visually obvious off-spec behavior. Mutation endpoints accept the demo user's writes (FEAT-006), but the reads they browse before mutating are filtered. The illusion "exactly like a regular admin" breaks at the first page load.
 
 ### FEAT-011 — Document file-upload orphan limitation for demo mode
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: Discovery-derived — `UploadFileCommand` writes to disk; transaction rollback leaves orphaned files.
