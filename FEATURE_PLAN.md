@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 10 | Done: 2 | Blocked: 0 | Superseded: 0
+- Pending: 9 | Done: 3 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -122,7 +122,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - **Why this matters (rationale)**: without the re-role step, every environment that has ever served `/api/auth/demo` retains an Admin demo user. The `IsInRole("Demo")` check in the transaction behavior then fails for that user, the transaction never opens, and the demo user has real write access to the database — silently defeating the entire feature.
 
 ### FEAT-003 — Extend `ICurrentUser` with `IsDemo` and `HasAdminAccess` properties
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "rolls back when `ICurrentUser.IsInRole("Demo")`" — the behavior reads demo state via `ICurrentUser`. Also enables FEAT-012 (read-side admin gate widening).
