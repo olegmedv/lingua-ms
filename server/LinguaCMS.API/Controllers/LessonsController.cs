@@ -22,17 +22,17 @@ public class LessonsController : ControllerBase
     public async Task<ActionResult<LessonDto>> GetById(Guid id)
         => Ok(await _mediator.Send(new GetLessonByIdQuery(id)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPost("languages/{langId}/lessons")]
     public async Task<ActionResult<LessonDto>> Create(Guid langId, [FromBody] CreateLessonRequest request)
         => Ok(await _mediator.Send(new CreateLessonCommand(langId, request.Title, request.Description, request.Order, request.PassThreshold)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPut("lessons/{id}")]
     public async Task<ActionResult<LessonDto>> Update(Guid id, [FromBody] UpdateLessonRequest request)
         => Ok(await _mediator.Send(new UpdateLessonCommand(id, request.Title, request.Description, request.Order, request.PassThreshold)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpDelete("lessons/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

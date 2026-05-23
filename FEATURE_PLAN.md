@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 7 | Done: 5 | Blocked: 0 | Superseded: 0
+- Pending: 6 | Done: 6 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -180,7 +180,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - `dotnet build` returns 0; tests green.
 
 ### FEAT-006 — Broaden `[Authorize(Roles="Admin")]` to `"Admin,Demo"` on admin endpoints
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "all mutation endpoints accept their requests and return success"

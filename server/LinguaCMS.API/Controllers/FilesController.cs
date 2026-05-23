@@ -15,12 +15,12 @@ public class FilesController : ControllerBase
     private readonly IMediator _mediator;
     public FilesController(IMediator mediator) => _mediator = mediator;
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPost("upload")]
     public async Task<ActionResult<UploadFileResponse>> Upload([ModelBinder(typeof(UploadFileModelBinder))] UploadFileCommand command)
         => Ok(await _mediator.Send(command));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpDelete]
     public async Task<ActionResult> Delete([FromQuery] string url)
     {
