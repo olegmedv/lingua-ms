@@ -1,3 +1,4 @@
+using LinguaCMS.Application.Exceptions;
 using LinguaCMS.Application.Languages.Models;
 using LinguaCMS.Data;
 using MediatR;
@@ -5,15 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LinguaCMS.Application.Languages.Queries;
 
-public class GetDemoLanguageHandler : IRequestHandler<GetDemoLanguageQuery, LanguageDto?>
+public class GetDemoLanguageHandler : IRequestHandler<GetDemoLanguageQuery, LanguageDto>
 {
     private readonly AppDbContext _db;
     public GetDemoLanguageHandler(AppDbContext db) => _db = db;
 
-    public async Task<LanguageDto?> Handle(GetDemoLanguageQuery request, CancellationToken ct)
+    public async Task<LanguageDto> Handle(GetDemoLanguageQuery request, CancellationToken ct)
     {
-        var lang = await _db.Languages.FirstOrDefaultAsync(l => l.IsDemo && l.IsPublished, ct);
-        if (lang == null) return null;
+        var lang = await _db.Languages.FirstOrDefaultAsync(l => l.IsDemo && l.IsPublished, ct)
+            ?? throw new NotFoundException("Demo language not found");
 
         return new LanguageDto { Id = lang.Id, Name = lang.Name, Description = lang.Description, ImageUrl = lang.ImageUrl, IsPublished = lang.IsPublished, IsDemo = lang.IsDemo };
     }

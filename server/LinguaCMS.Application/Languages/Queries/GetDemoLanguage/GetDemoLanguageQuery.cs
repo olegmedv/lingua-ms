@@ -3,4 +3,4 @@ using MediatR;
 
 namespace LinguaCMS.Application.Languages.Queries;
 
-public record GetDemoLanguageQuery : IRequest<LanguageDto?>;
+public record GetDemoLanguageQuery : IRequest<LanguageDto>;

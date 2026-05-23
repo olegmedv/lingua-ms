@@ -20,11 +20,7 @@ public class LanguagesController : ControllerBase
 
     [HttpGet("demo")]
     public async Task<ActionResult<LanguageDto>> GetDemo()
-    {
-        var lang = await _mediator.Send(new GetDemoLanguageQuery());
-        if (lang == null) return NotFound();
-        return Ok(lang);
-    }
+        => Ok(await _mediator.Send(new GetDemoLanguageQuery()));
 
     [HttpGet("{id}")]
     public async Task<ActionResult<LanguageDto>> GetById(Guid id)
