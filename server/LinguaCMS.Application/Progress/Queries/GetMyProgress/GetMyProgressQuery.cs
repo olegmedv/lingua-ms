@@ -3,4 +3,4 @@ using MediatR;
 
 namespace LinguaCMS.Application.Progress.Queries;
 
-public record GetMyProgressQuery(Guid UserId) : IRequest<List<ProgressDto>>;
+public record GetMyProgressQuery : IRequest<List<ProgressDto>>;

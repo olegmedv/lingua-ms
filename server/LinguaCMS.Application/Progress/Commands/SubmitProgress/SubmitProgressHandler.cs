@@ -1,7 +1,8 @@
 using LinguaCMS.Application.Extensions;
 using LinguaCMS.Application.Progress.Models;
-using LinguaCMS.Domain.Entities;
 using LinguaCMS.Data;
+using LinguaCMS.Domain.Entities;
+using LinguaCMS.Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +11,17 @@ namespace LinguaCMS.Application.Progress.Commands;
 public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, ProgressDto>
 {
     private readonly AppDbContext _db;
-    public SubmitProgressHandler(AppDbContext db) => _db = db;
+    private readonly ICurrentUser _currentUser;
+
+    public SubmitProgressHandler(AppDbContext db, ICurrentUser currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
 
     public async Task<ProgressDto> Handle(SubmitProgressCommand request, CancellationToken ct)
     {
+        var userId = _currentUser.UserId;
         var lesson = await _db.Lessons.FirstOrNotFoundAsync(l => l.Id == request.LessonId, ct);
 
         var completed = request.Score >= lesson.PassThreshold;
@@ -21,7 +29,7 @@ public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, Prog
 
         // Find previous best attempt for this lesson
         var previousBest = await _db.LessonProgress
-            .Where(p => p.UserId == request.UserId && p.LessonId == request.LessonId)
+            .Where(p => p.UserId == userId && p.LessonId == request.LessonId)
             .OrderByDescending(p => p.XpEarned)
             .FirstOrDefaultAsync(ct);
 
@@ -33,7 +41,7 @@ public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, Prog
         var progress = new LessonProgress
         {
             Id = Guid.NewGuid(),
-            UserId = request.UserId,
+            UserId = userId,
             LessonId = request.LessonId,
             Score = request.Score,
             Completed = completed,
@@ -44,10 +52,10 @@ public class SubmitProgressHandler : IRequestHandler<SubmitProgressCommand, Prog
         _db.LessonProgress.Add(progress);
 
         // Update user stats
-        var stats = await _db.UserStats.FirstOrDefaultAsync(s => s.UserId == request.UserId, ct);
+        var stats = await _db.UserStats.FirstOrDefaultAsync(s => s.UserId == userId, ct);
         if (stats == null)
         {
-            stats = new UserStats { UserId = request.UserId, LastActivityDate = DateTime.UtcNow };
+            stats = new UserStats { UserId = userId, LastActivityDate = DateTime.UtcNow };
             _db.UserStats.Add(stats);
         }
 

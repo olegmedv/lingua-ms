@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 7 | Done: 11 | Blocked: 0 | Superseded: 4
+- Pending: 6 | Done: 12 | Blocked: 0 | Superseded: 4
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -362,7 +362,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-017 — Thin ProgressController: drop UserId param; handlers use ICurrentUser
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Controllers contain only `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return." / "Never touch `HttpContext.User` in handlers/controllers."

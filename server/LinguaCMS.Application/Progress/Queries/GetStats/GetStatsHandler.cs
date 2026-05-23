@@ -1,5 +1,6 @@
 using LinguaCMS.Application.Progress.Models;
 using LinguaCMS.Data;
+using LinguaCMS.Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,16 +9,23 @@ namespace LinguaCMS.Application.Progress.Queries;
 public class GetStatsHandler : IRequestHandler<GetStatsQuery, StatsDto>
 {
     private readonly AppDbContext _db;
-    public GetStatsHandler(AppDbContext db) => _db = db;
+    private readonly ICurrentUser _currentUser;
+
+    public GetStatsHandler(AppDbContext db, ICurrentUser currentUser)
+    {
+        _db = db;
+        _currentUser = currentUser;
+    }
 
     public async Task<StatsDto> Handle(GetStatsQuery request, CancellationToken ct)
     {
-        var stats = await _db.UserStats.FirstOrDefaultAsync(s => s.UserId == request.UserId, ct);
-        var completedLessons = await _db.LessonProgress.CountAsync(p => p.UserId == request.UserId && p.Completed, ct);
+        var userId = _currentUser.UserId;
+        var stats = await _db.UserStats.FirstOrDefaultAsync(s => s.UserId == userId, ct);
+        var completedLessons = await _db.LessonProgress.CountAsync(p => p.UserId == userId && p.Completed, ct);
 
         // Average score across best attempt per lesson
         var bestScores = await _db.LessonProgress
-            .Where(p => p.UserId == request.UserId && p.Completed)
+            .Where(p => p.UserId == userId && p.Completed)
             .GroupBy(p => p.LessonId)
             .Select(g => g.Max(p => p.Score))
             .ToListAsync(ct);
