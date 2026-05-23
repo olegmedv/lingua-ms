@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 8 | Done: 7 | Blocked: 1
+- Pending: 7 | Done: 8 | Blocked: 1
 - Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -193,7 +193,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Decision (2026-05-23)**: keep AntD, drop Tailwind. The admin pages are AntD-heavy already (Modal, Form, Upload).
 
 ### REF-011 — `LessonManager.tsx`: pick one UI library
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: Same as REF-010.

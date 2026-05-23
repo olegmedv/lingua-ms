@@ -1,12 +1,29 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Modal, Form, Input, InputNumber, Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import {
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  Button,
+  Card,
+  Empty,
+  Row,
+  Col,
+  Space,
+  Flex,
+  Typography,
+} from 'antd';
+import {
+  PlusOutlined,
+  LeftOutlined,
+  RightOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from '@ant-design/icons';
 import { api } from '../../api/client';
 import { API } from '../../api/endpoints';
-import { ChevronLeft, ChevronRight, Pencil, Trash2 } from 'lucide-react';
 import type { Lesson } from '../../types/api';
-import { Card } from '../../components/ui';
 
 export default function LessonManager() {
   const { langId } = useParams();
@@ -45,63 +62,65 @@ export default function LessonManager() {
   };
 
   return (
-    <div className="p-6 md:p-10">
-      <Link to="/admin/languages" className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-3">
-        <ChevronLeft className="w-4 h-4" /> Languages
+    <div style={{ padding: 24 }}>
+      <Link to="/admin/languages">
+        <Space size={4}>
+          <LeftOutlined /> Languages
+        </Space>
       </Link>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Lessons</h1>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}>
+
+      <Flex justify="space-between" align="center" style={{ margin: '12px 0 24px' }}>
+        <Typography.Title level={2} style={{ margin: 0 }}>Lessons</Typography.Title>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
+        >
           Add Lesson
         </Button>
-      </div>
+      </Flex>
 
       {lessons.length === 0 ? (
-        <p className="text-gray-400 py-12 text-center">No lessons yet. Create one to get started.</p>
+        <Empty description="No lessons yet. Create one to get started." />
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        <Row gutter={[12, 12]}>
           {lessons.sort((a, b) => a.order - b.order).map(lesson => (
-            <Card
-              key={lesson.id}
-              onClick={() => navigate(`/admin/lessons/${lesson.id}/exercises`)}
-              clickable
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs text-gray-400 font-medium">#{lesson.order}</span>
-                    <h3 className="font-semibold text-gray-800 truncate">{lesson.title}</h3>
+            <Col xs={24} md={12} lg={8} key={lesson.id}>
+              <Card hoverable onClick={() => navigate(`/admin/lessons/${lesson.id}/exercises`)}>
+                <Flex align="flex-start" justify="space-between">
+                  <div>
+                    <Space size={8}>
+                      <Typography.Text type="secondary">#{lesson.order}</Typography.Text>
+                      <Typography.Text strong>{lesson.title}</Typography.Text>
+                    </Space>
+                    {lesson.description && (
+                      <Typography.Paragraph type="secondary" ellipsis={{ rows: 1 }} style={{ marginBottom: 0 }}>
+                        {lesson.description}
+                      </Typography.Paragraph>
+                    )}
                   </div>
-                  {lesson.description && (
-                    <p className="text-sm text-gray-500 line-clamp-1">{lesson.description}</p>
-                  )}
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-300 group-hover:text-gray-500 shrink-0 mt-0.5" />
-              </div>
+                  <RightOutlined style={{ color: '#d1d5db' }} />
+                </Flex>
 
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-500">Pass: {lesson.passThreshold}%</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={(e) => handleEdit(e, lesson)}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={(e) => handleDelete(e, lesson.id)}
-                    className="p-1.5 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </Card>
+                <Flex align="center" justify="space-between" style={{ marginTop: 12 }}>
+                  <Typography.Text type="secondary">Pass: {lesson.passThreshold}%</Typography.Text>
+                  <Space>
+                    <Button type="text" icon={<EditOutlined />} onClick={(e) => handleEdit(e, lesson)} />
+                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lesson.id)} />
+                  </Space>
+                </Flex>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
       )}
 
-      <Modal title={editing ? 'Edit Lesson' : 'Add Lesson'} open={modalOpen} onCancel={() => setModalOpen(false)} onOk={() => form.submit()}>
+      <Modal
+        title={editing ? 'Edit Lesson' : 'Add Lesson'}
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        onOk={() => form.submit()}
+      >
         <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ order: 0, passThreshold: 80 }}>
           <Form.Item name="title" label="Title" rules={[{ required: true }]}><Input /></Form.Item>
           <Form.Item name="description" label="Description"><Input.TextArea /></Form.Item>
