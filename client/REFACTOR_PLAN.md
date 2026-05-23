@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 4 | Done: 11 | Blocked: 1
+- Pending: 4 | Done: 12 | Blocked: 0
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -14,13 +14,15 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 ## Items
 
 ### REF-001 — Set up OpenAPI codegen and generate `src/api/generated/`
-- **Status**: blocked
-- **Blocked reason (2026-05-23)**: backend swagger endpoint not reachable. Probed `http://localhost:5292/swagger/v1/swagger.json` (timeout) and `.env.production` has `VITE_API_URL=` empty. The codegen needs a running backend to fetch the OpenAPI document; nothing to generate from. Resume by starting the API and running the next `/loop refactor-execute`. Transitively blocks REF-002, REF-003, REF-004, REF-005 (they stay `pending` because their `Depends on` chain leads here).
+- **Status**: done
+- **Completed**: 2026-05-23 (autonomous tick after backend came up)
 - **Risk**: HIGH
 - **Requires decision**: N
+- **Implementation note**: `openapi-typescript-codegen@0.30.0` cannot fetch URLs directly (it tries to read them as files). The `generate-api` script downloads `${VITE_API_URL:-http://localhost:5292}/swagger/v1/swagger.json` to a temp `swagger.tmp.json` via Node's `http`/`https` module, runs the codegen against that, then deletes the temp file in a `finally` block. Codegen produced 31 files (6 core, 6 services, 18 models, 1 index). `OpenAPI.TOKEN` is typed `string | Resolver<string> | undefined` — the token-resolver wiring is left to REF-005.
 - **Rule**: "API types and services are **generated** from backend OpenAPI. Never hand-written." / "Generator: `openapi-typescript-codegen` (or equivalent). Output: `src/api/generated/`." / "Script: `npm run generate-api` pulls from `${VITE_API_URL}/swagger/v1/swagger.json`."
 - **Scope**:
   - [package.json](package.json) — add `openapi-typescript-codegen` dev dep and `generate-api` npm script (dep approved by user 2026-05-23)
+  - `package-lock.json` — implicit lockfile update accompanying the dep add
   - `src/api/generated/` — new directory, populated by codegen (do not hand-edit)
 - **Depends on**: none
 - **DoD**:
