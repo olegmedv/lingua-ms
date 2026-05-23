@@ -13,7 +13,8 @@ public class DeleteLessonHandler : IRequestHandler<DeleteLessonCommand>
     {
         var lesson = await _db.Lessons.FirstOrNotFoundAsync(l => l.Id == request.Id, ct);
 
-        _db.Lessons.Remove(lesson);
+        lesson.IsDeleted = true;
+        lesson.DeletedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(ct);
     }
 }

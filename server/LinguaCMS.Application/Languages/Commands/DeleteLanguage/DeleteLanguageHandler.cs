@@ -13,7 +13,8 @@ public class DeleteLanguageHandler : IRequestHandler<DeleteLanguageCommand>
     {
         var lang = await _db.Languages.FirstOrNotFoundAsync(l => l.Id == request.Id, ct);
 
-        _db.Languages.Remove(lang);
+        lang.IsDeleted = true;
+        lang.DeletedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(ct);
     }
 }

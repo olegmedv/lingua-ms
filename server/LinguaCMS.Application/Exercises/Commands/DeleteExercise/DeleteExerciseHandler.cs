@@ -38,7 +38,8 @@ public class DeleteExerciseHandler : IRequestHandler<DeleteExerciseCommand>
                         urlsToDelete.Add(item.GetString()!);
         }
 
-        _db.Exercises.Remove(exercise);
+        exercise.IsDeleted = true;
+        exercise.DeletedAt = DateTime.UtcNow;
         await _db.SaveChangesAsync(ct);
 
         foreach (var url in urlsToDelete)
