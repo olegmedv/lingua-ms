@@ -18,17 +18,17 @@ public class ExercisesController : ControllerBase
     public async Task<ActionResult<List<ExerciseDto>>> GetByLesson(Guid lessonId)
         => Ok(await _mediator.Send(new GetExercisesQuery(lessonId)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPost("lessons/{lessonId}/exercises")]
     public async Task<ActionResult<ExerciseDto>> Create(Guid lessonId, [FromBody] CreateExerciseRequest request)
         => Ok(await _mediator.Send(new CreateExerciseCommand(lessonId, request.Type, request.ContentJson, request.AudioUrl, request.Order)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPut("exercises/{id}")]
     public async Task<ActionResult<ExerciseDto>> Update(Guid id, [FromBody] UpdateExerciseRequest request)
         => Ok(await _mediator.Send(new UpdateExerciseCommand(id, request.Type, request.ContentJson, request.AudioUrl, request.Order)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpDelete("exercises/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

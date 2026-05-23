@@ -4,7 +4,7 @@ Generated: 2026-05-23. Source spec: "Block demo user (Role == Demo) from mutatio
 
 ## Summary
 - Total items: 7
-- Pending: 3 | Done: 4 | Blocked: 0 | Superseded: 0
+- Pending: 2 | Done: 5 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0 (all decisions resolved during iteration 1)
 - Critic iterations: 2
 - Critic verdict: approved (only LOW notes after iteration 2)
@@ -94,7 +94,8 @@ FEAT-001 → FEAT-002 → FEAT-003 → FEAT-007 → FEAT-006 → FEAT-005 → FE
   - `dotnet build` returns 0; `dotnet test` returns 0
 
 ### FEAT-006 — Widen `[Authorize(Roles = "Admin")]` → `"Admin,Demo"` on mutation endpoints
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N (option A approved iteration 1)
 - **Spec reference**: Implied — the spec presumes demo commands reach the MediatR pipeline. Currently `[Authorize(Roles = "Admin")]` would 403 them at the controller layer before the pipeline runs. Widening to admit both roles preserves pipeline reachability so the behavior gate (FEAT-003/004) can do its job.

@@ -26,17 +26,17 @@ public class LanguagesController : ControllerBase
     public async Task<ActionResult<LanguageDto>> GetById(Guid id)
         => Ok(await _mediator.Send(new GetLanguageByIdQuery(id)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPost]
     public async Task<ActionResult<LanguageDto>> Create([FromBody] CreateLanguageRequest request)
         => Ok(await _mediator.Send(new CreateLanguageCommand(request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpPut("{id}")]
     public async Task<ActionResult<LanguageDto>> Update(Guid id, [FromBody] UpdateLanguageRequest request)
         => Ok(await _mediator.Send(new UpdateLanguageCommand(id, request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Demo")]
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
