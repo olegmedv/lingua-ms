@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/auth';
 import { Home, User, Shield, LogOut, BookOpen } from 'lucide-react';
+import DemoModeBanner from './components/admin/DemoModeBanner';
 
 export default function App() {
   const { token, user, loadUser, logout } = useAuthStore();
@@ -23,10 +24,11 @@ export default function App() {
   const navItems = [
     { to: '/', icon: Home, label: 'Learn' },
     { to: '/profile', icon: User, label: 'Profile' },
-    ...(isAdmin ? [{ to: '/admin', icon: Shield, label: 'Admin' }] : []),
+    ...(isAdmin || isDemo ? [{ to: '/admin', icon: Shield, label: 'Admin' }] : []),
   ];
 
   const isExercise = location.pathname.includes('/play') || location.pathname.includes('/complete');
+  const isAdminPath = location.pathname === '/admin' || location.pathname.startsWith('/admin/');
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -41,7 +43,8 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Demo banner */}
-      {isDemo && !isExercise && (
+      {isDemo && isAdminPath && <DemoModeBanner />}
+      {isDemo && !isAdminPath && !isExercise && (
         <div className="bg-brand/10 border-b border-brand/20 px-4 py-2 text-center text-sm">
           <span className="text-brand font-medium">Demo mode</span>
           <span className="text-gray-600"> — nothing is saved. </span>
@@ -52,7 +55,7 @@ export default function App() {
 
       {/* Desktop Sidebar */}
       <aside className={`hidden md:flex fixed left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50 ${
-        isDemo && !isExercise ? 'top-[41px]' : 'top-0'
+        isDemo && (isAdminPath || !isExercise) ? 'top-[41px]' : 'top-0'
       }`}>
         <div className="p-5 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2.5">

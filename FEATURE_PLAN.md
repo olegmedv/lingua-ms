@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 3 | Done: 9 | Blocked: 0 | Superseded: 0
+- Pending: 2 | Done: 10 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -260,7 +260,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - **Dismissal-persistence note** (Critique 1 MED#4): Banner is mounted at `App.tsx` scope (parent of admin `<Outlet />` per FEAT-010). React Router swaps `<Outlet />` children on navigation but `App.tsx` stays mounted — therefore `useState` inside `DemoModeBanner` survives navigation between `/admin`, `/admin/languages`, `/admin/lessons/:id/exercises`, etc. A user who dismisses once does NOT see the banner reappear on the next admin sub-route. On logout, the auth gate in App.tsx unmounts the banner (via redirect to `/login`), naturally resetting state for the next session.
 
 ### FEAT-010 — Mount banner in `App.tsx` and widen admin nav for Demo role
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "show banner on /admin/*" + "users with Role=Demo see and use full admin UI exactly like a regular admin" (implies admin nav must be visible to Demo users).
