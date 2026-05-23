@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 8 | Done: 4 | Blocked: 0 | Superseded: 0
+- Pending: 7 | Done: 5 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -166,7 +166,8 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - `dotnet test` (architecture tests including naming convention for `*Behavior`) passes.
 
 ### FEAT-005 — Register `DemoTransactionRollbackBehavior` in pipeline
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "pipeline behavior that wraps mutation handlers"
