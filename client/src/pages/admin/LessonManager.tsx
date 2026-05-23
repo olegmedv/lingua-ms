@@ -22,12 +22,15 @@ import {
   DeleteOutlined,
 } from '@ant-design/icons';
 import { useLessons } from '../../hooks/useLessons';
+import { useIsDemoUser } from '../../hooks/useIsDemoUser';
+import DemoTooltip from '../../components/admin/DemoTooltip';
 import type { LessonDto as Lesson } from '../../api/generated';
 
 export default function LessonManager() {
   const { langId } = useParams();
   const navigate = useNavigate();
   const lessonsApi = useLessons();
+  const isDemo = useIsDemoUser();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Lesson | null>(null);
@@ -71,13 +74,16 @@ export default function LessonManager() {
 
       <Flex justify="space-between" align="center" style={{ margin: '12px 0 24px' }}>
         <Typography.Title level={2} style={{ margin: 0 }}>Lessons</Typography.Title>
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
-        >
-          Add Lesson
-        </Button>
+        <DemoTooltip>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            disabled={isDemo}
+            onClick={() => { setEditing(null); form.resetFields(); setModalOpen(true); }}
+          >
+            Add Lesson
+          </Button>
+        </DemoTooltip>
       </Flex>
 
       {lessons.length === 0 ? (
@@ -105,8 +111,12 @@ export default function LessonManager() {
                 <Flex align="center" justify="space-between" style={{ marginTop: 12 }}>
                   <Typography.Text type="secondary">Pass: {lesson.passThreshold}%</Typography.Text>
                   <Space>
-                    <Button type="text" icon={<EditOutlined />} onClick={(e) => handleEdit(e, lesson)} />
-                    <Button type="text" danger icon={<DeleteOutlined />} onClick={(e) => handleDelete(e, lesson.id!)} />
+                    <DemoTooltip>
+                      <Button type="text" icon={<EditOutlined />} disabled={isDemo} onClick={(e) => handleEdit(e, lesson)} />
+                    </DemoTooltip>
+                    <DemoTooltip>
+                      <Button type="text" danger icon={<DeleteOutlined />} disabled={isDemo} onClick={(e) => handleDelete(e, lesson.id!)} />
+                    </DemoTooltip>
                   </Space>
                 </Flex>
               </Card>
@@ -120,6 +130,7 @@ export default function LessonManager() {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={() => form.submit()}
+        okButtonProps={{ disabled: isDemo }}
       >
         <Form form={form} layout="vertical" onFinish={handleSave} initialValues={{ order: 0, passThreshold: 80 }}>
           <Form.Item name="title" label="Title" rules={[{ required: true }]}><Input /></Form.Item>

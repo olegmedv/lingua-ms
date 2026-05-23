@@ -14,6 +14,8 @@ import {
   MinusCircleOutlined,
 } from '@ant-design/icons';
 import { useFiles } from '../../hooks/useFiles';
+import { useIsDemoUser } from '../../hooks/useIsDemoUser';
+import DemoTooltip from '../../components/admin/DemoTooltip';
 
 interface Props {
   type: number;
@@ -23,6 +25,7 @@ interface Props {
 
 export default function ExerciseTypeFields({ type, form, onUpload }: Props) {
   const files = useFiles();
+  const isDemo = useIsDemoUser();
   const audioUrl = Form.useWatch('audioUrl', form);
   const isCorrectImage = Form.useWatch('is_correctImage', form);
   const isDi1 = Form.useWatch('is_di1', form);
@@ -44,9 +47,11 @@ export default function ExerciseTypeFields({ type, form, onUpload }: Props) {
         <input type="hidden" />
       </Form.Item>
       <Space size={12}>
-        <Upload accept="image/*" beforeUpload={(f) => { uploadFile(f, fieldName); return false; }} showUploadList={false}>
-          <Button icon={<UploadOutlined />}>Upload Image</Button>
-        </Upload>
+        <DemoTooltip>
+          <Upload accept="image/*" beforeUpload={(f) => { uploadFile(f, fieldName); return false; }} showUploadList={false} disabled={isDemo}>
+            <Button icon={<UploadOutlined />} disabled={isDemo}>Upload Image</Button>
+          </Upload>
+        </DemoTooltip>
         {currentUrl
           ? <Typography.Text type="success">✓ {currentUrl.split('/').pop()}</Typography.Text>
           : <Typography.Text type="secondary">No file selected</Typography.Text>
@@ -65,9 +70,11 @@ export default function ExerciseTypeFields({ type, form, onUpload }: Props) {
         <input type="hidden" />
       </Form.Item>
       <Space size={12}>
-        <Upload accept="audio/*" beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false}>
-          <Button icon={<UploadOutlined />}>Upload Audio</Button>
-        </Upload>
+        <DemoTooltip>
+          <Upload accept="audio/*" beforeUpload={(f) => { uploadFile(f, 'audioUrl'); return false; }} showUploadList={false} disabled={isDemo}>
+            <Button icon={<UploadOutlined />} disabled={isDemo}>Upload Audio</Button>
+          </Upload>
+        </DemoTooltip>
         {audioUrl
           ? <Typography.Text type="success">✓ {audioUrl.split('/').pop()}</Typography.Text>
           : <Typography.Text type="secondary">No file selected</Typography.Text>

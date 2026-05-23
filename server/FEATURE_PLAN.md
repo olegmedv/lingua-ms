@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 2 | Done: 12 | Blocked: 0 | Superseded: 0
+- Pending: 1 | Done: 13 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -239,7 +239,8 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - `npm run lint` returns 0; `npm run build` returns 0
 
 ### FEAT-013 — Disable mutation buttons + tooltip across admin pages
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N (option a confirmed in spec; mechanical pattern across files)
 - **Spec reference**: "Disable all mutation buttons (delete/edit/save/upload) for demo users with tooltip 'Demo cannot modify'. Read access unchanged — demo navigates all admin pages, sees all data, filters, paginations." Option (a) explicitly chosen over (b).
