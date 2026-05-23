@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useLessons } from '../../hooks/useLessons';
+import { useExercises } from '../../hooks/useExercises';
+import { useProgress } from '../../hooks/useProgress';
 import { ProgressBar } from '../../components/ui';
 import MultipleChoice from '../../components/exercises/MultipleChoice';
 import ListenAndSelect from '../../components/exercises/ListenAndSelect';
@@ -27,6 +28,9 @@ export default function ExercisePlayer() {
   const state = location.state as { langId?: string; demo?: boolean } | null;
   const langId = state?.langId;
   const isDemo = state?.demo === true;
+  const lessonsApi = useLessons();
+  const exercisesApi = useExercises();
+  const progressApi = useProgress();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [current, setCurrent] = useState(0);
@@ -34,9 +38,9 @@ export default function ExercisePlayer() {
   const [feedback, setFeedback] = useState<Feedback | null>(null);
 
   useEffect(() => {
-    api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises).catch(() => {});
-    api.get<Lesson>(API.lessons.byId(lessonId!)).then(setLesson).catch(() => {});
-  }, [lessonId]);
+    exercisesApi.listForLesson(lessonId!).then(setExercises).catch(() => {});
+    lessonsApi.byId(lessonId!).then(setLesson).catch(() => {});
+  }, [lessonId, exercisesApi, lessonsApi]);
 
   const isFlashcard = exercises[current]?.type === 7;
 
@@ -58,7 +62,7 @@ export default function ExercisePlayer() {
       if (isDemo) {
         navigate(`/demo/lessons/${lessonId}/complete`, { state: completeState });
       } else {
-        api.post<{ xpEarned: number }>(API.progress.submit, { lessonId, score }).then((res) => {
+        progressApi.submit({ lessonId, score }).then((res) => {
           navigate(`/lessons/${lessonId}/complete`, { state: { ...completeState, xpEarned: res.xpEarned } });
         });
       }

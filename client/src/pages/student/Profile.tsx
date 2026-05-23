@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '../../store/auth';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useProgress } from '../../hooks/useProgress';
 import { LogOut, Trophy, CheckCircle, TrendingUp } from 'lucide-react';
 import { Button } from '../../components/ui';
 import type { StatsDto as Stats } from '../../api/generated';
 
 export default function Profile() {
   const { user, logout } = useAuthStore();
+  const progressApi = useProgress();
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    api.get<Stats>(API.progress.stats).then(setStats).catch(() => {});
-  }, []);
+    progressApi.stats().then(setStats).catch(() => {});
+  }, [progressApi]);
 
   return (
     <div className="p-6 md:p-10">

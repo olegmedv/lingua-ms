@@ -26,25 +26,27 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useLanguages } from '../../hooks/useLanguages';
+import { useFiles } from '../../hooks/useFiles';
 import type { LanguageDto as Language } from '../../api/generated';
 
 export default function LanguageManager() {
   const navigate = useNavigate();
+  const langs = useLanguages();
+  const files = useFiles();
   const [languages, setLanguages] = useState<Language[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Language | null>(null);
   const [form] = Form.useForm();
 
-  const load = () => api.get<Language[]>(API.languages.list).then(setLanguages);
-  useEffect(() => { load(); }, []);
+  const load = () => langs.list().then(setLanguages);
+  useEffect(() => { load(); }, [langs]);
 
   const handleSave = async (values: { name: string; description: string; imageUrl?: string; isPublished: boolean; isDemo: boolean }) => {
     if (editing) {
-      await api.put(API.languages.byId(editing.id!), values);
+      await langs.update(editing.id!, values);
     } else {
-      await api.post(API.languages.list, values);
+      await langs.create(values);
     }
     setModalOpen(false);
     setEditing(null);
@@ -54,7 +56,7 @@ export default function LanguageManager() {
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    await api.delete(API.languages.byId(id));
+    await langs.remove(id);
     load();
   };
 
@@ -66,7 +68,7 @@ export default function LanguageManager() {
   };
 
   const handleUpload = async (file: File) => {
-    const res = await api.upload(API.files.upload, file);
+    const res = await files.upload(file);
     form.setFieldsValue({ imageUrl: res.url });
     message.success('Uploaded');
     return false;

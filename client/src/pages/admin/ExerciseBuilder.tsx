@@ -23,9 +23,10 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
-import type { ExerciseDto as Exercise, LessonDto as Lesson } from '../../api/generated';
+import { useLessons } from '../../hooks/useLessons';
+import { useExercises } from '../../hooks/useExercises';
+import { useFiles } from '../../hooks/useFiles';
+import type { ExerciseDto as Exercise, ExerciseType, LessonDto as Lesson } from '../../api/generated';
 import ExerciseTypeFields from './ExerciseTypeFields';
 
 const exerciseTypes = [
@@ -129,6 +130,9 @@ function parseContentToFields(type: number, json: string): Record<string, unknow
 
 export default function ExerciseBuilder() {
   const { lessonId } = useParams();
+  const lessonsApi = useLessons();
+  const exercisesApi = useExercises();
+  const files = useFiles();
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -142,13 +146,13 @@ export default function ExerciseBuilder() {
   const originalAudioUrl = useRef<string | null>(null);
   const originalImageUrls = useRef<{ correct: string | null; di1: string | null; di2: string | null; di3: string | null }>({ correct: null, di1: null, di2: null, di3: null });
 
-  const deleteFile = (url: string) => api.delete(API.files.delete(url)).catch(() => {});
+  const deleteFile = (url: string) => files.remove(url).catch(() => {});
 
-  const load = () => api.get<Exercise[]>(API.lessons.exercises(lessonId!)).then(setExercises);
+  const load = () => exercisesApi.listForLesson(lessonId!).then(setExercises);
   useEffect(() => {
     load();
-    api.get<Lesson>(API.lessons.byId(lessonId!)).then(setLesson);
-  }, [lessonId]);
+    lessonsApi.byId(lessonId!).then(setLesson);
+  }, [lessonId, exercisesApi, lessonsApi]);
 
   const openCreate = () => {
     sessionUploads.current = [];
@@ -195,15 +199,15 @@ export default function ExerciseBuilder() {
   };
 
   const handleSave = async (values: Record<string, unknown>) => {
-    const type = values.type as number;
+    const type = values.type as ExerciseType;
     const contentJson = buildContentJson(type, values);
     const savedFileUrl = (values.audioUrl as string) || null;
     const payload = { type, contentJson, audioUrl: savedFileUrl, order: (values.order as number) || 0 };
 
     if (editing) {
-      await api.put(API.exercises.byId(editing.id!), payload);
+      await exercisesApi.update(editing.id!, payload);
     } else {
-      await api.post(API.lessons.exercises(lessonId!), payload);
+      await exercisesApi.create(lessonId!, payload);
     }
 
     const savedUrls = new Set<string>(savedFileUrl ? [savedFileUrl] : []);
@@ -232,7 +236,7 @@ export default function ExerciseBuilder() {
   };
 
   const handleDelete = async (id: string) => {
-    await api.delete(API.exercises.byId(id));
+    await exercisesApi.remove(id);
     load();
   };
 

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
+import { useLanguages } from '../../hooks/useLanguages';
 import type { LanguageDto as Language } from '../../api/generated';
 
 export default function Dashboard() {
   const { user } = useAuthStore();
+  const langs = useLanguages();
   const [languages, setLanguages] = useState<Language[]>([]);
 
   useEffect(() => {
-    api.get<Language[]>(API.languages.list).then(setLanguages).catch(() => {});
-  }, []);
+    langs.list().then(setLanguages).catch(() => {});
+  }, [langs]);
 
   return (
     <div className="p-6 md:p-10 max-w-3xl">

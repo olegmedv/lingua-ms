@@ -13,8 +13,7 @@ import {
   UploadOutlined,
   MinusCircleOutlined,
 } from '@ant-design/icons';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useFiles } from '../../hooks/useFiles';
 
 interface Props {
   type: number;
@@ -23,6 +22,7 @@ interface Props {
 }
 
 export default function ExerciseTypeFields({ type, form, onUpload }: Props) {
+  const files = useFiles();
   const audioUrl = Form.useWatch('audioUrl', form);
   const isCorrectImage = Form.useWatch('is_correctImage', form);
   const isDi1 = Form.useWatch('is_di1', form);
@@ -30,9 +30,10 @@ export default function ExerciseTypeFields({ type, form, onUpload }: Props) {
   const isDi3 = Form.useWatch('is_di3', form);
 
   const uploadFile = async (file: File, field: string) => {
-    const res = await api.upload(API.files.upload, file);
-    form.setFieldsValue({ [field]: res.url });
-    onUpload(res.url);
+    const res = await files.upload(file);
+    const url = res.url!;
+    form.setFieldsValue({ [field]: url });
+    onUpload(url);
     message.success('Uploaded');
     return false;
   };

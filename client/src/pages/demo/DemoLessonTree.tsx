@@ -1,26 +1,28 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useLanguages } from '../../hooks/useLanguages';
+import { useLessons } from '../../hooks/useLessons';
 import { ChevronRight } from 'lucide-react';
 import type { LanguageDto as Language, LessonDto as Lesson } from '../../api/generated';
 import { Card } from '../../components/ui';
 
 export default function DemoLessonTree() {
   const navigate = useNavigate();
+  const langs = useLanguages();
+  const lessonsApi = useLessons();
   const [language, setLanguage] = useState<Language | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    api.get<Language>(API.languages.demo)
+    langs.demo()
       .then(lang => {
         setLanguage(lang);
-        return api.get<Lesson[]>(API.languages.lessons(lang.id!));
+        return lessonsApi.listForLanguage(lang.id!);
       })
       .then(setLessons)
       .catch(() => setError(true));
-  }, []);
+  }, [langs, lessonsApi]);
 
   if (error) {
     return (

@@ -21,26 +21,26 @@ import {
   EditOutlined,
   DeleteOutlined,
 } from '@ant-design/icons';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
+import { useLessons } from '../../hooks/useLessons';
 import type { LessonDto as Lesson } from '../../api/generated';
 
 export default function LessonManager() {
   const { langId } = useParams();
   const navigate = useNavigate();
+  const lessonsApi = useLessons();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Lesson | null>(null);
   const [form] = Form.useForm();
 
-  const load = () => api.get<Lesson[]>(API.languages.lessons(langId!)).then(setLessons);
-  useEffect(() => { load(); }, [langId]);
+  const load = () => lessonsApi.listForLanguage(langId!).then(setLessons);
+  useEffect(() => { load(); }, [langId, lessonsApi]);
 
   const handleSave = async (values: { title: string; description?: string; order: number; passThreshold: number }) => {
     if (editing) {
-      await api.put(API.lessons.byId(editing.id!), values);
+      await lessonsApi.update(editing.id!, values);
     } else {
-      await api.post(API.languages.lessons(langId!), values);
+      await lessonsApi.create(langId!, values);
     }
     setModalOpen(false);
     setEditing(null);
@@ -50,7 +50,7 @@ export default function LessonManager() {
 
   const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    await api.delete(API.lessons.byId(id));
+    await lessonsApi.remove(id);
     load();
   };
 

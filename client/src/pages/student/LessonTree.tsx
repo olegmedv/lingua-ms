@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { api } from '../../api/client';
-import { API } from '../../api/endpoints';
 import { useAuthStore } from '../../store/auth';
+import { useLessons } from '../../hooks/useLessons';
+import { useProgress } from '../../hooks/useProgress';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import type { LessonDto as Lesson, ProgressDto as Progress } from '../../api/generated';
 import { Card, Badge } from '../../components/ui';
@@ -11,13 +11,15 @@ export default function LessonTree() {
   const { langId } = useParams();
   const navigate = useNavigate();
   const { isDemo } = useAuthStore();
+  const lessonsApi = useLessons();
+  const progressApi = useProgress();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [progress, setProgress] = useState<Progress[]>([]);
 
   useEffect(() => {
-    api.get<Lesson[]>(API.languages.lessons(langId!)).then(setLessons).catch(() => {});
-    api.get<Progress[]>(API.progress.my).then(setProgress).catch(() => {});
-  }, [langId]);
+    lessonsApi.listForLanguage(langId!).then(setLessons).catch(() => {});
+    progressApi.my().then(setProgress).catch(() => {});
+  }, [langId, lessonsApi, progressApi]);
 
   const getProgress = (lessonId: string) => progress.find(p => p.lessonId === lessonId);
   const isCompleted = (lessonId: string) => progress.some(p => p.lessonId === lessonId && p.completed);

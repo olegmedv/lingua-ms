@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 3 | Done: 13 | Blocked: 0
+- Pending: 2 | Done: 14 | Blocked: 0
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -59,10 +59,13 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
   - `npm run build` returns 0
 
 ### REF-003 — Introduce hooks layer; pages call hooks, hooks call generated services
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: HIGH
 - **Requires decision**: N
 - **Decision (2026-05-23)**: thin hand-written hooks over generated services (no TanStack Query).
+- **Scope expansion (2026-05-23)**: original scope listed 8 pages but two more files needed touching to satisfy the DoD: (1) `src/pages/admin/ExerciseTypeFields.tsx` — created by REF-016 after the original audit; it's a component that also calls `api.upload`, so the "no page or component imports api/client" rule required migrating it too. (2) `src/api/openapi-config.ts` — new bootstrap file that sets `OpenAPI.BASE = API_URL` and `OpenAPI.TOKEN = () => useAuthStore.getState().token ?? ''`. Each hook imports it for the side effect. This bootstrap was originally REF-005 territory (token resolver) but had to land here because the generated services can't reach the API without it. REF-005 still owns the localStorage confinement work.
+- **Implementation note**: each hook (`useLanguages`, `useLessons`, `useExercises`, `useProgress`, `useFiles`) returns a `useMemo`-stabilised object of action methods over the matching generated service. The generated service method names (`getApiLanguages1`, `getApiLanguagesDemo`, etc.) are renamed to clean ones in the hook layer (`byId`, `demo`, `listForLanguage`).
 - **Rule**: "No direct HTTP from components. Components call hooks; hooks call generated services."
 - **Scope**:
   - `src/hooks/use<Name>.ts` — new files (one hook per resource: e.g. `useLanguages`, `useLessons`, `useExercises`, `useProgress`, `useStats`)
