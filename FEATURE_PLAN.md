@@ -4,7 +4,7 @@ Generated: 2026-05-24. Description: "Demo admin mode — users with Role=Demo se
 
 ## Summary
 - Total items: 12
-- Pending: 5 | Done: 7 | Blocked: 0 | Superseded: 0
+- Pending: 4 | Done: 8 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: 3
 - Critic verdict: approved (3 LOW notes only, no blockers)
@@ -216,7 +216,9 @@ Auto mode active. The spec is unusually well-defined (rollback approach, banner 
   - `npm run lint` and `npm run build` (`tsc -b && vite build`) both pass.
 
 ### FEAT-008 — Derive demo state from role in auth store; remove standalone `isDemo` flag
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-24
+- **Scope expansion at execute time**: `client/src/pages/student/LessonTree.tsx` added to scope. The original Discovery report classified this file as "out of scope — references `LanguageDto.isDemo` (entity flag)", but it also has `const { isDemo } = useAuthStore()` at line 13 used for the lesson-unlock gate at line 28. One-line fix applied: `useAuthStore((s) => s.user?.role === 'Demo')`. User-authorized scope expansion during execute-plan.
 - **Risk**: MED (was LOW — raised after Critique 1 MED#1 scope ambiguity and MED#2 first-paint flicker)
 - **Requires decision**: N
 - **Spec reference**: "Frontend: detect Role=Demo from JWT" — single source of truth.

@@ -7,7 +7,6 @@ import type { UserDto as User } from '../api/generated';
 interface AuthState {
   user: User | null;
   token: string | null;
-  isDemo: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, displayName: string, password: string) => Promise<void>;
   demoLogin: () => Promise<void>;
@@ -20,25 +19,24 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       token: null,
-      isDemo: false,
 
       login: async (email, password) => {
         const res = await AuthService.postApiAuthLogin({ requestBody: { email, password } });
-        set({ token: res.token!, user: res.user ?? null, isDemo: false });
+        set({ token: res.token!, user: res.user ?? null });
       },
 
       register: async (email, displayName, password) => {
         const res = await AuthService.postApiAuthRegister({ requestBody: { email, displayName, password } });
-        set({ token: res.token!, user: res.user ?? null, isDemo: false });
+        set({ token: res.token!, user: res.user ?? null });
       },
 
       demoLogin: async () => {
         const res = await AuthService.postApiAuthDemo();
-        set({ token: res.token!, user: res.user ?? null, isDemo: true });
+        set({ token: res.token!, user: res.user ?? null });
       },
 
       logout: () => {
-        set({ token: null, user: null, isDemo: false });
+        set({ token: null, user: null });
       },
 
       loadUser: async () => {
@@ -46,13 +44,13 @@ export const useAuthStore = create<AuthState>()(
           const user = await AuthService.getApiAuthMe();
           set({ user });
         } catch {
-          set({ token: null, user: null, isDemo: false });
+          set({ token: null, user: null });
         }
       },
     }),
     {
       name: 'auth',
-      partialize: (state) => ({ token: state.token, isDemo: state.isDemo }),
+      partialize: (state) => ({ token: state.token, user: state.user }),
     },
   ),
 );

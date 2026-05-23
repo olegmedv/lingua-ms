@@ -10,7 +10,7 @@ import { Card, Badge } from '../../components/ui';
 export default function LessonTree() {
   const { langId } = useParams();
   const navigate = useNavigate();
-  const { isDemo } = useAuthStore();
+  const isDemo = useAuthStore((s) => s.user?.role === 'Demo');
   const lessonsApi = useLessons();
   const progressApi = useProgress();
   const [lessons, setLessons] = useState<Lesson[]>([]);

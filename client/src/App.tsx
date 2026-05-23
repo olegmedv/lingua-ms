@@ -4,7 +4,7 @@ import { useAuthStore } from './store/auth';
 import { Home, User, Shield, LogOut, BookOpen } from 'lucide-react';
 
 export default function App() {
-  const { token, user, isDemo, loadUser, logout } = useAuthStore();
+  const { token, user, loadUser, logout } = useAuthStore();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,6 +19,7 @@ export default function App() {
   if (!token) return null;
 
   const isAdmin = user?.role === 'Admin';
+  const isDemo = user?.role === 'Demo';
   const navItems = [
     { to: '/', icon: Home, label: 'Learn' },
     { to: '/profile', icon: User, label: 'Profile' },
