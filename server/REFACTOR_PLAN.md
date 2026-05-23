@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 12 | Done: 8 | Blocked: 0 | Superseded: 2
+- Pending: 11 | Done: 9 | Blocked: 0 | Superseded: 2
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -119,7 +119,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-006 — Extract inline EF configurations into per-entity Configuration classes
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "EF configuration | `<Sln>.Data/Configurations/<Entity>Configuration.cs`" + "Logic in controllers, entities, or EF configurations" (Never — keep configs declarative; move OnModelCreating fluent calls to per-entity classes).
