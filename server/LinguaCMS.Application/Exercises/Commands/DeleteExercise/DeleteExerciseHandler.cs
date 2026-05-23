@@ -19,18 +19,14 @@ public class DeleteExerciseHandler : IRequestHandler<DeleteExerciseCommand, Dele
 
         if (exercise.Type == ExerciseType.ImageSelect && !string.IsNullOrEmpty(exercise.ContentJson))
         {
-            try
-            {
-                var doc = JsonDocument.Parse(exercise.ContentJson);
-                var root = doc.RootElement;
-                if (root.TryGetProperty("correctImageUrl", out var correct) && correct.ValueKind == JsonValueKind.String)
-                    imageUrls.Add(correct.GetString()!);
-                if (root.TryGetProperty("distractorImages", out var distractors) && distractors.ValueKind == JsonValueKind.Array)
-                    foreach (var item in distractors.EnumerateArray())
-                        if (item.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(item.GetString()))
-                            imageUrls.Add(item.GetString()!);
-            }
-            catch { /* ignore parse errors */ }
+            var doc = JsonDocument.Parse(exercise.ContentJson);
+            var root = doc.RootElement;
+            if (root.TryGetProperty("correctImageUrl", out var correct) && correct.ValueKind == JsonValueKind.String)
+                imageUrls.Add(correct.GetString()!);
+            if (root.TryGetProperty("distractorImages", out var distractors) && distractors.ValueKind == JsonValueKind.Array)
+                foreach (var item in distractors.EnumerateArray())
+                    if (item.ValueKind == JsonValueKind.String && !string.IsNullOrEmpty(item.GetString()))
+                        imageUrls.Add(item.GetString()!);
         }
 
         _db.Exercises.Remove(exercise);

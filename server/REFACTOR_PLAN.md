@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 17 | Done: 4 | Blocked: 1
+- Pending: 16 | Done: 5 | Blocked: 1
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -410,7 +410,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-020 — Remove silent catch in DeleteExerciseHandler
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "No empty `catch` blocks. No `catch (Exception)` outside `<Sln>.API/Middleware/`. Let middleware handle global error translation." (Never)
