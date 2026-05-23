@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 22 | Done: 0 | Blocked: 0
+- Pending: 21 | Done: 1 | Blocked: 0
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -26,7 +26,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 ## Items
 
 ### REF-001 — Add Directory.Packages.props for central package management
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Versions in `Directory.Packages.props`."
