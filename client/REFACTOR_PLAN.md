@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 1 | Done: 15 | Blocked: 0
+- Pending: 0 | Done: 16 | Blocked: 0
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -104,10 +104,12 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Notes**: User decision required on whether to keep `src/api/client.ts` as an empty slot for future hand-written extras or remove the file entirely.
 
 ### REF-005 — Confine all `localStorage` access to the auth store; generated client pulls token via store
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Decision (2026-05-23)**: use `zustand/middleware` `persist` rather than scattered `localStorage` calls.
+- **Implementation note**: auth store now wraps its definition in `persist(...)` with `partialize` keeping only `token` and `isDemo` (user is server-fetched). `grep -rE "localStorage|sessionStorage" src/` returns nothing — persist handles storage internally under the key `'auth'`. Token resolver wiring (`OpenAPI.TOKEN = () => useAuthStore.getState().token ?? ''`) already landed in REF-003's `src/api/openapi-config.ts`. **Behavior change**: existing logged-in users will be logged out once after this commit because the persist key (`'auth'`, JSON) differs from the old keys (`'token'`, `'isDemo'`). A future commit could add a one-shot migration if needed.
 - **Rule**: "Stores own persisted state. Components never touch `localStorage` / `sessionStorage` directly." / "Read `localStorage` / `sessionStorage` outside a store." (Never list)
 - **Scope**:
   - [src/api/client.ts](src/api/client.ts) — 3 `localStorage` reads (removed by REF-004; ensure no replacement re-introduces direct access)
