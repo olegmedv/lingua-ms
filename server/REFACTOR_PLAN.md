@@ -1,13 +1,23 @@
 # Refactor Plan
 
-Generated: 2026-05-23. Re-audited: 2026-05-23 (4th pass, post-OpenAPI rule addition). Source: server/CLAUDE.md.
+Generated: 2026-05-23. Re-audited: 2026-05-23 (5th pass, post-REF-023 execution). Source: server/CLAUDE.md.
 
 ## Summary
-- Total items: 23
-- Pending: 0 | Done: 18 | Blocked: 0 | Superseded: 5
-- Items requiring user decision: 6
+- Total items: 25
+- Pending: 2 | Done: 18 | Blocked: 0 | Superseded: 5
+- Items requiring user decision: 7
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
+
+## Re-audit notes (2026-05-23, 5th pass)
+- REF-023 verified done: `c.SupportNonNullableReferenceTypes()` present at [LinguaCMS.API/Program.cs:58](LinguaCMS.API/Program.cs#L58).
+- Per-rule sweep of the 16 code-shape rules surfaced two violations of the "Controllers contain only `IMediator.Send(...)`" rule that prior audit passes missed:
+  - `FilesController.Upload` performs empty-file validation and `IFormFile.OpenReadStream()` extraction before the Send call.
+  - `LanguagesController.GetDemo` performs null-to-NotFound translation after the Send call (handler returns `LanguageDto?`; controller maps null → 404).
+- Why missed earlier: REF-016 audited `LanguagesController` only for the `User.IsInRole` issue in `GetAll`; the `GetDemo` body was outside its scope. REF-018 audited the file-handling refactor focused on `ExercisesController.Delete` and the `IFileStorage` introduction; `FilesController.Upload`'s validation/binding logic was not enumerated in REF-018 DoD.
+- These are violations of an **existing** rule, not a new rule. Per the skill rules (same rule + different fix per file → N items), they become two separate items: REF-024 (Files/Upload) and REF-025 (Languages/GetDemo).
+- IDs preserved: REF-001..REF-023. IDs issued: REF-024, REF-025.
+- 0 items silently resolved between audits.
 
 ## Re-audit notes (2026-05-23, 4th pass)
 - CLAUDE.md gained one new code-shape rule in commit `ab7c124`: **OpenAPI schema accuracy** — Swashbuckle must be configured to honor C# nullability annotations and `[Required]` attributes.
@@ -501,6 +511,45 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (4th pass, post-OpenAPI rule addit
   - `dotnet build` returns 0
   - Spot-check the regenerated `/swagger/v1/swagger.json`: at least one previously-string-with-default DTO property (e.g., `RegisterRequest.Email`) is emitted as `nullable: false` and listed in the schema's `required` array; at least one nullable property (e.g., `LanguageDto.ImageUrl`) is emitted as `nullable: true` and absent from `required`
   - Frontend OpenAPI codegen consumes the regenerated schema and produces required/non-nullable types for the affected fields (validated by the frontend client build — out of scope for this item's commit, but follows naturally)
+
+### REF-024 — Thin FilesController.Upload: move empty-file check and IFormFile binding out of the controller
+- **Status**: pending
+- **Risk**: MED
+- **Requires decision**: Y
+- **Rule**: "Controllers contain **only** `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return."
+- **Scope**:
+  - `LinguaCMS.API/Controllers/FilesController.cs` (the `Upload` action body — currently performs `if (file.Length == 0) return BadRequest(...)` and `await using var stream = file.OpenReadStream();` before the Send call)
+  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileCommand.cs` (command shape may need to change depending on the chosen approach)
+  - `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileHandler.cs`
+  - Possibly `LinguaCMS.Application/Files/Commands/UploadFile/UploadFileValidator.cs` (new — if the empty-file check moves to a FluentValidation validator)
+- **Depends on**: REF-018 (done)
+- **Decision needed**: two valid architectural fixes for the controller-thinness violation:
+  - **Option A — Command takes `IFormFile` directly**: controller becomes `=> Ok(await _mediator.Send(new UploadFileCommand(file)))`. Requires `LinguaCMS.Application` to reference `Microsoft.AspNetCore.Http.Features` (the `IFormFile` interface lives there) — couples Application to ASP.NET Core. Empty-file check moves into `UploadFileValidator`.
+  - **Option B — Custom model binder**: a binder converts `IFormFile` to a `(Stream, string fileName)` pair before the action method runs, so the controller signature stays `(Stream content, string fileName)` and the action body is a single Send. Empty-file check moves into a validator on the command. No new package; keeps Application ASP.NET-free.
+  - **Option C — Accept the controller minor logic as pragmatic**: weaken the rule. Not recommended per "Fix code, never weaken rules."
+- **DoD**:
+  - `FilesController.Upload` body is a single expression: `=> Ok(await _mediator.Send(...))` or equivalent one-line dispatch
+  - The empty-file check no longer lives in the controller; it lives in either a validator (preferred) or the handler
+  - No `IFormFile.OpenReadStream()` or `IFormFile.Length` access in any controller file
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
+
+### REF-025 — Thin LanguagesController.GetDemo: move null-to-404 mapping into the handler
+- **Status**: pending
+- **Risk**: LOW
+- **Requires decision**: N
+- **Rule**: "Controllers contain **only** `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return."
+- **Scope**:
+  - `LinguaCMS.API/Controllers/LanguagesController.cs` (the `GetDemo` action — currently has `var lang = ...; if (lang == null) return NotFound(); return Ok(lang);`)
+  - `LinguaCMS.Application/Languages/Queries/GetDemoLanguage/GetDemoLanguageQuery.cs` (return type changes from `LanguageDto?` to `LanguageDto`)
+  - `LinguaCMS.Application/Languages/Queries/GetDemoLanguage/GetDemoLanguageHandler.cs` (replace `if (lang == null) return null;` with `throw new NotFoundException(...)`)
+- **Depends on**: none
+- **DoD**:
+  - `LanguagesController.GetDemo` body is a single expression-bodied `=> Ok(await _mediator.Send(new GetDemoLanguageQuery()))`
+  - `GetDemoLanguageQuery` implements `IRequest<LanguageDto>` (non-nullable)
+  - Handler throws `NotFoundException` when no demo language exists; `ExceptionHandlerMiddleware` translates it to 404 (pattern already established elsewhere)
+  - `dotnet build` returns 0
+  - `dotnet test` returns 0 with test count ≥ baseline
 
 ## Out of audit scope (workflow rules)
 
