@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAuthStore } from '../store/auth';
+import { useAuthStore } from '../../store/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import { Button, Input } from '../components/ui';
+import { Button, Input } from '../../components/ui';
 
 export default function Register() {
   const [email, setEmail] = useState('');

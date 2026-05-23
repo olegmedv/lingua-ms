@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 import Dashboard from './pages/student/Dashboard';
 import LessonTree from './pages/student/LessonTree';
 import ExercisePlayer from './pages/student/ExercisePlayer';

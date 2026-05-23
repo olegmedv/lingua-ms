@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 14 | Done: 2 | Blocked: 0
+- Pending: 13 | Done: 3 | Blocked: 0
 - Items requiring user decision: 12
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -125,7 +125,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
   - `npm run build` returns 0
 
 ### REF-007 — Move `Login.tsx` and `Register.tsx` into `src/pages/auth/`
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Page: `src/pages/<area>/<PageName>.tsx`."
