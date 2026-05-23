@@ -4,7 +4,7 @@ Generated: 2026-05-23. Source spec: "Block demo user (Role == Demo) from mutatio
 
 ## Summary
 - Total items: 7
-- Pending: 2 | Done: 5 | Blocked: 0 | Superseded: 0
+- Pending: 1 | Done: 6 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0 (all decisions resolved during iteration 1)
 - Critic iterations: 2
 - Critic verdict: approved (only LOW notes after iteration 2)
@@ -78,7 +78,8 @@ FEAT-001 → FEAT-002 → FEAT-003 → FEAT-007 → FEAT-006 → FEAT-005 → FE
   - `dotnet build` returns 0
 
 ### FEAT-005 — Update DemoLoginHandler to assign Role = Demo (and migrate existing demo user)
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Spec reference**: Implied by "Block demo user (Role == Demo)" — without this item the gate never bites because the seeded demo user currently has `Role = UserRole.Admin`.
