@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 19 | Done: 2 | Blocked: 1
+- Pending: 18 | Done: 3 | Blocked: 1
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -178,7 +178,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-008 — Move every command/query into a per-verb subfolder
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "Command + Handler | `<Sln>.Application/<Entity>/Commands/<Verb><Entity>/<Verb><Entity>Command.cs` + `<Verb><Entity>Handler.cs`" / same for Query.
