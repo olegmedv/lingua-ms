@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 3 | Done: 11 | Blocked: 0 | Superseded: 0
+- Pending: 2 | Done: 12 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -214,7 +214,9 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - `npm run lint` returns 0; `npm run build` returns 0
 
 ### FEAT-012 — Wire admin banner into [App.tsx](../client/src/App.tsx); widen nav visibility to demo; suppress student banner on admin paths
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Implementation note**: Chose the three-way ternary approach (not the flex refactor) for the sidebar offset. Picked `top-[42px]` for the admin banner — AntD warning Alert with `showIcon closable` defaults to ~38–44px depending on font metrics. If visual QA during FEAT-013/14 reveals a misalignment, the offset value is a one-character fix. Used the existing `isDemo` store flag for the student-banner condition (preserves prior behavior) and the new `useIsDemoUser()` hook for `canSeeAdmin` and the admin-banner gate (role-based, decouples from the demoLogin-specific flag). Banner visibility computed once as `studentBannerVisible` / `adminBannerVisible` and reused for both rendering and sidebar offset — no double conditional drift.
 - **Risk**: MED
 - **Requires decision**: N (single design owns all three concerns; bundling avoids three drive-by edits of the same file)
 - **Spec reference**: "Show a persistent banner at the top of all admin pages" + "Read access unchanged — demo navigates all admin pages" (implies the Admin nav link must be reachable for demo users).

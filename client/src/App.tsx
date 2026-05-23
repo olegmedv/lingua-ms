@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
 import { Outlet, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from './store/auth';
+import { useIsDemoUser } from './hooks/useIsDemoUser';
+import { useUiStore } from './store/ui';
+import DemoAdminBanner from './components/admin/DemoAdminBanner';
 import { Home, User, Shield, LogOut, BookOpen } from 'lucide-react';
 
 export default function App() {
   const { token, user, isDemo, loadUser, logout } = useAuthStore();
+  const isDemoUser = useIsDemoUser();
+  const adminBannerDismissed = useUiStore(s => s.adminDemoBannerDismissed);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,14 +23,22 @@ export default function App() {
 
   if (!token) return null;
 
-  const isAdmin = user?.role === 'Admin';
+  const canSeeAdmin = user?.role === 'Admin' || isDemoUser;
   const navItems = [
     { to: '/', icon: Home, label: 'Learn' },
     { to: '/profile', icon: User, label: 'Profile' },
-    ...(isAdmin ? [{ to: '/admin', icon: Shield, label: 'Admin' }] : []),
+    ...(canSeeAdmin ? [{ to: '/admin', icon: Shield, label: 'Admin' }] : []),
   ];
 
   const isExercise = location.pathname.includes('/play') || location.pathname.includes('/complete');
+  const isAdminPath = location.pathname.startsWith('/admin');
+  const studentBannerVisible = isDemo && !isExercise && !isAdminPath;
+  const adminBannerVisible = isAdminPath && isDemoUser && !adminBannerDismissed;
+  const sidebarTop = studentBannerVisible
+    ? 'top-[41px]'
+    : adminBannerVisible
+      ? 'top-[42px]'
+      : 'top-0';
 
   const isActive = (path: string) => {
     if (path === '/') return location.pathname === '/';
@@ -39,8 +52,11 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Demo banner */}
-      {isDemo && !isExercise && (
+      {/* Admin demo banner (warning Alert on /admin/* for demo users) */}
+      {isAdminPath && <DemoAdminBanner />}
+
+      {/* Student demo banner (brand-tinted, non-admin pages) */}
+      {studentBannerVisible && (
         <div className="bg-brand/10 border-b border-brand/20 px-4 py-2 text-center text-sm">
           <span className="text-brand font-medium">Demo mode</span>
           <span className="text-gray-600"> — nothing is saved. </span>
@@ -50,9 +66,7 @@ export default function App() {
       )}
 
       {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex fixed left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50 ${
-        isDemo && !isExercise ? 'top-[41px]' : 'top-0'
-      }`}>
+      <aside className={`hidden md:flex fixed left-0 bottom-0 w-56 bg-white border-r border-gray-200 flex-col z-50 ${sidebarTop}`}>
         <div className="p-5 border-b border-gray-100">
           <Link to="/" className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-brand rounded-xl flex items-center justify-center">
