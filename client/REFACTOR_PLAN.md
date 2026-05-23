@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 6 | Done: 9 | Blocked: 1
+- Pending: 5 | Done: 10 | Blocked: 1
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -253,7 +253,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Notes**: may be subsumed by REF-012 if the UI library rewrite removes these elements.
 
 ### REF-015 — `WordBank.tsx`: split into one component per file
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Rule**: "One component per file."

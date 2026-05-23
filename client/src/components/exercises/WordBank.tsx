@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
 import { DndContext, closestCenter, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
-import { SortableContext, useSortable, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { SortableContext, horizontalListSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { Button } from '../ui';
+import SortableWord from './SortableWord';
+import BankWord from './BankWord';
 
 interface Props {
   data: { prompt: string; correctOrder: string[]; distractorWords: string[]; instruction?: string };
@@ -13,26 +14,6 @@ interface Props {
 interface WordItem {
   id: string;
   label: string;
-}
-
-function SortableWord({ item, onClick }: { item: WordItem; onClick: () => void }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id });
-  const style = { transform: CSS.Transform.toString(transform), transition, touchAction: 'none' as const };
-  return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners} onClick={onClick}
-      className="bg-white border-2 border-gray-300 rounded-xl px-4 py-2 text-lg font-semibold cursor-grab active:cursor-grabbing select-none shadow-sm hover:border-gray-400 transition-colors">
-      {item.label}
-    </div>
-  );
-}
-
-function BankWord({ item, onClick }: { item: WordItem; onClick: () => void }) {
-  return (
-    <button onClick={onClick}
-      className="bg-white border-2 border-gray-300 rounded-xl px-4 py-2 text-lg font-semibold select-none hover:border-brand hover:bg-brand/5 transition-colors">
-      {item.label}
-    </button>
-  );
 }
 
 function shuffle<T>(arr: T[]): T[] {
