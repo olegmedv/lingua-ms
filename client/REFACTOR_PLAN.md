@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 2 | Done: 14 | Blocked: 0
+- Pending: 1 | Done: 15 | Blocked: 0
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -85,10 +85,12 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Notes**: TanStack Query is "optional" per CLAUDE.md — user must decide whether to introduce it or write thin hooks over the generated services. The decision affects the shape of every new hook.
 
 ### REF-004 — Remove hand-written `src/api/client.ts` and `src/api/endpoints.ts`
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Decision (2026-05-23)**: delete both files entirely (no empty slot). Auth store uses generated `AuthService`.
+- **Implementation note**: auth.ts also imports `../api/openapi-config` so the OpenAPI bootstrap runs before any AuthService call (e.g. when the user navigates straight to /login). The store still touches `localStorage` directly — REF-005 confines that.
 - **Rule**: "API types and services are **generated** from backend OpenAPI. Never hand-written." / "Hand-written API wrapper: `src/api/client.ts`." (the wrapper exists as a slot, but its current contents duplicate generator output and must be retired once consumers migrate)
 - **Scope**:
   - [src/api/client.ts](src/api/client.ts) — delete (hand-written fetch wrapper)

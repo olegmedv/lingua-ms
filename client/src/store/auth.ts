@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { api } from '../api/client';
-import { API } from '../api/endpoints';
-import type { UserDto as User, AuthResponse } from '../api/generated';
+import '../api/openapi-config';
+import { AuthService } from '../api/generated';
+import type { UserDto as User } from '../api/generated';
 
 interface AuthState {
   user: User | null;
@@ -20,21 +20,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   isDemo: localStorage.getItem('isDemo') === 'true',
 
   login: async (email, password) => {
-    const res = await api.post<AuthResponse>(API.auth.login, { email, password });
+    const res = await AuthService.postApiAuthLogin({ requestBody: { email, password } });
     localStorage.setItem('token', res.token!);
     localStorage.removeItem('isDemo');
     set({ token: res.token!, user: res.user ?? null, isDemo: false });
   },
 
   register: async (email, displayName, password) => {
-    const res = await api.post<AuthResponse>(API.auth.register, { email, displayName, password });
+    const res = await AuthService.postApiAuthRegister({ requestBody: { email, displayName, password } });
     localStorage.setItem('token', res.token!);
     localStorage.removeItem('isDemo');
     set({ token: res.token!, user: res.user ?? null, isDemo: false });
   },
 
   demoLogin: async () => {
-    const res = await api.post<AuthResponse>(API.auth.demo);
+    const res = await AuthService.postApiAuthDemo();
     localStorage.setItem('token', res.token!);
     localStorage.setItem('isDemo', 'true');
     set({ token: res.token!, user: res.user ?? null, isDemo: true });
@@ -48,7 +48,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   loadUser: async () => {
     try {
-      const user = await api.get<User>(API.auth.me);
+      const user = await AuthService.getApiAuthMe();
       set({ user });
     } catch {
       localStorage.removeItem('token');
