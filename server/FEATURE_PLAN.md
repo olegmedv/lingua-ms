@@ -8,7 +8,7 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
 
 ## Summary
 - Total items: 14 (7 backend + 7 frontend)
-- Pending: 4 | Done: 10 | Blocked: 0 | Superseded: 0
+- Pending: 3 | Done: 11 | Blocked: 0 | Superseded: 0
 - Items requiring user decision: 0
 - Critic iterations: Phase 1 — 2 (approved). Phase 2 — 2 (approved).
 - Critic verdict: Phase 1 approved (only LOW notes after iteration 2). Phase 2 approved (only LOW notes after iteration 2).
@@ -196,7 +196,8 @@ Generated: 2026-05-23. Multi-phase plan for "Demo admin mode" feature.
   - `npm run lint` returns 0; `npm run build` returns 0
 
 ### FEAT-011 — Add `<DemoAdminBanner>` warning banner component
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: LOW
 - **Requires decision**: N
 - **Spec reference**: "Show a persistent banner at the top of all admin pages: 'Demo mode — changes are not saved'. Banner color: warning (yellow/orange), dismissible per session."
