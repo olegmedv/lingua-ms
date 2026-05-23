@@ -1,10 +1,11 @@
 using System.Text;
 using LinguaCMS.API.Middleware;
-using LinguaCMS.API.Services;
 using FluentValidation;
 using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Common.Behaviors;
 using LinguaCMS.Data;
+using LinguaCMS.Domain.Interfaces;
+using LinguaCMS.Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -43,7 +44,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddSingleton<JwtTokenService>();
+builder.Services.AddSingleton<IJwtTokenService, JwtTokenService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // Controllers + Swagger
 builder.Services.AddControllers();

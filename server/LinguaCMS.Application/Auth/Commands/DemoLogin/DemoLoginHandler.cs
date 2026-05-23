@@ -1,8 +1,9 @@
 using LinguaCMS.Application.Auth.Models;
 using LinguaCMS.Application.Common;
+using LinguaCMS.Data;
 using LinguaCMS.Domain.Entities;
 using LinguaCMS.Domain.Enums;
-using LinguaCMS.Data;
+using LinguaCMS.Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,16 @@ namespace LinguaCMS.Application.Auth.Commands;
 public class DemoLoginHandler : IRequestHandler<DemoLoginCommand, AuthResponse>
 {
     private readonly AppDbContext _db;
+    private readonly IJwtTokenService _jwt;
 
     private const string DemoEmail = "demo@linguacms.com";
     private const string DemoName = "Demo Admin";
 
-    public DemoLoginHandler(AppDbContext db) => _db = db;
+    public DemoLoginHandler(AppDbContext db, IJwtTokenService jwt)
+    {
+        _db = db;
+        _jwt = jwt;
+    }
 
     public async Task<AuthResponse> Handle(DemoLoginCommand request, CancellationToken ct)
     {
@@ -45,7 +51,7 @@ public class DemoLoginHandler : IRequestHandler<DemoLoginCommand, AuthResponse>
 
         return new AuthResponse
         {
-            Token = "",
+            Token = _jwt.GenerateToken(user.Id, user.Email, user.Role.ToString()),
             User = new UserDto
             {
                 Id = user.Id,

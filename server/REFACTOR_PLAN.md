@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 11 | Done: 9 | Blocked: 0 | Superseded: 2
+- Pending: 8 | Done: 10 | Blocked: 0 | Superseded: 4
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -271,8 +271,10 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet ef migrations script <previous> <new>` shows only `RENAME` operations, no destructive `DROP`
   - `dotnet build` returns 0
 
-### REF-012 — Move JwtTokenService to Infrastructure; introduce IJwtTokenService domain interface
-- **Status**: pending
+### REF-012 — Auth refactor: IJwtTokenService + ICurrentUser interfaces; thin AuthController (merged with REF-014, REF-015)
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Re-audit note (2026-05-23)**: merged with REF-014 and REF-015. The three items were inseparable: REF-012 deletes API/Services/JwtTokenService.cs but AuthController references it concretely (REF-015 scope); both JwtTokenService and CurrentUser need ASP.NET Core / JWT packages in Infrastructure that weren't part of any single item's scope. User approved merge.
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "Domain interface | `<Sln>.Domain/Interfaces/I<Name>.cs`" / "Domain interface impl | `<Sln>.Infrastructure/Services/<Name>Service.cs`" / "Domain interface implementation outside `<Sln>.Infrastructure` or `<Sln>.ExternalServices.*.Providers`" (Never). JwtTokenService currently lives in `LinguaCMS.API/Services/` and is consumed by `AuthController` directly.
@@ -308,7 +310,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-014 — Introduce ICurrentUser domain interface + Infrastructure implementation
-- **Status**: pending
+- **Status**: superseded
+- **Superseded by**: REF-012 (merged 2026-05-23 — Infrastructure needs ASP.NET Core access for IHttpContextAccessor, an unstated scope expansion; rolled into the auth refactor).
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "Current user via `ICurrentUser` (domain interface, infra impl) reading `sub` claim. Never touch `HttpContext.User` in handlers/controllers." / "Read claims / `HttpContext` / env vars in handlers" (Never).
@@ -324,7 +327,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-015 — Thin AuthController: move token generation & claim access into handlers
-- **Status**: pending
+- **Status**: superseded
+- **Superseded by**: REF-012 (merged 2026-05-23 — see REF-012 re-audit note).
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "Controllers contain only `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return." / "Never touch `HttpContext.User` in handlers/controllers."

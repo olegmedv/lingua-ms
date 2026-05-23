@@ -1,8 +1,6 @@
-using System.Security.Claims;
 using LinguaCMS.Application.Auth.Commands;
 using LinguaCMS.Application.Auth.Models;
 using LinguaCMS.Application.Auth.Queries;
-using LinguaCMS.API.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,44 +12,23 @@ namespace LinguaCMS.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly JwtTokenService _jwt;
 
-    public AuthController(IMediator mediator, JwtTokenService jwt)
-    {
-        _mediator = mediator;
-        _jwt = jwt;
-    }
+    public AuthController(IMediator mediator) => _mediator = mediator;
 
     [HttpPost("register")]
     public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
-    {
-        var result = await _mediator.Send(new RegisterCommand(request.Email, request.DisplayName, request.Password));
-        result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);
-        return Ok(result);
-    }
+        => Ok(await _mediator.Send(new RegisterCommand(request.Email, request.DisplayName, request.Password)));
 
     [HttpPost("login")]
     public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
-    {
-        var result = await _mediator.Send(new LoginCommand(request.Email, request.Password));
-        result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);
-        return Ok(result);
-    }
+        => Ok(await _mediator.Send(new LoginCommand(request.Email, request.Password)));
 
     [HttpPost("demo")]
     public async Task<ActionResult<AuthResponse>> DemoLogin()
-    {
-        var result = await _mediator.Send(new DemoLoginCommand());
-        result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);
-        return Ok(result);
-    }
+        => Ok(await _mediator.Send(new DemoLoginCommand()));
 
     [Authorize]
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> Me()
-    {
-        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var result = await _mediator.Send(new GetMeQuery(userId));
-        return Ok(result);
-    }
+        => Ok(await _mediator.Send(new GetMeQuery()));
 }
