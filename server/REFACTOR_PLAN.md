@@ -1,13 +1,22 @@
 # Refactor Plan
 
-Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tightening). Source: server/CLAUDE.md.
+Generated: 2026-05-23. Re-audited: 2026-05-23 (4th pass, post-OpenAPI rule addition). Source: server/CLAUDE.md.
 
 ## Summary
-- Total items: 22
-- Pending: 0 | Done: 17 | Blocked: 0 | Superseded: 5
+- Total items: 23
+- Pending: 0 | Done: 18 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
+
+## Re-audit notes (2026-05-23, 4th pass)
+- CLAUDE.md gained one new code-shape rule in commit `ab7c124`: **OpenAPI schema accuracy** — Swashbuckle must be configured to honor C# nullability annotations and `[Required]` attributes.
+- Audited against the new rule: `LinguaCMS.API/Program.cs` calls `AddSwaggerGen(...)` but does **not** call `c.SupportNonNullableReferenceTypes()`. Without it, Swashbuckle emits every reference type as `nullable: true, required: false` regardless of C# annotations — exactly the "all-fields-optional schema drift" the rule prohibits.
+- DTOs themselves are compliant: non-nullable references use `string` with `= string.Empty` defaults (`RegisterRequest`, `LoginRequest`, `AuthResponse`, `UserDto`, `LanguageDto`, `CreateLanguageRequest`, `UpdateLanguageRequest`, `LessonDto`, `CreateLessonRequest`, `UpdateLessonRequest`, `ExerciseDto`, `CreateExerciseRequest`, `UpdateExerciseRequest`, `ProgressDto`, `SubmitProgressRequest`, `StatsDto`, `UploadFileResponse`); nullable references use `string?`. The schema drift is purely a Swagger-config gap, not a DTO-annotation gap.
+- 1 new code-shape violation → REF-023 issued. Highest pre-existing ID was REF-022.
+- All 22 existing items retain their status from the 2026-05-23 3rd-pass audit (17 done, 5 superseded). Per skill rules, done items are not re-checked.
+- IDs preserved: REF-001..REF-022. IDs issued: REF-023.
+- 0 items silently resolved between audits.
 
 ## Re-audit notes (2026-05-23, 3rd pass)
 - All 22 existing items remain pending — verified one-by-one against current source.
@@ -477,6 +486,21 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet test` runs and the architecture suite passes (or fails honestly, exposing remaining violations as test failures rather than as PR review nits)
   - Test project lives in `server/LinguaCMS.ArchitectureTests/`
   - `dotnet build` returns 0
+
+### REF-023 — Configure Swashbuckle to honor C# nullability + [Required] in OpenAPI schema
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Risk**: LOW
+- **Requires decision**: N
+- **Rule**: "Swashbuckle is configured to honor C# nullability annotations and `[Required]` attributes. Non-nullable reference types in DTOs produce `required: true, nullable: false` in the schema. Nullable reference types produce `nullable: true`. The generated frontend client must reflect the true runtime contract — no all-fields-optional schema drift."
+- **Scope**:
+  - `LinguaCMS.API/Program.cs` (the `AddSwaggerGen(c => ...)` block at lines 56–77)
+- **Depends on**: none
+- **DoD**:
+  - `AddSwaggerGen` configuration calls `c.SupportNonNullableReferenceTypes()` (and any equivalent needed to propagate `[Required]` — Swashbuckle 6.x picks up `[Required]` natively once the non-nullable-reference-types switch is on)
+  - `dotnet build` returns 0
+  - Spot-check the regenerated `/swagger/v1/swagger.json`: at least one previously-string-with-default DTO property (e.g., `RegisterRequest.Email`) is emitted as `nullable: false` and listed in the schema's `required` array; at least one nullable property (e.g., `LanguageDto.ImageUrl`) is emitted as `nullable: true` and absent from `required`
+  - Frontend OpenAPI codegen consumes the regenerated schema and produces required/non-nullable types for the affected fields (validated by the frontend client build — out of scope for this item's commit, but follows naturally)
 
 ## Out of audit scope (workflow rules)
 
