@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 5 | Done: 10 | Blocked: 1
+- Pending: 4 | Done: 11 | Blocked: 1
 - Items requiring user decision: 0
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -270,7 +270,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Decision (2026-05-23)**: extract into the same folder (`src/components/exercises/`), no new subgroup.
 
 ### REF-016 — `ExerciseBuilder.tsx`: split into one component per file
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "One component per file."
