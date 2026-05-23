@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 15 | Done: 6 | Blocked: 1
+- Pending: 14 | Done: 7 | Blocked: 1
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -214,7 +214,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-009 — Add FluentValidation + ValidationBehavior to MediatR pipeline
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: Y
 - **Rule**: "MediatR + FluentValidation auto-scan via `AddMediatR` / `AddValidatorsFromAssembly`. No manual registration." / "Pipeline order: `LoggingBehavior` → `ValidationBehavior` → others → Handler."

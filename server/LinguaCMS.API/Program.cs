@@ -1,6 +1,7 @@
 using System.Text;
 using LinguaCMS.API.Middleware;
 using LinguaCMS.API.Services;
+using FluentValidation;
 using LinguaCMS.Application.Common;
 using LinguaCMS.Application.Common.Behaviors;
 using LinguaCMS.Infrastructure.Data;
@@ -21,6 +22,8 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(LinguaCMS.Application.Auth.Commands.RegisterCommand).Assembly));
 
 builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehavior<,>));
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+builder.Services.AddValidatorsFromAssembly(typeof(LinguaCMS.Application.Auth.Commands.RegisterCommand).Assembly);
 
 // JWT Auth
 var jwtKey = builder.Configuration["Jwt:Key"]!;
