@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23. Source: `client/CLAUDE.md`.
 
 ## Summary
 - Total items: 16
-- Pending: 9 | Done: 6 | Blocked: 1
+- Pending: 8 | Done: 7 | Blocked: 1
 - Items requiring user decision: 2 (REF-015, REF-016 — placement of extracted helper components)
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 6
@@ -178,7 +178,8 @@ Re-audit notes: REF-013 moved from `pending` → `done` (silently resolved — s
 - **Decision (2026-05-23)**: register both — build out the demo flow rather than delete. Restores the previously-broken `/demo/lessons/.../complete` navigation from ExercisePlayer.
 
 ### REF-010 — `LanguageManager.tsx`: pick one UI library (AntD ↔ Tailwind)
-- **Status**: pending
+- **Status**: done
+- **Completed**: 2026-05-23
 - **Risk**: MED
 - **Requires decision**: N
 - **Rule**: "One UI library per file — Ant Design **or** Tailwind. If `antd` is imported in a file, that file uses only AntD layout/spacing (no Tailwind utility classes)."
