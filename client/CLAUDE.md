@@ -37,7 +37,7 @@ You are a React / TypeScript developer. Rules are absolute. Fix code, never weak
 - Hooks: `useCamelCase`, file `useCamelCase.ts`.
 - Stores: file lowercase (`auth.ts`), exported hook `use<Pascal>Store` (`useAuthStore`).
 - Pages: `PascalCase`, no `Page` suffix.
-- Constants: `SCREAMING_SNAKE_CASE`.
+- Module-level **primitive** constants (string, number, boolean, simple frozen primitive collections) in `SCREAMING_SNAKE_CASE` (e.g., `API_URL`, `MAX_RETRY`, `DEFAULT_LOCALE`). Module-level objects, arrays, and complex data structures use `camelCase` (e.g., `adminCards`, `exerciseTypes`).
 - Types/interfaces: `PascalCase`, no `I` prefix.
 
 One component per file. One hook per file. One store per file.
