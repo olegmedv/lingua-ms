@@ -4,7 +4,7 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
 
 ## Summary
 - Total items: 22
-- Pending: 4 | Done: 14 | Blocked: 0 | Superseded: 4
+- Pending: 2 | Done: 15 | Blocked: 0 | Superseded: 5
 - Items requiring user decision: 6
 - Ambiguous rules (not audited): 0
 - Workflow rules out of audit scope: 10
@@ -381,8 +381,10 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `ProgressController` has no `User.*` access and no `UserId` helper
   - `dotnet build` returns 0
 
-### REF-018 — Thin ExercisesController.Delete: move file-deletion logic into handler
-- **Status**: pending
+### REF-018 — File handling refactor: IFileStorage, thin ExercisesController.Delete, mediator-based FilesController (merged with REF-019)
+- **Status**: done
+- **Completed**: 2026-05-23
+- **Re-audit note (2026-05-23)**: merged with REF-019. Both items share the IFileStorage interface and benefit from a single atomic introduction; user approved merge.
 - **Risk**: MED
 - **Requires decision**: Y
 - **Rule**: "Controllers contain only `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return." / "Logic in controllers, entities, or EF configurations" (Never).
@@ -401,7 +403,8 @@ Generated: 2026-05-23. Re-audited: 2026-05-23 (3rd pass, post-CLAUDE.md tighteni
   - `dotnet build` returns 0
 
 ### REF-019 — Refactor FilesController to mediator-based commands with typed responses
-- **Status**: pending
+- **Status**: superseded
+- **Superseded by**: REF-018 (merged 2026-05-23 — share IFileStorage; atomic introduction is cleaner).
 - **Risk**: HIGH
 - **Requires decision**: Y
 - **Rule**: "Controllers contain only `IMediator.Send(...)`, HTTP attributes, `ActionResult<T>` return." / "Controller action that doesn't dispatch through `IMediator`" (Never). / "`dynamic` / `object` / untyped dictionaries on API boundaries" (Never — `ActionResult<object>` violates). / "Logic in controllers, entities, or EF configurations" (Never).

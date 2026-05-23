@@ -1,3 +1,7 @@
+using LinguaCMS.Application.Files.Commands.DeleteFile;
+using LinguaCMS.Application.Files.Commands.UploadFile;
+using LinguaCMS.Application.Files.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,43 +11,26 @@ namespace LinguaCMS.API.Controllers;
 [Route("api/[controller]")]
 public class FilesController : ControllerBase
 {
-    private readonly IWebHostEnvironment _env;
-    public FilesController(IWebHostEnvironment env) => _env = env;
+    private readonly IMediator _mediator;
+    public FilesController(IMediator mediator) => _mediator = mediator;
 
     [Authorize(Roles = "Admin")]
     [HttpPost("upload")]
-    public async Task<ActionResult<object>> Upload(IFormFile file)
+    public async Task<ActionResult<UploadFileResponse>> Upload(IFormFile file)
     {
         if (file.Length == 0)
             return BadRequest("Empty file");
 
-        var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
-        Directory.CreateDirectory(uploadsDir);
-
-        var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
-        var filePath = Path.Combine(uploadsDir, fileName);
-
-        using var stream = new FileStream(filePath, FileMode.Create);
-        await file.CopyToAsync(stream);
-
-        var url = $"/uploads/{fileName}";
-        return Ok(new { url });
+        await using var stream = file.OpenReadStream();
+        var response = await _mediator.Send(new UploadFileCommand(stream, file.FileName));
+        return Ok(response);
     }
 
     [Authorize(Roles = "Admin")]
     [HttpDelete]
-    public IActionResult Delete([FromQuery] string url)
+    public async Task<ActionResult> Delete([FromQuery] string url)
     {
-        var fileName = Path.GetFileName(url);
-        if (string.IsNullOrEmpty(fileName))
-            return BadRequest("Invalid URL");
-
-        var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
-        var filePath = Path.Combine(uploadsDir, fileName);
-
-        if (System.IO.File.Exists(filePath))
-            System.IO.File.Delete(filePath);
-
+        await _mediator.Send(new DeleteFileCommand(url));
         return NoContent();
     }
 }

@@ -12,12 +12,7 @@ namespace LinguaCMS.API.Controllers;
 public class ExercisesController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IWebHostEnvironment _env;
-    public ExercisesController(IMediator mediator, IWebHostEnvironment env)
-    {
-        _mediator = mediator;
-        _env = env;
-    }
+    public ExercisesController(IMediator mediator) => _mediator = mediator;
 
     [HttpGet("lessons/{lessonId}/exercises")]
     public async Task<ActionResult<List<ExerciseDto>>> GetByLesson(Guid lessonId)
@@ -37,19 +32,7 @@ public class ExercisesController : ControllerBase
     [HttpDelete("exercises/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        var result = await _mediator.Send(new DeleteExerciseCommand(id));
-
-        var uploadsDir = Path.Combine(_env.WebRootPath ?? Path.Combine(_env.ContentRootPath, "wwwroot"), "uploads");
-        var allUrls = new List<string?> { result.AudioUrl };
-        allUrls.AddRange(result.ImageUrls);
-
-        foreach (var url in allUrls.Where(u => !string.IsNullOrEmpty(u)))
-        {
-            var filePath = Path.Combine(uploadsDir, Path.GetFileName(url!));
-            if (System.IO.File.Exists(filePath))
-                System.IO.File.Delete(filePath);
-        }
-
+        await _mediator.Send(new DeleteExerciseCommand(id));
         return NoContent();
     }
 }
