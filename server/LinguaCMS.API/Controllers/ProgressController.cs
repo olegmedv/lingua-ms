@@ -19,7 +19,7 @@ public class ProgressController : ControllerBase
     private Guid UserId => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpPost("submit")]
-    public async Task<ActionResult<ProgressDto>> Submit(SubmitProgressRequest request)
+    public async Task<ActionResult<ProgressDto>> Submit([FromBody] SubmitProgressRequest request)
         => Ok(await _mediator.Send(new SubmitProgressCommand(UserId, request.LessonId, request.Score)));
 
     [HttpGet("my")]

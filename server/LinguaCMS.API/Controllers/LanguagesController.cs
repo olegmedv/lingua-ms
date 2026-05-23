@@ -35,12 +35,12 @@ public class LanguagesController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<LanguageDto>> Create(CreateLanguageRequest request)
+    public async Task<ActionResult<LanguageDto>> Create([FromBody] CreateLanguageRequest request)
         => Ok(await _mediator.Send(new CreateLanguageCommand(request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<ActionResult<LanguageDto>> Update(Guid id, UpdateLanguageRequest request)
+    public async Task<ActionResult<LanguageDto>> Update(Guid id, [FromBody] UpdateLanguageRequest request)
         => Ok(await _mediator.Send(new UpdateLanguageCommand(id, request.Name, request.Description, request.ImageUrl, request.IsPublished, request.IsDemo)));
 
     [Authorize(Roles = "Admin")]

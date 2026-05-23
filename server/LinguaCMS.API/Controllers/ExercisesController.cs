@@ -25,12 +25,12 @@ public class ExercisesController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost("lessons/{lessonId}/exercises")]
-    public async Task<ActionResult<ExerciseDto>> Create(Guid lessonId, CreateExerciseRequest request)
+    public async Task<ActionResult<ExerciseDto>> Create(Guid lessonId, [FromBody] CreateExerciseRequest request)
         => Ok(await _mediator.Send(new CreateExerciseCommand(lessonId, request.Type, request.ContentJson, request.AudioUrl, request.Order)));
 
     [Authorize(Roles = "Admin")]
     [HttpPut("exercises/{id}")]
-    public async Task<ActionResult<ExerciseDto>> Update(Guid id, UpdateExerciseRequest request)
+    public async Task<ActionResult<ExerciseDto>> Update(Guid id, [FromBody] UpdateExerciseRequest request)
         => Ok(await _mediator.Send(new UpdateExerciseCommand(id, request.Type, request.ContentJson, request.AudioUrl, request.Order)));
 
     [Authorize(Roles = "Admin")]

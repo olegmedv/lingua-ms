@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
+    public async Task<ActionResult<AuthResponse>> Register([FromBody] RegisterRequest request)
     {
         var result = await _mediator.Send(new RegisterCommand(request.Email, request.DisplayName, request.Password));
         result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);
@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+    public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest request)
     {
         var result = await _mediator.Send(new LoginCommand(request.Email, request.Password));
         result.Token = _jwt.GenerateToken(result.User.Id, result.User.Email, result.User.Role);

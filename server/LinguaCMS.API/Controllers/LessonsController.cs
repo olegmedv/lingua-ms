@@ -24,12 +24,12 @@ public class LessonsController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpPost("languages/{langId}/lessons")]
-    public async Task<ActionResult<LessonDto>> Create(Guid langId, CreateLessonRequest request)
+    public async Task<ActionResult<LessonDto>> Create(Guid langId, [FromBody] CreateLessonRequest request)
         => Ok(await _mediator.Send(new CreateLessonCommand(langId, request.Title, request.Description, request.Order, request.PassThreshold)));
 
     [Authorize(Roles = "Admin")]
     [HttpPut("lessons/{id}")]
-    public async Task<ActionResult<LessonDto>> Update(Guid id, UpdateLessonRequest request)
+    public async Task<ActionResult<LessonDto>> Update(Guid id, [FromBody] UpdateLessonRequest request)
         => Ok(await _mediator.Send(new UpdateLessonCommand(id, request.Title, request.Description, request.Order, request.PassThreshold)));
 
     [Authorize(Roles = "Admin")]
